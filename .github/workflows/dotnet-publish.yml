@@ -17,7 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checkout the repo
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2      
+        with:
+          fetch-depth: 0 # Needed for GitVersion to function correctly
 
       # Setup .NET Core SDK
       - name: Setup .NET Core
