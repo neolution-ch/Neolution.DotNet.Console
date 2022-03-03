@@ -1,0 +1,9 @@
+mode: Mainline
+branches:
+  release:
+    mode: ContinuousDeployment
+  pull-request:
+    tag: pr-
+ignore:
+  sha: []
+merge-message-formats: {}
