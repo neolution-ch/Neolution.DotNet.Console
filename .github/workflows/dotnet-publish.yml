@@ -48,19 +48,20 @@ jobs:
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API_KEY_NEOLUTION }}
       
-      # Calculate date and time for version number
-      - name: Calculate version number
-        id: versionNumber
-        uses: lee-dohm/calculate-dates-and-times@v1.0.2
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
         with:
-          format: "YYYY.M.DHHmm"      
+          versionSpec: '5.x'
+          
+      - name: Determine Version
+        uses: gittools/actions/gitversion/execute@v0.9.7  
 
       # Run dotnet build and package
       - name: dotnet build and publish
         run: |
           dotnet restore
           dotnet build --configuration '${{ env.BUILD_CONFIGURATION }}'
-          dotnet pack -c '${{ env.BUILD_CONFIGURATION }}' -p:PackageVersion=${{ steps.versionNumber.outputs.date }}
+          dotnet pack -c '${{ env.BUILD_CONFIGURATION }}' -p:PackageVersion=$GITVERSION_NUGETVERSION
 
       # Publish the package to Azure Artifacts
       #- name: "dotnet publish"
