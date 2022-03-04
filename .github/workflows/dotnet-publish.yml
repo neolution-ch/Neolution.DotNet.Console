@@ -13,27 +13,7 @@ env:
   DOTNET_VERSION: "6.x"
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      # Checkout the repo
-      - uses: actions/checkout@v2
-
-      # Setup .NET Core SDK
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      # Run dotnet build and package
-      - name: dotnet build and test
-        run: |
-          dotnet restore
-          dotnet build --configuration '${{ env.BUILD_CONFIGURATION }}'
-          dotnet test --configuration '${{ env.BUILD_CONFIGURATION }}'
-
-  az-artifacts-build-and-deploy:
-    needs: build
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       # Checkout the repo
@@ -62,8 +42,8 @@ jobs:
       - name: dotnet build and publish
         run: |
           dotnet restore
-          dotnet build --configuration '${{ env.BUILD_CONFIGURATION }}'
-          dotnet pack --configuration '${{ env.BUILD_CONFIGURATION }}' -p:PackageVersion='${{ env.GITVERSION_NUGETVERSION }}'
+          dotnet build --configuration '${{ env.BUILD_CONFIGURATION }}' -p:Version=$GITVERSION_NUGETVERSION
+          dotnet pack --configuration '${{ env.BUILD_CONFIGURATION }}' --no-build -p:PackageVersion=$GITVERSION_NUGETVERSION
 
       # Publish the package to Azure Artifacts
       #- name: "dotnet publish"
