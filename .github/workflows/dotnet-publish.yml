@@ -63,7 +63,7 @@ jobs:
         run: |
           dotnet restore
           dotnet build --configuration '${{ env.BUILD_CONFIGURATION }}'
-          dotnet pack -c '${{ env.BUILD_CONFIGURATION }}' -p:PackageVersion=$GITVERSION_NUGETVERSION
+          dotnet pack --configuration '${{ env.BUILD_CONFIGURATION }}' -p:PackageVersion='${{ env.GITVERSION_NUGETVERSION }}'
 
       # Publish the package to Azure Artifacts
       #- name: "dotnet publish"
