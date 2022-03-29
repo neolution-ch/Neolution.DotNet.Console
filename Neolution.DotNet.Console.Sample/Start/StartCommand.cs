@@ -7,8 +7,8 @@
     /// <summary>
     /// The default command of the application.
     /// </summary>
-    /// <seealso cref="IVerbCommand{TOptions}" />
-    public class StartCommand : IVerbCommand<StartOptions>
+    /// <seealso cref="IConsoleAppCommand{TOptions}" />
+    public class StartCommand : IConsoleAppCommand<StartOptions>
     {
         /// <summary>
         /// The logger

@@ -77,9 +77,9 @@
         private void RunWithOptions(object options)
         {
             var dataType = new[] { options.GetType() };
-            var genericBase = typeof(IVerbCommand<>);
+            var genericBase = typeof(IConsoleAppCommand<>);
             var combinedType = genericBase.MakeGenericType(dataType);
-            var method = combinedType.GetMethod(nameof(IVerbCommand<object>.Run));
+            var method = combinedType.GetMethod(nameof(IConsoleAppCommand<object>.Run));
 
             var command = this.Services.GetRequiredService(combinedType);
             method?.Invoke(command, new[] { options });
