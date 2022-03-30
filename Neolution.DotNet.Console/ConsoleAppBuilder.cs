@@ -259,7 +259,7 @@
             services.Scan(selector =>
             {
                 selector.FromAssembliesOf(this.compositionRootType)
-                    .AddClasses(classes => classes.AssignableTo(typeof(IVerbCommand<>))).AsImplementedInterfaces();
+                    .AddClasses(classes => classes.AssignableTo(typeof(IConsoleAppCommand<>))).AsImplementedInterfaces();
             });
 
             // Only allow one constructor for ICompositionRoot implementations. DI services should have only one constructor anyways.

@@ -3,9 +3,6 @@ name: Publish NuGet package
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 env:
   ARTIFACTS_FEED_URL: https://api.nuget.org/v3/index.json
@@ -13,34 +10,15 @@ env:
   DOTNET_VERSION: "6.x"
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      # Checkout the repo
-      - uses: actions/checkout@v2
-
-      # Setup .NET Core SDK
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+      - name: Checkout
+        uses: actions/checkout@v2
         with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+          fetch-depth: 0 # Needed for GitVersion to function correctly
 
-      # Run dotnet build and package
-      - name: dotnet build and test
-        run: |
-          dotnet restore
-          dotnet build --configuration '${{ env.BUILD_CONFIGURATION }}'
-          dotnet test --configuration '${{ env.BUILD_CONFIGURATION }}'
-
-  az-artifacts-build-and-deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      # Checkout the repo
-      - uses: actions/checkout@v2
-
-      # Setup .NET Core SDK
-      - name: Setup .NET Core
+      - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
@@ -48,22 +26,21 @@ jobs:
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API_KEY_NEOLUTION }}
       
-      # Calculate date and time for version number
-      - name: Calculate version number
-        id: versionNumber
-        uses: lee-dohm/calculate-dates-and-times@v1.0.2
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
         with:
-          format: "YYYY.M.DHHmm"      
+          versionSpec: '5.x'
+          
+      - name: Determine version number
+        uses: gittools/actions/gitversion/execute@v0.9.7  
 
-      # Run dotnet build and package
-      - name: dotnet build and publish
+      - name: Build and pack
         run: |
           dotnet restore
-          dotnet build --configuration '${{ env.BUILD_CONFIGURATION }}'
-          dotnet pack -c '${{ env.BUILD_CONFIGURATION }}' -p:PackageVersion=${{ steps.versionNumber.outputs.date }}
+          dotnet build --configuration '${{ env.BUILD_CONFIGURATION }}' -p:Version=$GITVERSION_NUGETVERSION
+          dotnet pack 'Neolution.DotNet.Console\Neolution.DotNet.Console.csproj' --configuration '${{ env.BUILD_CONFIGURATION }}' --no-build -p:PackageVersion=$GITVERSION_NUGETVERSION
 
-      # Publish the package to Azure Artifacts
-      #- name: "dotnet publish"
-      #  run: dotnet nuget push --skip-duplicate -k $NUGET_AUTH_TOKEN  **/bin/Release/*.nupkg
-      #  env:
-      #    NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API_KEY_NEOLUTION }}
+      - name: Push NuGet package
+        run: dotnet nuget push --skip-duplicate -k $NUGET_AUTH_TOKEN  **/bin/Release/*.nupkg
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API_KEY_NEOLUTION }}

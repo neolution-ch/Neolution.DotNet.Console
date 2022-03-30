@@ -5,8 +5,8 @@
     /// <summary>
     /// Prints the command line parameter into the console window
     /// </summary>
-    /// <seealso cref="IVerbCommand{TOptions}" />
-    public class EchoCommand : IVerbCommand<EchoOptions>
+    /// <seealso cref="IConsoleAppCommand{TOptions}" />
+    public class EchoCommand : IConsoleAppCommand<EchoOptions>
     {
         /// <summary>
         /// The tracker
