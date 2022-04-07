@@ -1,6 +1,9 @@
 ﻿namespace Neolution.DotNet.Console.UnitTests
 {
     using System;
+    using System.Collections;
+    using System.Text.Json;
+    using Neolution.DotNet.Console.UnitTests.Stubs;
     using System.Linq;
     using AutoFixture.Xunit2;
     using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +20,26 @@
     /// </summary>
     public class ConsoleAppTests
     {
+        [Fact]
+        public void GivenServicesWithVariousServiceLifetimes_WhenRunningConsoleApp_ThenShouldNotThrow()
+        {
+            // Arrange
+            var console = DotNetConsole.CreateDefaultBuilder(InjectServicesWithVariousLifetimesOptions.Verb.Split(" "))
+                .ConfigureServices((context, services) =>
+                {
+                    services.AddTransient<ITransientServiceStub, TransientServiceStub>();
+                    services.AddScoped<IScopedServiceStub, ScopedServiceStub>();
+                    services.AddSingleton<ISingletonServiceStub, SingletonServiceStub>();
+                })
+                .UseCompositionRoot<CompositionRootStub>()
+                .Build();
+
+            // Act
+
+            // Assert
+            Should.NotThrow(() => console.Run());
+        }
+
         /// <summary>
         /// Given the built console application, when calling with the verb only then should return expected result.
         /// </summary>
