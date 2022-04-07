@@ -1,4 +1,4 @@
-name: .NET
+name: CI
 
 on:  
   push:
@@ -31,4 +31,4 @@ jobs:
       run: dotnet build --no-restore --configuration '${{ env.BUILD_CONFIGURATION }}'
 
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal --configuration '${{ env.BUILD_CONFIGURATION }}'
