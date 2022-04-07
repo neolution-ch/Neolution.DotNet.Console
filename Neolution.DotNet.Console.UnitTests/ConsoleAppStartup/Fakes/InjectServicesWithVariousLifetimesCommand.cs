@@ -1,15 +1,8 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.Fakes
+﻿using Neolution.DotNet.Console.Abstractions;
+using Neolution.DotNet.Console.UnitTests.Common.Stubs;
+
+namespace Neolution.DotNet.Console.UnitTests.ConsoleAppStartup.Fakes
 {
-    using CommandLine;
-    using Neolution.DotNet.Console.Abstractions;
-    using Neolution.DotNet.Console.UnitTests.Stubs;
-
-    [Verb(Verb)]
-    public class InjectServicesWithVariousLifetimesOptions
-    {
-        public const string Verb = "InjectServicesWithVariousLifetimes";
-    }
-
     public class InjectServicesWithVariousLifetimesCommand : IConsoleAppCommand<InjectServicesWithVariousLifetimesOptions>
     {
         private readonly ITransientServiceStub transientService;

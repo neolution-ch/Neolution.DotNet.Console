@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.Stubs;
+﻿namespace Neolution.DotNet.Console.UnitTests.Common.Stubs;
 
 public interface ITransientServiceStub
 {
