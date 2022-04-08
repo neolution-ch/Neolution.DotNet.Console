@@ -15,6 +15,9 @@
     /// </summary>
     public class ConsoleAppGrammarTests
     {
+        /// <summary>
+        /// When calling the console app without specifying a verb, it should run the command of the default verb.
+        /// </summary>
         [Fact]
         public void GivenBuiltConsoleApp_WhenCallingWithoutVerb_ThenShouldRunDefaultVerb()
         {
@@ -30,6 +33,9 @@
             logger.LoggedObjects.First().ShouldBeOfType<DefaultVerbOptions>();
         }
 
+        /// <summary>
+        /// Test if calling the command without passing a value works.
+        /// </summary>
         [Fact]
         public void GivenBuiltConsoleApp_WhenCallingVerbWithoutValue_ThenShouldReturnExpectedResult()
         {

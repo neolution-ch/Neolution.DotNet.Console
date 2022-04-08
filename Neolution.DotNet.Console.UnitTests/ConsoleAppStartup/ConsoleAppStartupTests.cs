@@ -8,6 +8,9 @@
 
     public class ConsoleAppStartupTests
     {
+        /// <summary>
+        /// Given configured services with various (all possible) service lifetimes, when running the console application, then should it not throw.
+        /// </summary>
         [Fact]
         public void GivenServicesWithVariousServiceLifetimes_WhenRunningConsoleApp_ThenShouldNotThrow()
         {
@@ -28,6 +31,9 @@
             Should.NotThrow(() => console.Run());
         }
 
+        /// <summary>
+        /// Given not specifying a composition root, when building console application, then should throw a <see cref="ConsoleAppException"/>.
+        /// </summary>
         [Fact]
         public void GivenNoCompositionRoot_WhenBuildingConsoleApp_ThenShouldThrowConsoleAppException()
         {
@@ -40,6 +46,9 @@
             Should.Throw<ConsoleAppException>(() => builder.Build());
         }
 
+        /// <summary>
+        /// Given a composition root with disallowed injected services, when building the console application, then should throw a <see cref="ConsoleAppException"/>.
+        /// </summary>
         [Fact]
         public void GivenCompositionRootWithDisallowedInjections_WhenBuildingConsoleApp_ThenShouldThrowConsoleAppException()
         {
@@ -53,6 +62,9 @@
             Should.Throw<ConsoleAppException>(() => builder.Build());
         }
 
+        /// <summary>
+        /// Given a composition root with allowed injected services, when building console application, then should not throw.
+        /// </summary>
         [Fact]
         public void GivenCompositionRootWithAllowedInjections_WhenBuildingConsoleApp_ThenShouldNotThrow()
         {
