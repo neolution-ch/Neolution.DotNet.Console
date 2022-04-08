@@ -2,8 +2,9 @@
 name: Publish NuGet package
 
 on:
-  tags: 
-    - 'v*.*.*'
+  push:
+    tags: 
+      - 'v*.*.*'
   workflow_dispatch:
 
 env:
