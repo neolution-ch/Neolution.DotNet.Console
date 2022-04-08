@@ -30,17 +30,17 @@
             console.Run();
 
             // Assert
-            logger.LoggedObjects.First().ShouldBeOfType<DefaultVerbOptions>();
+            logger.LoggedObjects.First().ShouldBeOfType<DefaultOptions>();
         }
 
         /// <summary>
-        /// Test if calling the command without passing a value works.
+        /// Given the built console application, when specifying the echo verb without passing a value, then it should still work, but without returning a message .
         /// </summary>
         [Fact]
         public void GivenBuiltConsoleApp_WhenCallingVerbWithoutValue_ThenShouldReturnExpectedResult()
         {
             // Arrange
-            const string args = $"{EchoOptions.CommandName}";
+            const string args = "echo";
             var logger = new UnitTestLogger();
             var console = CreateConsoleAppWithLogger(args, logger);
 
@@ -53,13 +53,13 @@
         }
 
         /// <summary>
-        /// Given the built console application, when calling with the verb only then should return expected result.
+        /// Given the built console application, when specifying the echo verb and passing a value, then it should return the value as the message.
         /// </summary>
         [Fact]
         public void GivenBuiltConsoleApp_WhenCallingVerbWithValue_ThenShouldReturnExpectedResult()
         {
             // Arrange
-            const string args = $"{EchoOptions.CommandName} hello";
+            const string args = "echo hello";
             var logger = new UnitTestLogger();
             var console = CreateConsoleAppWithLogger(args, logger);
 
@@ -72,13 +72,13 @@
         }
 
         /// <summary>
-        /// Given the built console application, when calling the verb with option then should return expected result.
+        /// Given the built console application, when specifying the echo verb with a switch option, then the switch option should be <c>true</c>.
         /// </summary>
         [Fact]
         public void GivenBuiltConsoleApp_WhenCallingVerbWithSwitchOption_ThenShouldReturnExpectedResult()
         {
             // Arrange
-            const string args = $"{EchoOptions.CommandName} hello --upper";
+            const string args = "echo hello --upper";
             var logger = new UnitTestLogger();
             var console = CreateConsoleAppWithLogger(args, logger);
 
@@ -92,13 +92,13 @@
         }
 
         /// <summary>
-        /// Given the built console application, when calling with the verb and an option that takes value then should return expected result3.
+        /// Given the built console application, when specifying the echo verb and a scalar option, then the scalar option should be the scalar value.
         /// </summary>
         [Fact]
         public void GivenBuiltConsoleApp_WhenCallingVerbWithScalarOption_ThenShouldReturnExpectedResult()
         {
             // Arrange
-            const string args = $"{EchoOptions.CommandName} hello --upper --repeat 2";
+            const string args = "echo hello --upper --repeat 2";
             var logger = new UnitTestLogger();
             var console = CreateConsoleAppWithLogger(args, logger);
 

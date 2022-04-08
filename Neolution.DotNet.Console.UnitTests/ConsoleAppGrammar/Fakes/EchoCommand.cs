@@ -4,10 +4,10 @@
     using Neolution.DotNet.Console.UnitTests.Common.Spies;
 
     /// <summary>
-    /// Prints the command line parameter into the console window
+    /// Fake command that logs the value passed via command line.
     /// </summary>
     /// <seealso cref="IConsoleAppCommand{TOptions}" />
-    public class EchoVerbCommand : IConsoleAppCommand<EchoOptions>
+    public class EchoCommand : IConsoleAppCommand<EchoOptions>
     {
         /// <summary>
         /// The logger
@@ -15,10 +15,10 @@
         private readonly IUnitTestLogger logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EchoVerbCommand"/> class.
+        /// Initializes a new instance of the <see cref="EchoCommand"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public EchoVerbCommand(IUnitTestLogger logger)
+        public EchoCommand(IUnitTestLogger logger)
         {
             this.logger = logger;
         }

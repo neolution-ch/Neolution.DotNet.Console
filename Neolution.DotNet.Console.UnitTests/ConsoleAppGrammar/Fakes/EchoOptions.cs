@@ -3,16 +3,11 @@
     using CommandLine;
 
     /// <summary>
-    /// Unit Test fake options for <see cref="EchoVerbCommand"/>
+    /// Fake options for <see cref="EchoCommand"/>
     /// </summary>
-    [Verb(CommandName)]
+    [Verb("echo")]
     public class EchoOptions
     {
-        /// <summary>
-        /// The command name
-        /// </summary>
-        public const string CommandName = "echo";
-
         /// <summary>
         /// Gets or sets the message.
         /// </summary>

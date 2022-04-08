@@ -7,7 +7,7 @@
     /// The command for the default verb.
     /// </summary>
     /// <seealso cref="IConsoleAppCommand{DefaultVerbOptions}" />
-    public class DefaultVerbCommand : IConsoleAppCommand<DefaultVerbOptions>
+    public class DefaultCommand : IConsoleAppCommand<DefaultOptions>
     {
         /// <summary>
         /// The logger
@@ -15,10 +15,10 @@
         private readonly IUnitTestLogger logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultVerbCommand"/> class.
+        /// Initializes a new instance of the <see cref="DefaultCommand"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public DefaultVerbCommand(IUnitTestLogger logger)
+        public DefaultCommand(IUnitTestLogger logger)
         {
             this.logger = logger;
         }
@@ -27,7 +27,7 @@
         /// Runs the command with the specified options.
         /// </summary>
         /// <param name="options">The options.</param>
-        public void Run(DefaultVerbOptions options)
+        public void Run(DefaultOptions options)
         {
             this.logger.Log(options);
         }
