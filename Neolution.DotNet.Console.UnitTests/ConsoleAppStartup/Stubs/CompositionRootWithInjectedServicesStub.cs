@@ -1,7 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace Neolution.DotNet.Console.UnitTests.ConsoleAppStartup.Stubs
+﻿namespace Neolution.DotNet.Console.UnitTests.ConsoleAppStartup.Stubs
 {
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Neolution.DotNet.Console.Abstractions;

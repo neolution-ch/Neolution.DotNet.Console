@@ -1,15 +1,15 @@
-﻿using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Neolution.DotNet.Console.Abstractions;
-using Neolution.DotNet.Console.UnitTests.Common.Spies;
-using Neolution.DotNet.Console.UnitTests.Common.Stubs;
-using Neolution.DotNet.Console.UnitTests.ConsoleAppGrammar.Fakes;
-using Shouldly;
-using Xunit;
-
-namespace Neolution.DotNet.Console.UnitTests.ConsoleAppGrammar
+﻿namespace Neolution.DotNet.Console.UnitTests.ConsoleAppGrammar
 {
+    using System.Linq;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Neolution.DotNet.Console.Abstractions;
+    using Neolution.DotNet.Console.UnitTests.Common.Spies;
+    using Neolution.DotNet.Console.UnitTests.Common.Stubs;
+    using Neolution.DotNet.Console.UnitTests.ConsoleAppGrammar.Fakes;
+    using Shouldly;
+    using Xunit;
+
     /// <summary>
     /// Command line arguments grammar tests
     /// </summary>

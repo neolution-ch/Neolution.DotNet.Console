@@ -1,8 +1,8 @@
-﻿using Neolution.DotNet.Console.Abstractions;
-using Neolution.DotNet.Console.UnitTests.Common.Spies;
-
-namespace Neolution.DotNet.Console.UnitTests.ConsoleAppGrammar.Fakes
+﻿namespace Neolution.DotNet.Console.UnitTests.ConsoleAppGrammar.Fakes
 {
+    using Neolution.DotNet.Console.Abstractions;
+    using Neolution.DotNet.Console.UnitTests.Common.Spies;
+
     /// <summary>
     /// Prints the command line parameter into the console window
     /// </summary>

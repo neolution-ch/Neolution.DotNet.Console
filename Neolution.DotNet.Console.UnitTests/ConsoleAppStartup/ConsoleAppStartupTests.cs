@@ -1,19 +1,18 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Neolution.DotNet.Console.UnitTests.Common.Stubs;
-using Neolution.DotNet.Console.UnitTests.ConsoleAppStartup.Fakes;
-using Neolution.DotNet.Console.UnitTests.ConsoleAppStartup.Stubs;
-using Shouldly;
-using Xunit;
-
-namespace Neolution.DotNet.Console.UnitTests.ConsoleAppStartup
+﻿namespace Neolution.DotNet.Console.UnitTests.ConsoleAppStartup
 {
+    using Microsoft.Extensions.DependencyInjection;
+    using Neolution.DotNet.Console.UnitTests.Common.Stubs;
+    using Neolution.DotNet.Console.UnitTests.ConsoleAppStartup.Stubs;
+    using Shouldly;
+    using Xunit;
+
     public class ConsoleAppStartupTests
     {
         [Fact]
         public void GivenServicesWithVariousServiceLifetimes_WhenRunningConsoleApp_ThenShouldNotThrow()
         {
             // Arrange
-            var console = DotNetConsole.CreateDefaultBuilder(InjectServicesWithVariousLifetimesOptions.CommandName.Split(" "))
+            var console = DotNetConsole.CreateDefaultBuilder(InjectServicesWithVariousLifetimesOptionsStub.CommandName.Split(" "))
                 .ConfigureServices((context, services) =>
                 {
                     services.AddTransient<ITransientServiceStub, TransientServiceStub>();

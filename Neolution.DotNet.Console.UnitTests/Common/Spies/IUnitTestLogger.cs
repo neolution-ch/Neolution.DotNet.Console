@@ -1,28 +1,34 @@
-﻿using System.Collections.Generic;
-
-namespace Neolution.DotNet.Console.UnitTests.Common.Spies
+﻿namespace Neolution.DotNet.Console.UnitTests.Common.Spies
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// A service to inject in fakes to log any object verify if certain code was run
     /// </summary>
     public interface IUnitTestLogger
     {
+        /// <summary>
+        /// Gets the logged objects.
+        /// </summary>
         public IList<object> LoggedObjects { get; }
 
         /// <summary>
-        /// Tracks the specified object.
+        /// Logs the specified object.
         /// </summary>
         /// <param name="obj">The object.</param>
         void Log(object obj);
     }
 
+    /// <inheritdoc />
     public class UnitTestLogger : IUnitTestLogger
     {
+        /// <inheritdoc />
         public IList<object> LoggedObjects { get; } = new List<object>();
 
+        /// <inheritdoc />
         public void Log(object obj)
         {
-            LoggedObjects.Add(obj);
+            this.LoggedObjects.Add(obj);
         }
     }
 }

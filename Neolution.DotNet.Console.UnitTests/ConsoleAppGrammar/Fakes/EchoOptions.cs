@@ -1,13 +1,16 @@
-﻿using CommandLine;
-
-namespace Neolution.DotNet.Console.UnitTests.ConsoleAppGrammar.Fakes
+﻿namespace Neolution.DotNet.Console.UnitTests.ConsoleAppGrammar.Fakes
 {
+    using CommandLine;
+
     /// <summary>
     /// Unit Test fake options for <see cref="EchoVerbCommand"/>
     /// </summary>
     [Verb(CommandName)]
     public class EchoOptions
     {
+        /// <summary>
+        /// The command name
+        /// </summary>
         public const string CommandName = "echo";
 
         /// <summary>

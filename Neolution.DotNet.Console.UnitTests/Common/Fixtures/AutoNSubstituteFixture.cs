@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using AutoFixture;
-using AutoFixture.AutoNSubstitute;
-
-namespace Neolution.DotNet.Console.UnitTests.Common.Fixtures
+﻿namespace Neolution.DotNet.Console.UnitTests.Common.Fixtures
 {
+    using System.Linq;
+    using AutoFixture;
+    using AutoFixture.AutoNSubstitute;
+
     /// <summary>
     /// Defines NSubstitute fixture
     /// </summary>
