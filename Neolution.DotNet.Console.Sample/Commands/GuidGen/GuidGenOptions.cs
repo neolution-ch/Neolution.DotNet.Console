@@ -1,7 +1,7 @@
-﻿namespace Neolution.DotNet.Console.Sample.GuidGen
+﻿namespace Neolution.DotNet.Console.Sample.Commands.GuidGen
 {
     using CommandLine;
-    using Neolution.DotNet.Console.Sample.Echo;
+    using Neolution.DotNet.Console.Sample.Commands.Echo;
 
     /// <summary>
     /// The options for the <see cref="EchoCommand"/>.

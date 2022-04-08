@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.Sample.Start
+﻿namespace Neolution.DotNet.Console.Sample.Commands.Start
 {
     using CommandLine;
 

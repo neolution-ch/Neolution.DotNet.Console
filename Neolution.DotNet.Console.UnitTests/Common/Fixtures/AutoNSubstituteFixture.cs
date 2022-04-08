@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.Fixtures
+﻿namespace Neolution.DotNet.Console.UnitTests.Common.Fixtures
 {
     using System.Linq;
     using AutoFixture;

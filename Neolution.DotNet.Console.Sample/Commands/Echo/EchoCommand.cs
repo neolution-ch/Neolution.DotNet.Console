@@ -1,26 +1,26 @@
-﻿namespace Neolution.DotNet.Console.Sample.GuidGen
+﻿namespace Neolution.DotNet.Console.Sample.Commands.Echo
 {
     using System;
-    using System.Globalization;
     using Microsoft.Extensions.Logging;
     using Neolution.DotNet.Console.Abstractions;
+    using Neolution.DotNet.Console.Sample.Commands.Start;
 
     /// <summary>
-    /// Prints a randomly generated GUID in the console window
+    /// Prints the command line parameter into the console window
     /// </summary>
     /// <seealso cref="IConsoleAppCommand{TOptions}" />
-    public class GuidGenCommand : IConsoleAppCommand<GuidGenOptions>
+    public class EchoCommand : IConsoleAppCommand<EchoOptions>
     {
         /// <summary>
         /// The logger
         /// </summary>
-        private readonly ILogger<GuidGenCommand> logger;
+        private readonly ILogger<EchoCommand> logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GuidGenCommand"/> class.
+        /// Initializes a new instance of the <see cref="EchoCommand"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public GuidGenCommand(ILogger<GuidGenCommand> logger)
+        public EchoCommand(ILogger<EchoCommand> logger)
         {
             this.logger = logger;
         }
@@ -30,23 +30,14 @@
         /// </summary>
         /// <param name="options">The options.</param>
         /// <exception cref="System.ArgumentNullException">options</exception>
-        public void Run(GuidGenOptions options)
+        public void Run(EchoOptions options)
         {
             if (options == null)
             {
                 throw new ArgumentNullException(nameof(options));
             }
 
-            var format = options.Format ?? "B";
-            var result = Guid.NewGuid().ToString(format, CultureInfo.InvariantCulture);
-
-            if (options.Upper)
-            {
-                result = result.ToUpperInvariant();
-            }
-
-            System.Console.WriteLine(result);
-            this.logger.LogTrace("Wrote result to console");
+            this.logger.LogInformation(options.Message);
         }
     }
 }

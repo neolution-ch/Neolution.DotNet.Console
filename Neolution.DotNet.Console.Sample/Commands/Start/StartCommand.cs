@@ -1,25 +1,25 @@
-﻿namespace Neolution.DotNet.Console.Sample.Echo
+﻿namespace Neolution.DotNet.Console.Sample.Commands.Start
 {
     using System;
     using Microsoft.Extensions.Logging;
     using Neolution.DotNet.Console.Abstractions;
 
     /// <summary>
-    /// Prints the command line parameter into the console window
+    /// The default command of the application.
     /// </summary>
     /// <seealso cref="IConsoleAppCommand{TOptions}" />
-    public class EchoCommand : IConsoleAppCommand<EchoOptions>
+    public class StartCommand : IConsoleAppCommand<StartOptions>
     {
         /// <summary>
         /// The logger
         /// </summary>
-        private readonly ILogger<EchoCommand> logger;
+        private readonly ILogger<StartCommand> logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EchoCommand"/> class.
+        /// Initializes a new instance of the <see cref="StartCommand"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public EchoCommand(ILogger<EchoCommand> logger)
+        public StartCommand(ILogger<StartCommand> logger)
         {
             this.logger = logger;
         }
@@ -28,15 +28,14 @@
         /// Runs the command with the specified options.
         /// </summary>
         /// <param name="options">The options.</param>
-        /// <exception cref="System.ArgumentNullException">options</exception>
-        public void Run(EchoOptions options)
+        public void Run(StartOptions options)
         {
-            if (options == null)
+            if (options is null)
             {
                 throw new ArgumentNullException(nameof(options));
             }
 
-            this.logger.LogInformation(options.Message);
+            this.logger.LogInformation("Hello World!");
         }
     }
 }

@@ -81,7 +81,11 @@
             var combinedType = genericBase.MakeGenericType(dataType);
             var method = combinedType.GetMethod(nameof(IConsoleAppCommand<object>.Run));
 
-            var command = this.Services.GetRequiredService(combinedType);
+            // To support scoped services, create a scope for each command call/run.
+            var scopeFactory = this.Services.GetRequiredService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+
+            var command = scope.ServiceProvider.GetRequiredService(combinedType);
             method?.Invoke(command, new[] { options });
         }
     }

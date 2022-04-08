@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.Sample.Echo
+﻿namespace Neolution.DotNet.Console.Sample.Commands.Echo
 {
     using CommandLine;
 
