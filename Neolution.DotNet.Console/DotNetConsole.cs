@@ -1,5 +1,6 @@
 ﻿namespace Neolution.DotNet.Console
 {
+    using System;
     using System.IO;
     using System.Reflection;
     using Microsoft.Extensions.Configuration;
@@ -26,7 +27,10 @@
         {
             var builder = new ConsoleAppBuilder(args);
 
-            builder.UseContentRoot(Directory.GetCurrentDirectory());
+            var assemblyLocation = typeof(DotNetConsole).Assembly.Location;
+            var assemblyPath = Path.GetDirectoryName(assemblyLocation);
+
+            builder.UseContentRoot(assemblyPath);
             builder.ConfigureConsoleConfiguration(config =>
             {
                 config.AddEnvironmentVariables(prefix: "DOTNET_");
