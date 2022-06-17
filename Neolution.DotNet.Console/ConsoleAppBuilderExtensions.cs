@@ -34,21 +34,6 @@
         }
 
         /// <summary>
-        /// Configures the <see cref="ILoggingBuilder"/> delegate.
-        /// </summary>
-        /// <param name="loggingBuilderDelegate">The delegate that configures the <see cref="ILoggingBuilder"/>.</param>
-        /// <param name="context">The <see cref="ConsoleAppBuilderContext"/>.</param>
-        /// <returns>The <see cref="ILoggingBuilder"/> delegate.</returns>
-        private static Action<ILoggingBuilder> ConfigureLoggingBuilder(Action<ConsoleAppBuilderContext, ILoggingBuilder> loggingBuilderDelegate, ConsoleAppBuilderContext context)
-        {
-            return builder =>
-            {
-                builder.AddConfiguration(context.Configuration.GetSection("Logging"));
-                loggingBuilderDelegate(context, builder);
-            };
-        }
-
-        /// <summary>
         /// Specify the content root directory to be used by the host.
         /// </summary>
         /// <param name="consoleAppBuilder">The <see cref="IConsoleAppBuilder"/> to configure.</param>
@@ -73,6 +58,21 @@
                         new KeyValuePair<string, string>(HostDefaults.ContentRootKey, contentRoot),
                    });
                });
+        }
+
+        /// <summary>
+        /// Configures the <see cref="ILoggingBuilder"/> delegate.
+        /// </summary>
+        /// <param name="loggingBuilderDelegate">The delegate that configures the <see cref="ILoggingBuilder"/>.</param>
+        /// <param name="context">The <see cref="ConsoleAppBuilderContext"/>.</param>
+        /// <returns>The <see cref="ILoggingBuilder"/> delegate.</returns>
+        private static Action<ILoggingBuilder> ConfigureLoggingBuilder(Action<ConsoleAppBuilderContext, ILoggingBuilder> loggingBuilderDelegate, ConsoleAppBuilderContext context)
+        {
+            return builder =>
+            {
+                builder.AddConfiguration(context.Configuration.GetSection("Logging"));
+                loggingBuilderDelegate(context, builder);
+            };
         }
     }
 }
