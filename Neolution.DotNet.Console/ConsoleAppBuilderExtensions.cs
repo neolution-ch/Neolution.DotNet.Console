@@ -30,7 +30,22 @@
                 throw new ArgumentNullException(nameof(consoleAppBuilder));
             }
 
-            return consoleAppBuilder.ConfigureServices((context, collection) => collection.AddLogging(builder => configureDelegate(context, builder)));
+            return consoleAppBuilder.ConfigureServices((context, collection) => collection.AddLogging(ConfigureLoggingBuilder(configureDelegate, context)));
+        }
+
+        /// <summary>
+        /// Configures the <see cref="ILoggingBuilder"/> delegate.
+        /// </summary>
+        /// <param name="loggingBuilderDelegate">The delegate that configures the <see cref="ILoggingBuilder"/>.</param>
+        /// <param name="context">The <see cref="ConsoleAppBuilderContext"/>.</param>
+        /// <returns>The <see cref="ILoggingBuilder"/> delegate.</returns>
+        private static Action<ILoggingBuilder> ConfigureLoggingBuilder(Action<ConsoleAppBuilderContext, ILoggingBuilder> loggingBuilderDelegate, ConsoleAppBuilderContext context)
+        {
+            return builder =>
+            {
+                builder.AddConfiguration(context.Configuration.GetSection("Logging"));
+                loggingBuilderDelegate(context, builder);
+            };
         }
 
         /// <summary>
