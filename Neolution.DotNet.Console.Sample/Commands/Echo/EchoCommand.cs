@@ -3,7 +3,6 @@
     using System;
     using Microsoft.Extensions.Logging;
     using Neolution.DotNet.Console.Abstractions;
-    using Neolution.DotNet.Console.Sample.Commands.Start;
 
     /// <summary>
     /// Prints the command line parameter into the console window

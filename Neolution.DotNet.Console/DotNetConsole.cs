@@ -26,7 +26,10 @@
         {
             var builder = new ConsoleAppBuilder(args);
 
-            builder.UseContentRoot(Directory.GetCurrentDirectory());
+            var assemblyLocation = typeof(DotNetConsole).Assembly.Location;
+            var assemblyPath = Path.GetDirectoryName(assemblyLocation);
+
+            builder.UseContentRoot(assemblyPath);
             builder.ConfigureConsoleConfiguration(config =>
             {
                 config.AddEnvironmentVariables(prefix: "DOTNET_");
