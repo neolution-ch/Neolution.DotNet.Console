@@ -62,7 +62,6 @@
                 })
                 .ConfigureLogging((context, logging) =>
                 {
-                    logging.ClearProviders();
                     logging.AddNLog(context.Configuration);
                 });
 
