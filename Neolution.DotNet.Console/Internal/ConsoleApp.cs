@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Reflection;
+    using System.Threading.Tasks;
     using CommandLine;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -70,6 +71,12 @@
                 .WithParsed(this.RunWithOptions);
         }
 
+        public async Task RunAsync()
+        {
+            await Parser.Default.ParseArguments(this.args, this.verbs)
+                .WithParsedAsync(this.RunWithOptionsAsync);
+        }
+
         /// <summary>
         /// Runs the command with options.
         /// </summary>
@@ -87,6 +94,28 @@
 
             var command = scope.ServiceProvider.GetRequiredService(combinedType);
             method?.Invoke(command, new[] { options });
+        }
+
+        private async Task RunWithOptionsAsync(object options)
+        {
+            var dataType = new[] { options.GetType() };
+            var genericBase = typeof(IConsoleAppCommand<>);
+            var combinedType = genericBase.MakeGenericType(dataType);
+            var method = combinedType.GetMethod(nameof(IConsoleAppCommand<object>.Run));
+
+            // To support scoped services, create a scope for each command call/run.
+            var scopeFactory = this.Services.GetRequiredService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+
+            var command = scope.ServiceProvider.GetRequiredService(combinedType);
+            var result = (Task)method?.Invoke(command, new[] { options });
+            if (result is null)
+            {
+                await Task.CompletedTask;
+                return;
+            }
+
+            await result.ConfigureAwait(true);
         }
     }
 }
