@@ -141,9 +141,37 @@
             this.CreateConsoleAppEnvironment();
             this.CreateConsoleBuilderContext();
             this.BuildAppConfiguration();
-            this.CreateServiceProvider();
+            this.CreateServiceProvider(typeof(IConsoleAppCommand<>));
 
             return new ConsoleApp(this.args, this.compositionRootType, this.appServices, this.appConfiguration, this.consoleAppEnvironment);
+        }
+
+        /// <inheritdoc />
+        public IAsyncConsoleApp AsyncBuild()
+        {
+            if (this.containerBuilt)
+            {
+                throw new InvalidOperationException("Build can only be called once.");
+            }
+
+            // Automatically add user secrets for entry point assembly
+            this.ConfigureAppConfiguration((context, builder) =>
+            {
+                if (context.ConsoleAppEnvironment.IsDevelopment())
+                {
+                    builder.AddUserSecrets(this.compositionRootType?.GetTypeInfo().Assembly);
+                }
+            });
+
+            this.containerBuilt = true;
+
+            this.BuildConsoleConfiguration();
+            this.CreateConsoleAppEnvironment();
+            this.CreateConsoleBuilderContext();
+            this.BuildAppConfiguration();
+            this.CreateServiceProvider(typeof(IAsyncConsoleAppCommand<>));
+
+            return new AsyncConsoleApp(this.args, this.compositionRootType, this.appServices, this.appConfiguration, this.consoleAppEnvironment);
         }
 
         /// <summary>
@@ -231,9 +259,10 @@
         /// <summary>
         /// Creates the service provider.
         /// </summary>
+        /// <param name="type">The type of the commands used in this application.</param>
         /// <exception cref="ConsoleAppException">No composition root defined.</exception>
         /// <exception cref="InvalidOperationException">The IServiceProviderFactory returned a null IServiceProvider.</exception>
-        private void CreateServiceProvider()
+        private void CreateServiceProvider(Type type)
         {
             var services = new ServiceCollection();
             services.AddSingleton(this.consoleAppEnvironment);
@@ -259,7 +288,7 @@
             services.Scan(selector =>
             {
                 selector.FromAssembliesOf(this.compositionRootType)
-                    .AddClasses(classes => classes.AssignableTo(typeof(IConsoleAppCommand<>))).AsImplementedInterfaces();
+                    .AddClasses(classes => classes.AssignableTo(type)).AsImplementedInterfaces();
             });
 
             // Only allow one constructor for ICompositionRoot implementations. DI services should have only one constructor anyways.
