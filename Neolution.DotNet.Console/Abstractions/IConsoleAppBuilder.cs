@@ -54,6 +54,12 @@
         IConsoleApp Build();
 
         /// <summary>
+        /// Run the given actions to initialize the async host. This can only be called once.
+        /// </summary>
+        /// <returns>The entry point wired up with dependency injection and the resolved configuration instance.</returns>
+        IAsyncConsoleApp AsyncBuild();
+
+        /// <summary>
         /// Instructs the console app builder to use the specified composition root.
         /// </summary>
         /// <typeparam name="TCompositionRoot">The type of the composition root.</typeparam>

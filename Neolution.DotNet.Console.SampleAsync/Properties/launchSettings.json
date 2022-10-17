@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Neolution.DotNet.Console.SampleAsync": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
