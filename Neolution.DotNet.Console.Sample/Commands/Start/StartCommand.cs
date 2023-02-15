@@ -35,7 +35,13 @@
                 throw new ArgumentNullException(nameof(options));
             }
 
-            this.logger.LogInformation("Hello World!");
+            const string message = "Hello World!";
+            this.logger.LogTrace(message);
+            this.logger.LogDebug(message);
+            this.logger.LogInformation(message);
+            this.logger.LogWarning(message);
+            this.logger.LogError(message);
+            this.logger.LogCritical(message);
         }
     }
 }
