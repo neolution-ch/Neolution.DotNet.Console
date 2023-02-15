@@ -19,8 +19,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NLog" Version="4.7.15" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="1.7.5" />
+    <PackageReference Include="NLog" Version="5.1.1" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.2.1" />
     <PackageReference Include="Scrutor" Version="4.2.1" />
   </ItemGroup>
 
