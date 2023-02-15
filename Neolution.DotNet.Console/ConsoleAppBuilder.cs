@@ -1,7 +1,8 @@
-namespace Neolution.DotNet.Console
+﻿namespace Neolution.DotNet.Console
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -17,6 +18,7 @@ namespace Neolution.DotNet.Console
     /// Source: https://github.com/dotnet/runtime/blob/master/src/libraries/Microsoft.Extensions.Hosting/src/HostBuilder.cs
     /// </remarks>
     /// <inheritdoc cref="IConsoleAppBuilder" />
+    [SuppressMessage("Major Code Smell", "S1200:Classes should not be coupled to too many other classes (Single Responsibility Principle)", Justification = "Follow the code of the Microsoft HostBuilder as close as possible.")]
     public sealed class ConsoleAppBuilder : IConsoleAppBuilder
     {
         /// <summary>
@@ -284,7 +286,7 @@ namespace Neolution.DotNet.Console
 
             // Register all commands in service collection.
             services.Scan(selector => selector.FromAssembliesOf(this.compositionRootType)
-                    .AddClasses(classes => classes.AssignableTo(typeof(IVerbCommand<>))).AsImplementedInterfaces());
+                    .AddClasses(classes => classes.AssignableTo(type)).AsImplementedInterfaces());
 
             // Only allow one constructor for ICompositionRoot implementations. DI services should have only one constructor anyways.
             var targetConstructor = this.compositionRootType.GetConstructors().First();
