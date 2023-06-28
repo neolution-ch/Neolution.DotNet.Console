@@ -4,7 +4,6 @@
     using System.Reflection;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Logging;
     using Neolution.DotNet.Console.Abstractions;
     using NLog.Extensions.Logging;
 

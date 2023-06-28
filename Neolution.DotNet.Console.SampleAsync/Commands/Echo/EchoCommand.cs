@@ -32,7 +32,7 @@
                 throw new ArgumentNullException(nameof(options));
             }
 
-            this.logger.LogInformation(options.Message);
+            this.logger.LogInformation("Called with message: {Message}", options.Message);
             return Task.CompletedTask;
         }
     }

@@ -30,7 +30,7 @@
         /// <inheritdoc />
         public void ConfigureServices(IServiceCollection services)
         {
-            // just a stub
+            this.notAllowedService.DoSomething();
         }
     }
 }
