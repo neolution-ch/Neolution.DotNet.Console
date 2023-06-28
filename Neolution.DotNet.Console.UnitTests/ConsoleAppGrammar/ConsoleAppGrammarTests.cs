@@ -121,7 +121,7 @@
         private static IConsoleApp CreateConsoleAppWithLogger(string args, IUnitTestLogger tracker)
         {
             var builder = DotNetConsole.CreateDefaultBuilder(args.Split(" "))
-                .ConfigureServices((context, services) =>
+                .ConfigureServices((_, services) =>
                 {
                     services.Replace(new ServiceDescriptor(typeof(IUnitTestLogger), tracker));
                 })

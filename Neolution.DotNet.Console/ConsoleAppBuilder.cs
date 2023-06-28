@@ -296,19 +296,19 @@
 
             // Collect the supported constructor injection parameters.
             var parameters = new List<object>();
-            foreach (var info in targetConstructor.GetParameters())
+            foreach (var paramType in targetConstructor.GetParameters().Select(x => x.ParameterType))
             {
-                if (typeof(IConfiguration).IsAssignableFrom(info.ParameterType))
+                if (typeof(IConfiguration).IsAssignableFrom(paramType))
                 {
                     parameters.Add(this.consoleAppBuilderContext.Configuration);
                 }
-                else if (typeof(IHostEnvironment).IsAssignableFrom(info.ParameterType))
+                else if (typeof(IHostEnvironment).IsAssignableFrom(paramType))
                 {
                     parameters.Add(this.consoleAppBuilderContext.ConsoleAppEnvironment);
                 }
                 else
                 {
-                    throw new ConsoleAppException($"Composition root does not support injection of type '{info.ParameterType}'. Only {nameof(IConfiguration)} and {nameof(IHostEnvironment)} are supported");
+                    throw new ConsoleAppException($"Composition root does not support injection of type '{paramType}'. Only {nameof(IConfiguration)} and {nameof(IHostEnvironment)} are supported");
                 }
             }
 
