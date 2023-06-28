@@ -40,7 +40,9 @@
         /// <inheritdoc />
         public void Run(InjectServicesWithVariousLifetimesOptionsStub options)
         {
-            // just a stub
+            this.transientService.DoSomething();
+            this.scopedService.DoSomething();
+            this.singletonService.DoSomething();
         }
     }
 }
