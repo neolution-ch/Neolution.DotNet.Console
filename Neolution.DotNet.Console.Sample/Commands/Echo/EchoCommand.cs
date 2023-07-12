@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.Sample.Commands.Echo
+namespace Neolution.DotNet.Console.Sample.Commands.Echo
 {
     using System;
     using Microsoft.Extensions.Logging;

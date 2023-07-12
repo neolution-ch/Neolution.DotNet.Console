@@ -1,11 +1,15 @@
 ﻿namespace Neolution.DotNet.Console.UnitTests.ConsoleAppStartup
 {
     using Microsoft.Extensions.DependencyInjection;
+    using Neolution.DotNet.Console.UnitTests.Common;
     using Neolution.DotNet.Console.UnitTests.Common.Stubs;
     using Neolution.DotNet.Console.UnitTests.ConsoleAppStartup.Stubs;
     using Shouldly;
     using Xunit;
 
+    /// <summary>
+    /// Tests for the Console App Startup class.
+    /// </summary>
     public class ConsoleAppStartupTests
     {
         /// <summary>
@@ -15,8 +19,8 @@
         public void GivenServicesWithVariousServiceLifetimes_WhenRunningConsoleApp_ThenShouldNotThrow()
         {
             // Arrange
-            var console = DotNetConsole.CreateDefaultBuilder(InjectServicesWithVariousLifetimesOptionsStub.CommandName.Split(" "))
-                .ConfigureServices((context, services) =>
+            var console = DotNetConsole.CreateDefaultBuilder(UnitTestsConstants.InjectServicesWithVariousLifetimes.Split(" "))
+                .ConfigureServices((_, services) =>
                 {
                     services.AddTransient<ITransientServiceStub, TransientServiceStub>();
                     services.AddScoped<IScopedServiceStub, ScopedServiceStub>();

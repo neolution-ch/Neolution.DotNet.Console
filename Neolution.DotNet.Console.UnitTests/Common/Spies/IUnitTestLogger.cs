@@ -18,17 +18,4 @@
         /// <param name="obj">The object.</param>
         void Log(object obj);
     }
-
-    /// <inheritdoc />
-    public class UnitTestLogger : IUnitTestLogger
-    {
-        /// <inheritdoc />
-        public IList<object> LoggedObjects { get; } = new List<object>();
-
-        /// <inheritdoc />
-        public void Log(object obj)
-        {
-            this.LoggedObjects.Add(obj);
-        }
-    }
 }
