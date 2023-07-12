@@ -1,4 +1,4 @@
-namespace Neolution.DotNet.Console
+﻿namespace Neolution.DotNet.Console
 {
     using System;
     using System.Collections.Generic;
