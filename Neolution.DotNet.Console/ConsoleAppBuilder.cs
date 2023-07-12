@@ -29,17 +29,17 @@
         /// <summary>
         /// The configure console configuration actions
         /// </summary>
-        private readonly List<Action<IConfigurationBuilder>> configureConsoleConfigActions = new ();
+        private readonly List<Action<IConfigurationBuilder>> configureConsoleConfigActions = new();
 
         /// <summary>
         /// The configure application configuration actions
         /// </summary>
-        private readonly List<Action<ConsoleAppBuilderContext, IConfigurationBuilder>> configureAppConfigActions = new ();
+        private readonly List<Action<ConsoleAppBuilderContext, IConfigurationBuilder>> configureAppConfigActions = new();
 
         /// <summary>
         /// The configure services actions
         /// </summary>
-        private readonly List<Action<ConsoleAppBuilderContext, IServiceCollection>> configureServicesActions = new ();
+        private readonly List<Action<ConsoleAppBuilderContext, IServiceCollection>> configureServicesActions = new();
 
         /// <summary>
         /// The composition root type.
