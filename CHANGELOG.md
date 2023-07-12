@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Create Console App Scope asynchronously
+- Cleaned repository from now unused Azure DevOps files
+
 ### Added
 
 - Async Console Application variant
+
+### Changed
+
+- Updated NLog to V5
+- Updated CommandLineParser to v2.9.1
+
+### Removed
+
+- Removed AWS NLog Logger assembly that was used for logging to Amazon CloudWatch
