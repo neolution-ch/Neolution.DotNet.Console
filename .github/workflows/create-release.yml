@@ -47,6 +47,9 @@ jobs:
           git config user.name "GitHub Release Bot"
           git config user.email release-bot@neolution.ch
 
+      - name: install @release-it/bumper
+        run: npm install -g release-it @release-it/bumper
+
       - name: install @release-it/keep-a-changelog
         run: npm install -g release-it @release-it/keep-a-changelog
 
