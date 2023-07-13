@@ -3,20 +3,20 @@ name: Create Release
 on:
   workflow_dispatch:
     inputs:
-      pre_release:
+      versioning_stage:
         type: choice
-        description: Stage
+        description: Versioning Stage
         options:
           - stable
           - rc
           - beta
           - alpha
           
-      version_type:
+      versioning_level:
         type: choice
-        description: Semantic Version Type
+        description: Next Version Number
         options:
-          - automatic
+          - increment
           - patch
           - minor
           - major
@@ -47,22 +47,19 @@ jobs:
           git config user.name "GitHub Release Bot"
           git config user.email release-bot@neolution.ch
 
-      - name: install @release-it/bumper
-        run: npm install -g release-it @release-it/bumper
-
-      - name: install @release-it/keep-a-changelog
-        run: npm install -g release-it @release-it/keep-a-changelog
+      - name: install release-it with plugins
+        run: npm install -g release-it @release-it/bumper @release-it/keep-a-changelog
 
       - name: run release-it
         run: |
           params=()
 
-          if [[ ${{ github.event.inputs.version_type }} != "automatic" ]]; then
-              params+=(${{ github.event.inputs.version_type }})
+          if [[ ${{ github.event.inputs.versioning_level }} != "increment" ]]; then
+              params+=(${{ github.event.inputs.versioning_level }})
           fi
 
-          if [[ ${{ github.event.inputs.pre_release }} != "stable" ]]; then
-              params+=(--preRelease=${{ github.event.inputs.pre_release }})
+          if [[ ${{ github.event.inputs.versioning_stage }} != "stable" ]]; then
+              params+=(--preRelease=${{ github.event.inputs.versioning_stage }})
               params+=(--plugins.@release-it/keep-a-changelog.keepUnreleased)
               params+=(--no-plugins.@release-it/keep-a-changelog.strictLatest)
           fi

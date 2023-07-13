@@ -18,7 +18,7 @@
       "filename": "CHANGELOG.md",
       "addVersionUrl": true,
       "addUnreleased": true,
-      "strictLatest": true
+      "strictLatest": false
     }
   },
   "hooks": {
