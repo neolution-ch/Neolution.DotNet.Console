@@ -16,24 +16,29 @@
         private readonly ILogger<StartCommand> logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StartCommand"/> class.
+        /// The HTTP client
+        /// </summary>
+        private readonly HttpClient httpClient;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StartCommand" /> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public StartCommand(ILogger<StartCommand> logger)
+        /// <param name="httpClientFactory">The HTTP client factory.</param>
+        public StartCommand(ILogger<StartCommand> logger, IHttpClientFactory httpClientFactory)
         {
             this.logger = logger;
+            this.httpClient = httpClientFactory.CreateClient();
         }
 
         /// <inheritdoc />
-        public Task RunAsync(StartOptions options)
+        public async Task RunAsync(StartOptions options)
         {
-            if (options is null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
+            var response = await this.httpClient.GetAsync(new Uri("http://www.google.com"));
+            var html = await response.Content.ReadAsStringAsync();
 
             this.logger.LogInformation("Hello World!");
-            return Task.CompletedTask;
+            this.logger.LogInformation("Response: {PartOfHtml}...", html[..100]);
         }
     }
 }

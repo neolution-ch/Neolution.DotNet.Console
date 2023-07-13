@@ -9,8 +9,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		azure-pipelines.yml = azure-pipelines.yml
-		GitVersion.yml = GitVersion.yml
+		.github\workflows\cd-production.yml = .github\workflows\cd-production.yml
+		CHANGELOG.md = CHANGELOG.md
+		.github\workflows\ci.yml = .github\workflows\ci.yml
+		.github\workflows\create-release.yml = .github\workflows\create-release.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -18,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neolution.DotNet.Console.Sa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neolution.DotNet.Console.UnitTests", "Neolution.DotNet.Console.UnitTests\Neolution.DotNet.Console.UnitTests.csproj", "{09C5A31D-8D63-4BA3-8895-D3F713E195E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neolution.DotNet.Console.SampleAsync", "Neolution.DotNet.Console.SampleAsync\Neolution.DotNet.Console.SampleAsync.csproj", "{C31218C2-00A1-4B5C-A4B3-AF83E2CBA3A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neolution.DotNet.Console.SampleAsync", "Neolution.DotNet.Console.SampleAsync\Neolution.DotNet.Console.SampleAsync.csproj", "{C31218C2-00A1-4B5C-A4B3-AF83E2CBA3A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

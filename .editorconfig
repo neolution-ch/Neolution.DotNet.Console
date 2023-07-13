@@ -51,3 +51,6 @@ indent_size = 4
 insert_final_newline = true
 charset = utf-8-bom
 
+[*.{cs,vb}]
+# All projects are .NET based and never referenced in .NET Framework projects
+dotnet_diagnostic.CA2007.severity = none

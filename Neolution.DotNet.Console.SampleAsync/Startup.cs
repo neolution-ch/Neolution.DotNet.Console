@@ -9,7 +9,7 @@
         /// <inheritdoc />
         public void ConfigureServices(IServiceCollection services)
         {
-            // Configure services...
+            services.AddHttpClient();
         }
     }
 }

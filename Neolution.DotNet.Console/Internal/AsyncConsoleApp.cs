@@ -28,8 +28,7 @@
         public async Task RunAsync()
         {
             await Parser.Default.ParseArguments(this.Args, this.Verbs)
-                .WithParsedAsync(this.RunWithOptionsAsync)
-                .ConfigureAwait(true);
+                .WithParsedAsync(this.RunWithOptionsAsync);
         }
 
         /// <summary>
@@ -46,17 +45,17 @@
 
             // To support scoped services, create a scope for each command call/run.
             var scopeFactory = this.Services.GetRequiredService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
+            await using var scope = scopeFactory.CreateAsyncScope();
 
             var command = scope.ServiceProvider.GetRequiredService(combinedType);
             var result = (Task)method?.Invoke(command, new[] { options });
             if (result is null)
             {
-                await Task.CompletedTask.ConfigureAwait(true);
+                await Task.CompletedTask;
                 return;
             }
 
-            await result.ConfigureAwait(true);
+            await result;
         }
     }
 }

@@ -18,7 +18,7 @@
     /// Source: https://github.com/dotnet/runtime/blob/master/src/libraries/Microsoft.Extensions.Hosting/src/HostBuilder.cs
     /// </remarks>
     /// <inheritdoc cref="IConsoleAppBuilder" />
-    [SuppressMessage("Major Code Smell", "S1200:Classes should not be coupled to too many other classes (Single Responsibility Principle)", Justification = "Designed to be similar to the Microsoft HostBuilder.")]
+    [SuppressMessage("Major Code Smell", "S1200:Classes should not be coupled to too many other classes (Single Responsibility Principle)", Justification = "Follow the code of the Microsoft HostBuilder as close as possible.")]
     public sealed class ConsoleAppBuilder : IConsoleAppBuilder
     {
         /// <summary>
@@ -29,17 +29,17 @@
         /// <summary>
         /// The configure console configuration actions
         /// </summary>
-        private readonly List<Action<IConfigurationBuilder>> configureConsoleConfigActions = new List<Action<IConfigurationBuilder>>();
+        private readonly List<Action<IConfigurationBuilder>> configureConsoleConfigActions = new();
 
         /// <summary>
         /// The configure application configuration actions
         /// </summary>
-        private readonly List<Action<ConsoleAppBuilderContext, IConfigurationBuilder>> configureAppConfigActions = new List<Action<ConsoleAppBuilderContext, IConfigurationBuilder>>();
+        private readonly List<Action<ConsoleAppBuilderContext, IConfigurationBuilder>> configureAppConfigActions = new();
 
         /// <summary>
         /// The configure services actions
         /// </summary>
-        private readonly List<Action<ConsoleAppBuilderContext, IServiceCollection>> configureServicesActions = new List<Action<ConsoleAppBuilderContext, IServiceCollection>>();
+        private readonly List<Action<ConsoleAppBuilderContext, IServiceCollection>> configureServicesActions = new();
 
         /// <summary>
         /// The composition root type.
@@ -285,11 +285,8 @@
             }
 
             // Register all commands in service collection.
-            services.Scan(selector =>
-            {
-                selector.FromAssembliesOf(this.compositionRootType)
-                    .AddClasses(classes => classes.AssignableTo(type)).AsImplementedInterfaces();
-            });
+            services.Scan(selector => selector.FromAssembliesOf(this.compositionRootType)
+                    .AddClasses(classes => classes.AssignableTo(type)).AsImplementedInterfaces());
 
             // Only allow one constructor for ICompositionRoot implementations. DI services should have only one constructor anyways.
             var targetConstructor = this.compositionRootType.GetConstructors().First();

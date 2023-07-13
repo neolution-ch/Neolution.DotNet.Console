@@ -22,7 +22,7 @@
 
             try
             {
-                await console.RunAsync().ConfigureAwait(true);
+                await console.RunAsync();
             }
             catch (Exception ex)
             {
