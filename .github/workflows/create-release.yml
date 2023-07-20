@@ -16,7 +16,7 @@ on:
         type: choice
         description: Next Version Number
         options:
-          - increment
+          - automatic
           - patch
           - minor
           - major
@@ -54,7 +54,7 @@ jobs:
         run: |
           params=()
 
-          if [[ ${{ github.event.inputs.versioning_level }} != "increment" ]]; then
+          if [[ ${{ github.event.inputs.versioning_level }} != "automatic" ]]; then
               params+=(${{ github.event.inputs.versioning_level }})
           fi
 
