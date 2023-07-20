@@ -10,10 +10,6 @@
     "release": true
   },
   "plugins": {
-    "@release-it/bumper": {
-      "in": "version.json",
-      "out": "version.json"
-    },
     "@release-it/keep-a-changelog": {
       "filename": "CHANGELOG.md",
       "addVersionUrl": true,

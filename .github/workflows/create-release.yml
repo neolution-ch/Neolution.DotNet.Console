@@ -48,7 +48,7 @@ jobs:
           git config user.email release-bot@neolution.ch
 
       - name: install release-it with plugins
-        run: npm install -g release-it @release-it/bumper @release-it/keep-a-changelog
+        run: npm install -g release-it @release-it/keep-a-changelog
 
       - name: run release-it
         run: |
