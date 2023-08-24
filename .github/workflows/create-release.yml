@@ -3,23 +3,29 @@ name: Create Release
 on:
   workflow_dispatch:
     inputs:
-      pre_release:
+      versioning_phase:
         type: choice
-        description: Stage
+        description: Versioning Phase
+        default: stable
         options:
-          - stable
-          - rc
-          - beta
           - alpha
+          - beta
+          - rc
+          - stable
           
-      version_type:
+      bump_version_number:
         type: choice
-        description: Semantic Version Type
+        description: Bump Version Number
+        default: consecutive
         options:
-          - automatic
+          - consecutive
           - patch
           - minor
           - major
+
+      is_dry_run:
+        type: boolean
+        description: Dry Run
 
 jobs:
   release-it:
@@ -43,21 +49,25 @@ jobs:
           git config user.name "GitHub Release Bot"
           git config user.email release-bot@neolution.ch
 
-      - name: install @release-it/keep-a-changelog
+      - name: install release-it with plugins
         run: npm install -g release-it @release-it/keep-a-changelog
 
       - name: run release-it
         run: |
           params=()
 
-          if [[ ${{ github.event.inputs.version_type }} != "automatic" ]]; then
-              params+=(${{ github.event.inputs.version_type }})
+          if [[ ${{ github.event.inputs.bump_version_number }} != "consecutive" ]]; then
+              params+=(${{ github.event.inputs.bump_version_number }})
           fi
 
-          if [[ ${{ github.event.inputs.pre_release }} != "stable" ]]; then
-              params+=(--preRelease=${{ github.event.inputs.pre_release }})
+          if [[ ${{ github.event.inputs.versioning_phase }} != "stable" ]]; then
+              params+=(--preRelease=${{ github.event.inputs.versioning_phase }})
               params+=(--plugins.@release-it/keep-a-changelog.keepUnreleased)
               params+=(--no-plugins.@release-it/keep-a-changelog.strictLatest)
+          fi
+
+          if [[ ${{ github.event.inputs.is_dry_run }} == "true" ]]; then
+              params+=(--dry-run)
           fi
 
           params+=(--ci)

@@ -14,15 +14,15 @@ To help you kickstart your console application, we've provided sample applicatio
 
 ## Migrate from V1 to V2
 
-V2 introduces breaking changes, primarily because it upgrades NLog to Version 5. For a detailed review of these changes, please refer to the [official NLog release notes](https://nlog-project.org/2021/08/25/nlog-5-0-preview1-ready.html).
+V2 **introduces breaking changes** from V1, primarily because it upgrades NLog to Version 5. For a detailed review of these changes, please refer to the [official NLog release notes](https://nlog-project.org/2021/08/25/nlog-5-0-preview1-ready.html).
 
-### Microsoft "Logging" section in appsettings.json
+### Removed `Logging` section in appsettings.json
 
-The "Logging" section in the appsettings.json is now deprecated. We've transitioned to only using NLog rules for filtering logging output. Although these rules might be a bit more complex, they offer greater flexibility and control. 
+NLog decided to deprecate Microsoft's `Logging` section in the appsettings.json starting with V5. In accordance of that decision we've also transitioned to only using NLog rules for filtering logging output. Although these rules might be a bit more complex, they offer greater flexibility and control. 
 
 To get acquainted with these rules and learn how to migrate your current configuration, check out the [NLog documentation on logging rules](https://github.com/NLog/NLog/wiki/Configuration-file#rules). There's also a guide on the [new finalMinLevel attribute](https://github.com/NLog/NLog/wiki/Logging-Rules-FinalMinLevel) that you might find helpful.
 
-### Removed assemblies
+### Removed default logging targets
 
 - **AWS Logger:** The AWS Logger, previously used for logging to CloudWatch, has been removed due to decreased usage. If you still need it, don't worry, you can easily [download it separately](https://www.nuget.org/packages/AWS.Logger.NLog). The configuration remains the same.
 
