@@ -3,20 +3,24 @@ name: Create Release
 on:
   workflow_dispatch:
     inputs:
-      versioning_stage:
+      versioning_phase:
         type: choice
-        description: Versioning Stage
+        description: Versioning Phase
+        required: true
+        default: stable
         options:
           - stable
           - rc
           - beta
           - alpha
           
-      versioning_level:
+      bump_version_number:
         type: choice
-        description: Next Version Number
+        description: Bump Version Number
+        required: false
+        default: consecutive
         options:
-          - automatic
+          - consecutive
           - patch
           - minor
           - major
@@ -54,12 +58,12 @@ jobs:
         run: |
           params=()
 
-          if [[ ${{ github.event.inputs.versioning_level }} != "automatic" ]]; then
-              params+=(${{ github.event.inputs.versioning_level }})
+          if [[ ${{ github.event.inputs.bump_version_number }} != "consecutive" ]]; then
+              params+=(${{ github.event.inputs.bump_version_number }})
           fi
 
-          if [[ ${{ github.event.inputs.versioning_stage }} != "stable" ]]; then
-              params+=(--preRelease=${{ github.event.inputs.versioning_stage }})
+          if [[ ${{ github.event.inputs.versioning_phase }} != "stable" ]]; then
+              params+=(--preRelease=${{ github.event.inputs.versioning_phase }})
               params+=(--plugins.@release-it/keep-a-changelog.keepUnreleased)
               params+=(--no-plugins.@release-it/keep-a-changelog.strictLatest)
           fi
