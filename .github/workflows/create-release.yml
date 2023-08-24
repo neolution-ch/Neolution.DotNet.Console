@@ -6,18 +6,16 @@ on:
       versioning_phase:
         type: choice
         description: Versioning Phase
-        required: true
         default: stable
         options:
-          - stable
-          - rc
-          - beta
           - alpha
+          - beta
+          - rc
+          - stable
           
       bump_version_number:
         type: choice
         description: Bump Version Number
-        required: false
         default: consecutive
         options:
           - consecutive
