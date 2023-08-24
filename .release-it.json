@@ -1,6 +1,7 @@
 {
   "git": {
-    "push": true
+    "push": true,
+    "tagName": "${version}"
   },
   "npm": {
     "publish": false,

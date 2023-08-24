@@ -6,8 +6,9 @@ on:
 
 env:
   ARTIFACTS_FEED_URL: https://api.nuget.org/v3/index.json
-  BUILD_CONFIGURATION: "Release"
-  DOTNET_VERSION: "6.x"
+  BUILD_CONFIGURATION: Release
+  DOTNET_VERSION: '6.x'
+  PROJECT_TO_PACK: 'Neolution.DotNet.Console\Neolution.DotNet.Console.csproj'
 
 jobs:
   build-pack-push:
@@ -25,13 +26,13 @@ jobs:
           NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API_KEY_NEOLUTION }}
       
       - name: Determine version for NuGet package
-        run: echo NUGET_VERSION=${GITHUB_REF#refs/tags/v} >> $GITHUB_ENV
+        run: echo NUGET_VERSION=${GITHUB_REF#refs/tags/} >> $GITHUB_ENV
 
       - name: Build and pack
         run: |
           dotnet restore
-          dotnet build --configuration ${{ env.BUILD_CONFIGURATION }} -p:Version=$NUGET_VERSION
-          dotnet pack "Neolution.DotNet.Console\Neolution.DotNet.Console.csproj" --configuration ${{ env.BUILD_CONFIGURATION }} --no-build -p:PackageVersion=$NUGET_VERSION
+          dotnet build --no-restore --configuration ${{ env.BUILD_CONFIGURATION }} -p:Version=$NUGET_VERSION
+          dotnet pack --no-build "${{ env.PROJECT_TO_PACK }}" --configuration ${{ env.BUILD_CONFIGURATION }} -p:PackageVersion=$NUGET_VERSION
 
       - name: Push NuGet package
         run: dotnet nuget push --skip-duplicate -k $NUGET_AUTH_TOKEN  **/bin/Release/*.nupkg
