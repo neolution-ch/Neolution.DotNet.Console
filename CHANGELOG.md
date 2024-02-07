@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2024-02-07
+
 ### Fixed
 
 - Create Console App Scope asynchronously
@@ -25,3 +27,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Removed AWS NLog Logger assembly that was used for logging to Amazon CloudWatch
+
+[unreleased]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v1.1.0-beta1...v2.0.0
