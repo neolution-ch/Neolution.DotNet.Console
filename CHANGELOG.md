@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Updated NLog to v5.3
+- Updated Neolution.CodeAnalysis to v3.0.5
+
 ## [2.0.0] - 2024-02-07
 
 ### Fixed
