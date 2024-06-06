@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Added README.md file to the NuGet package
+
 ## [2.0.1] - 2024-06-06
 
 ### Changed
