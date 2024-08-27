@@ -52,7 +52,14 @@
         /// <returns>The <see cref="ConsoleAppBuilder"/>.</returns>
         public static ConsoleAppBuilder CreateDefaultBuilder(string[] args)
         {
-            return CreateBuilderInternal(null, args);
+            // Get the entry assembly of the console application. It will later be scanned to find commands and verbs and their options.
+            var assembly = Assembly.GetEntryAssembly();
+            if (assembly is null)
+            {
+                throw new ConsoleAppException("Could not determine entry assembly");
+            }
+
+            return CreateBuilderInternal(assembly, args);
         }
 
         /// <summary>
@@ -66,7 +73,21 @@
         /// <exception cref="Neolution.DotNet.Console.ConsoleAppException">Could not determine entry assembly</exception>
         public static ConsoleAppBuilder CreateBuilderWithReference(Assembly assembly, string[] args)
         {
+            if (assembly is null)
+            {
+                throw new ArgumentNullException(nameof(assembly));
+            }
+
             return CreateBuilderInternal(assembly, args);
+        }
+
+        /// <summary>
+        /// Runs the application.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        public async Task RunAsync()
+        {
+            await this.commandLineParserResult.WithParsedAsync(this.RunWithOptionsAsync);
         }
 
         /// <summary>
@@ -77,18 +98,8 @@
         /// <returns>
         /// The <see cref="ConsoleAppBuilder" />.
         /// </returns>
-        /// <exception cref="ConsoleAppException">Could not determine assembly</exception>
-        /// <exception cref="Neolution.DotNet.Console.ConsoleAppException">Could not determine assembly to scan for commands</exception>
-        private static ConsoleAppBuilder CreateBuilderInternal(Assembly? assembly, string[] args)
+        private static ConsoleAppBuilder CreateBuilderInternal(Assembly assembly, string[] args)
         {
-            // Get the entry assembly of the console application. It will later be scanned to find commands and verbs and their options.
-            assembly ??= Assembly.GetEntryAssembly();
-
-            if (assembly is null)
-            {
-                throw new ConsoleAppException("Could not determine assembly to scan for commands");
-            }
-
             // Create a HostBuilder
             var hostBuilder = Host.CreateDefaultBuilder(args)
                 .ConfigureLogging((context, logging) =>
@@ -114,15 +125,6 @@
                 .ToArray();
 
             return new ConsoleAppBuilder(hostBuilder, Parser.Default.ParseArguments(args, availableVerbs), environment, configuration);
-        }
-
-        /// <summary>
-        /// Runs the application.
-        /// </summary>
-        /// <returns>The <see cref="Task"/>.</returns>
-        public async Task RunAsync()
-        {
-            await this.commandLineParserResult.WithParsedAsync(this.RunWithOptionsAsync);
         }
 
         /// <summary>
