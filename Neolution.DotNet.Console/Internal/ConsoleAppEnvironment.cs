@@ -10,7 +10,7 @@
     /// Customized (for console apps) variant of Microsoft's HostingEnvironment
     /// Source: https://github.com/dotnet/runtime/blob/main/src/libraries/Microsoft.Extensions.Hosting/src/Internal/HostingEnvironment.cs
     /// </remarks>
-    public class ConsoleCoreEnvironment : IHostEnvironment
+    public class ConsoleAppEnvironment : IHostEnvironment
     {
         /// <summary>
         /// Gets or sets the name of the environment. The host automatically sets this property to the value of the

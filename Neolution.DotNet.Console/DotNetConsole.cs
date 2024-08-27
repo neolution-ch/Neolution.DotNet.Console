@@ -50,14 +50,43 @@
         /// </summary>
         /// <param name="args">The arguments.</param>
         /// <returns>The <see cref="ConsoleAppBuilder"/>.</returns>
-        /// <exception cref="Neolution.DotNet.Console.ConsoleAppException">Could not determine entry assembly</exception>
         public static ConsoleAppBuilder CreateDefaultBuilder(string[] args)
         {
+            return CreateBuilderInternal(null, args);
+        }
+
+        /// <summary>
+        /// Creates the builder with a reference to the specified assembly. This is useful when the assembly that contains the commands is not the same as the entry assembly.
+        /// </summary>
+        /// <param name="assembly">The assembly.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>
+        /// The <see cref="ConsoleAppBuilder" />.
+        /// </returns>
+        /// <exception cref="Neolution.DotNet.Console.ConsoleAppException">Could not determine entry assembly</exception>
+        public static ConsoleAppBuilder CreateBuilderWithReference(Assembly assembly, string[] args)
+        {
+            return CreateBuilderInternal(assembly, args);
+        }
+
+        /// <summary>
+        /// Creates the default builder.
+        /// </summary>
+        /// <param name="assembly">The assembly.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>
+        /// The <see cref="ConsoleAppBuilder" />.
+        /// </returns>
+        /// <exception cref="ConsoleAppException">Could not determine assembly</exception>
+        /// <exception cref="Neolution.DotNet.Console.ConsoleAppException">Could not determine assembly to scan for commands</exception>
+        private static ConsoleAppBuilder CreateBuilderInternal(Assembly? assembly, string[] args)
+        {
             // Get the entry assembly of the console application. It will later be scanned to find commands and verbs and their options.
-            var entryAssembly = Assembly.GetEntryAssembly();
-            if (entryAssembly is null)
+            assembly ??= Assembly.GetEntryAssembly();
+
+            if (assembly is null)
             {
-                throw new ConsoleAppException("Could not determine entry assembly");
+                throw new ConsoleAppException("Could not determine assembly to scan for commands");
             }
 
             // Create a HostBuilder
@@ -70,7 +99,7 @@
                 .ConfigureServices((context, services) =>
                 {
                     // Register all commands found in the entry assembly.
-                    services.Scan(selector => selector.FromAssemblies(entryAssembly)
+                    services.Scan(selector => selector.FromAssemblies(assembly)
                         .AddClasses(classes => classes.AssignableTo(typeof(IConsoleAppCommand<>)))
                         .AsImplementedInterfaces());
                 });
@@ -80,7 +109,7 @@
             var configuration = ApplyDefaultConfiguration(environment, args);
 
             // Compile all available verbs for this run by looking for classes with the Verb attribute in the entry assembly
-            var availableVerbs = entryAssembly.GetTypes()
+            var availableVerbs = assembly.GetTypes()
                 .Where(t => CustomAttributeExtensions.GetCustomAttribute<VerbAttribute>((MemberInfo)t) != null)
                 .ToArray();
 
@@ -100,9 +129,9 @@
         /// Creates the console environment.
         /// </summary>
         /// <returns>The <see cref="IHostEnvironment"/>.</returns>
-        private static ConsoleCoreEnvironment CreateConsoleEnvironment()
+        private static ConsoleAppEnvironment CreateConsoleEnvironment()
         {
-            return new ConsoleCoreEnvironment
+            return new ConsoleAppEnvironment
             {
                 EnvironmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production",
                 ApplicationName = AppDomain.CurrentDomain.FriendlyName,
@@ -117,7 +146,7 @@
         /// <param name="environment">The environment.</param>
         /// <param name="args">The arguments.</param>
         /// <returns>The <see cref="IConfiguration"/>.</returns>
-        private static IConfiguration ApplyDefaultConfiguration(ConsoleCoreEnvironment environment, string[] args)
+        private static IConfiguration ApplyDefaultConfiguration(ConsoleAppEnvironment environment, string[] args)
         {
             var configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(Environment.CurrentDirectory)

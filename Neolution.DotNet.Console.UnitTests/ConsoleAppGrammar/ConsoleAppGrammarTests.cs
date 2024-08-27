@@ -1,6 +1,7 @@
 ﻿namespace Neolution.DotNet.Console.UnitTests.ConsoleAppGrammar
 {
     using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -124,7 +125,7 @@
         /// <returns>A built console app ready to run.</returns>
         private static DotNetConsole CreateConsoleAppWithLogger(string args, IUnitTestLogger tracker)
         {
-            var builder = DotNetConsole.CreateDefaultBuilder(args.Split(" "));
+            var builder = DotNetConsole.CreateBuilderWithReference(Assembly.GetAssembly(typeof(DefaultCommand))!, args.Split(" "));
 
             builder.Services.Replace(new ServiceDescriptor(typeof(IUnitTestLogger), tracker));
 
