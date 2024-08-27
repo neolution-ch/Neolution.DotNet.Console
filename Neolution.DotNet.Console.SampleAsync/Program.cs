@@ -17,7 +17,7 @@
         /// <returns>The <see cref="Task"/>.</returns>
         public static async Task Main(string[] args)
         {
-            var builder = ConsoleApplication.CreateDefaultBuilder(args);
+            var builder = DotNetConsole.CreateDefaultBuilder(args);
             Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
             Console.WriteLine($"Setting Value: {builder.Configuration["NLog:throwConfigExceptions"]}");
 

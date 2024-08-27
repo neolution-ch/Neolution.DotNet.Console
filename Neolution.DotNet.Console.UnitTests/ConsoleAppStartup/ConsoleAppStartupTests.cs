@@ -18,7 +18,7 @@
         public void GivenServicesWithVariousServiceLifetimes_WhenRunningConsoleApp_ThenShouldNotThrow()
         {
             // Arrange
-            var builder = ConsoleApplication.CreateDefaultBuilder(UnitTestsConstants.InjectServicesWithVariousLifetimes.Split(" "));
+            var builder = DotNetConsole.CreateDefaultBuilder(UnitTestsConstants.InjectServicesWithVariousLifetimes.Split(" "));
 
             builder.Services.AddTransient<ITransientServiceStub, TransientServiceStub>();
             builder.Services.AddScoped<IScopedServiceStub, ScopedServiceStub>();
@@ -39,7 +39,7 @@
         public void GivenNoCompositionRoot_WhenBuildingConsoleApp_ThenShouldThrowConsoleAppException()
         {
             // Arrange
-            var builder = ConsoleApplication.CreateDefaultBuilder(System.Array.Empty<string>());
+            var builder = DotNetConsole.CreateDefaultBuilder(System.Array.Empty<string>());
 
             // Act
 
@@ -54,7 +54,7 @@
         public void GivenCompositionRootWithAllowedInjections_WhenBuildingConsoleApp_ThenShouldNotThrow()
         {
             // Arrange
-            var builder = ConsoleApplication.CreateDefaultBuilder(System.Array.Empty<string>());
+            var builder = DotNetConsole.CreateDefaultBuilder(System.Array.Empty<string>());
 
             // Act
 

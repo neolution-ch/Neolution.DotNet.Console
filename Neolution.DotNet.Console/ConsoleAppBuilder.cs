@@ -8,7 +8,7 @@
     /// <summary>
     /// The console application builder.
     /// </summary>
-    public class ConsoleApplicationBuilder
+    public class ConsoleAppBuilder
     {
         /// <summary>
         /// The host builder
@@ -21,13 +21,13 @@
         private readonly ParserResult<object> commandLineParserResult;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConsoleApplicationBuilder"/> class.
+        /// Initializes a new instance of the <see cref="ConsoleAppBuilder"/> class.
         /// </summary>
         /// <param name="hostBuilder">The host builder.</param>
         /// <param name="commandLineParserResult">The command line parser result.</param>
         /// <param name="environment">The environment.</param>
         /// <param name="configuration">The configuration.</param>
-        public ConsoleApplicationBuilder(IHostBuilder hostBuilder, ParserResult<object> commandLineParserResult, IHostEnvironment environment, IConfiguration configuration)
+        public ConsoleAppBuilder(IHostBuilder hostBuilder, ParserResult<object> commandLineParserResult, IHostEnvironment environment, IConfiguration configuration)
         {
             this.hostBuilder = hostBuilder;
             this.commandLineParserResult = commandLineParserResult;
@@ -69,11 +69,11 @@
         /// <summary>
         /// Builds this instance.
         /// </summary>
-        /// <returns>The <see cref="ConsoleApplication"/>.</returns>
-        public ConsoleApplication Build()
+        /// <returns>The <see cref="DotNetConsole"/>.</returns>
+        public DotNetConsole Build()
         {
             var host = this.hostBuilder.Build();
-            return new ConsoleApplication(host, this.commandLineParserResult);
+            return new DotNetConsole(host, this.commandLineParserResult);
         }
     }
 }

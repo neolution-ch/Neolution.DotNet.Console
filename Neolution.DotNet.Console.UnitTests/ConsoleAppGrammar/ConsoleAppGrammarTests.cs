@@ -122,9 +122,9 @@
         /// <param name="args">The arguments.</param>
         /// <param name="tracker">The logger.</param>
         /// <returns>A built console app ready to run.</returns>
-        private static ConsoleApplication CreateConsoleAppWithLogger(string args, IUnitTestLogger tracker)
+        private static DotNetConsole CreateConsoleAppWithLogger(string args, IUnitTestLogger tracker)
         {
-            var builder = ConsoleApplication.CreateDefaultBuilder(args.Split(" "));
+            var builder = DotNetConsole.CreateDefaultBuilder(args.Split(" "));
 
             builder.Services.Replace(new ServiceDescriptor(typeof(IUnitTestLogger), tracker));
 

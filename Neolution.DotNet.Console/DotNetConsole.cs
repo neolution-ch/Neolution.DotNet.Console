@@ -17,7 +17,7 @@
     /// <summary>
     /// The console application.
     /// </summary>
-    public class ConsoleApplication
+    public class DotNetConsole
     {
         /// <summary>
         /// The host
@@ -30,11 +30,11 @@
         private readonly ParserResult<object> commandLineParserResult;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConsoleApplication"/> class.
+        /// Initializes a new instance of the <see cref="DotNetConsole"/> class.
         /// </summary>
         /// <param name="host">The host.</param>
         /// <param name="commandLineParserResult">The command line parser result.</param>
-        public ConsoleApplication(IHost host, ParserResult<object> commandLineParserResult)
+        public DotNetConsole(IHost host, ParserResult<object> commandLineParserResult)
         {
             this.host = host;
             this.commandLineParserResult = commandLineParserResult;
@@ -49,9 +49,9 @@
         /// Creates the default builder.
         /// </summary>
         /// <param name="args">The arguments.</param>
-        /// <returns>The <see cref="ConsoleApplicationBuilder"/>.</returns>
+        /// <returns>The <see cref="ConsoleAppBuilder"/>.</returns>
         /// <exception cref="Neolution.DotNet.Console.ConsoleAppException">Could not determine entry assembly</exception>
-        public static ConsoleApplicationBuilder CreateDefaultBuilder(string[] args)
+        public static ConsoleAppBuilder CreateDefaultBuilder(string[] args)
         {
             // Get the entry assembly of the console application. It will later be scanned to find commands and verbs and their options.
             var entryAssembly = Assembly.GetEntryAssembly();
@@ -84,7 +84,7 @@
                 .Where(t => CustomAttributeExtensions.GetCustomAttribute<VerbAttribute>((MemberInfo)t) != null)
                 .ToArray();
 
-            return new ConsoleApplicationBuilder(hostBuilder, Parser.Default.ParseArguments(args, availableVerbs), environment, configuration);
+            return new ConsoleAppBuilder(hostBuilder, Parser.Default.ParseArguments(args, availableVerbs), environment, configuration);
         }
 
         /// <summary>
