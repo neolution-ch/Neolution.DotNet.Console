@@ -3,7 +3,6 @@
     using Microsoft.Extensions.DependencyInjection;
     using Neolution.DotNet.Console.UnitTests.Common;
     using Neolution.DotNet.Console.UnitTests.Common.Stubs;
-    using Neolution.DotNet.Console.UnitTests.ConsoleAppStartup.Stubs;
     using Shouldly;
     using Xunit;
 
@@ -19,20 +18,18 @@
         public void GivenServicesWithVariousServiceLifetimes_WhenRunningConsoleApp_ThenShouldNotThrow()
         {
             // Arrange
-            var console = DotNetConsole.CreateDefaultBuilder(UnitTestsConstants.InjectServicesWithVariousLifetimes.Split(" "))
-                .ConfigureServices((_, services) =>
-                {
-                    services.AddTransient<ITransientServiceStub, TransientServiceStub>();
-                    services.AddScoped<IScopedServiceStub, ScopedServiceStub>();
-                    services.AddSingleton<ISingletonServiceStub, SingletonServiceStub>();
-                })
-                .UseCompositionRoot<CompositionRootStub>()
-                .Build();
+            var builder = ConsoleApplication.CreateDefaultBuilder(UnitTestsConstants.InjectServicesWithVariousLifetimes.Split(" "));
+
+            builder.Services.AddTransient<ITransientServiceStub, TransientServiceStub>();
+            builder.Services.AddScoped<IScopedServiceStub, ScopedServiceStub>();
+            builder.Services.AddSingleton<ISingletonServiceStub, SingletonServiceStub>();
+
+            var console = builder.Build();
 
             // Act
 
             // Assert
-            Should.NotThrow(() => console.Run());
+            Should.NotThrow(() => console.RunAsync());
         }
 
         /// <summary>
@@ -42,23 +39,7 @@
         public void GivenNoCompositionRoot_WhenBuildingConsoleApp_ThenShouldThrowConsoleAppException()
         {
             // Arrange
-            var builder = DotNetConsole.CreateDefaultBuilder(System.Array.Empty<string>());
-
-            // Act
-
-            // Assert
-            Should.Throw<ConsoleAppException>(() => builder.Build());
-        }
-
-        /// <summary>
-        /// Given a composition root with disallowed injected services, when building the console application, then should throw a <see cref="ConsoleAppException"/>.
-        /// </summary>
-        [Fact]
-        public void GivenCompositionRootWithDisallowedInjections_WhenBuildingConsoleApp_ThenShouldThrowConsoleAppException()
-        {
-            // Arrange
-            var builder = DotNetConsole.CreateDefaultBuilder(System.Array.Empty<string>())
-                .UseCompositionRoot<CompositionRootWithDisallowedInjectedServicesStub>();
+            var builder = ConsoleApplication.CreateDefaultBuilder(System.Array.Empty<string>());
 
             // Act
 
@@ -73,8 +54,7 @@
         public void GivenCompositionRootWithAllowedInjections_WhenBuildingConsoleApp_ThenShouldNotThrow()
         {
             // Arrange
-            var builder = DotNetConsole.CreateDefaultBuilder(System.Array.Empty<string>())
-                .UseCompositionRoot<CompositionRootWithInjectedServicesStub>();
+            var builder = ConsoleApplication.CreateDefaultBuilder(System.Array.Empty<string>());
 
             // Act
 

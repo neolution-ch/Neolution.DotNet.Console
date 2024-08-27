@@ -1,5 +1,6 @@
 ﻿namespace Neolution.DotNet.Console.UnitTests.ConsoleAppGrammar.Fakes
 {
+    using System.Threading.Tasks;
     using Neolution.DotNet.Console.Abstractions;
     using Neolution.DotNet.Console.UnitTests.Common.Spies;
 
@@ -23,13 +24,11 @@
             this.logger = logger;
         }
 
-        /// <summary>
-        /// Runs the command with the specified options.
-        /// </summary>
-        /// <param name="options">The options.</param>
-        public void Run(EchoOptions options)
+        /// <inheritdoc />
+        public async Task RunAsync(EchoOptions options)
         {
             this.logger.Log(options);
+            await Task.CompletedTask;
         }
     }
 }

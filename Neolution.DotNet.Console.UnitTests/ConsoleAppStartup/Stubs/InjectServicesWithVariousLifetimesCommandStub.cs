@@ -1,5 +1,6 @@
 ﻿namespace Neolution.DotNet.Console.UnitTests.ConsoleAppStartup.Stubs
 {
+    using System.Threading.Tasks;
     using Neolution.DotNet.Console.Abstractions;
     using Neolution.DotNet.Console.UnitTests.Common.Stubs;
 
@@ -38,11 +39,11 @@
         }
 
         /// <inheritdoc />
-        public void Run(InjectServicesWithVariousLifetimesOptionsStub options)
+        public async Task RunAsync(InjectServicesWithVariousLifetimesOptionsStub options)
         {
-            this.transientService.DoSomething();
-            this.scopedService.DoSomething();
-            this.singletonService.DoSomething();
+            await this.transientService.DoSomethingAsync();
+            await this.scopedService.DoSomethingAsync();
+            await this.singletonService.DoSomethingAsync();
         }
     }
 }
