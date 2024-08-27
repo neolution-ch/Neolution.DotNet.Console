@@ -9,8 +9,8 @@
     /// <summary>
     /// Prints the command line parameter into the console window
     /// </summary>
-    /// <seealso cref="IAsyncConsoleAppCommand{TOptions}" />
-    public class EchoCommand : IAsyncConsoleAppCommand<EchoOptions>
+    /// <seealso cref="IConsoleAppCommand{TOptions}" />
+    public class EchoCommand : IConsoleAppCommand<EchoOptions>
     {
         /// <summary>
         /// The logger

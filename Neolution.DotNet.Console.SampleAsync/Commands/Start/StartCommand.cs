@@ -7,8 +7,8 @@
     /// <summary>
     /// The default command of the application.
     /// </summary>
-    /// <seealso cref="IAsyncConsoleAppCommand{TOptions}" />
-    public class StartCommand : IAsyncConsoleAppCommand<StartOptions>
+    /// <seealso cref="IConsoleAppCommand{TOptions}" />
+    public class StartCommand : IConsoleAppCommand<StartOptions>
     {
         /// <summary>
         /// The logger

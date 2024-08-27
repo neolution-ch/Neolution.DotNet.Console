@@ -1,15 +1,18 @@
 ﻿namespace Neolution.DotNet.Console.Abstractions
 {
+    using System.Threading.Tasks;
+
     /// <summary>
-    /// A console app command that can be started by using a verb from the command line.
+    /// An async console app command that can be started by using a verb from the command line.
     /// </summary>
-    /// <typeparam name="TOptions">The type of the verb options.</typeparam>
+    /// <typeparam name="TOptions">The type of the options.</typeparam>
     public interface IConsoleAppCommand<in TOptions>
     {
         /// <summary>
-        /// Runs the command with the specified options.
+        /// Runs the command with the specified options asynchronously.
         /// </summary>
         /// <param name="options">The options.</param>
-        void Run(TOptions options);
+        /// <returns>The <see cref="Task"/>.</returns>
+        Task RunAsync(TOptions options);
     }
 }

@@ -1,11 +1,9 @@
 ﻿namespace Neolution.DotNet.Console
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using System.Runtime.InteropServices;
     using System.Threading.Tasks;
     using CommandLine;
     using Microsoft.Extensions.Configuration;
@@ -16,9 +14,44 @@
     using Neolution.DotNet.Console.Internal;
     using NLog.Extensions.Logging;
 
+    /// <summary>
+    /// The console application.
+    /// </summary>
     public class ConsoleApplication
     {
-        public static SlimApplicationBuilder CreateDefaultBuilder(string[] args)
+        /// <summary>
+        /// The host
+        /// </summary>
+        private readonly IHost host;
+
+        /// <summary>
+        /// The command line parser result
+        /// </summary>
+        private readonly ParserResult<object> commandLineParserResult;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConsoleApplication"/> class.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="commandLineParserResult">The command line parser result.</param>
+        public ConsoleApplication(IHost host, ParserResult<object> commandLineParserResult)
+        {
+            this.host = host;
+            this.commandLineParserResult = commandLineParserResult;
+        }
+
+        /// <summary>
+        /// Gets the services.
+        /// </summary>
+        public IServiceProvider Services => this.host.Services;
+
+        /// <summary>
+        /// Creates the default builder.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <returns>The <see cref="ConsoleApplicationBuilder"/>.</returns>
+        /// <exception cref="Neolution.DotNet.Console.ConsoleAppException">Could not determine entry assembly</exception>
+        public static ConsoleApplicationBuilder CreateDefaultBuilder(string[] args)
         {
             // Get the entry assembly of the console application. It will later be scanned to find commands and verbs and their options.
             var entryAssembly = Assembly.GetEntryAssembly();
@@ -38,12 +71,12 @@
                 {
                     // Register all commands found in the entry assembly.
                     services.Scan(selector => selector.FromAssemblies(entryAssembly)
-                        .AddClasses(classes => classes.AssignableTo(typeof(IAsyncConsoleAppCommand<>)))
+                        .AddClasses(classes => classes.AssignableTo(typeof(IConsoleAppCommand<>)))
                         .AsImplementedInterfaces());
                 });
 
-            // Manually build configuration and environment again, because we unfortunately can't access them from the host builder we just created, but want to provide them in the SlimApplicationBuilder.
-            var environment = CreateDefaultEnvironment();
+            // Manually build configuration and environment again, because we unfortunately can't access them from the host builder we just created, but want to provide them in the ConsoleApplicationBuilder.
+            var environment = CreateConsoleEnvironment();
             var configuration = ApplyDefaultConfiguration(environment, args);
 
             // Compile all available verbs for this run by looking for classes with the Verb attribute in the entry assembly
@@ -51,20 +84,40 @@
                 .Where(t => CustomAttributeExtensions.GetCustomAttribute<VerbAttribute>((MemberInfo)t) != null)
                 .ToArray();
 
-            return new SlimApplicationBuilder(hostBuilder, configuration, environment, Parser.Default.ParseArguments(args, availableVerbs));
+            return new ConsoleApplicationBuilder(hostBuilder, Parser.Default.ParseArguments(args, availableVerbs), environment, configuration);
         }
 
-        private static ConsoleAppEnvironment CreateDefaultEnvironment()
+        /// <summary>
+        /// Runs the application.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        public async Task RunAsync()
         {
-            return new ConsoleAppEnvironment
+            await this.commandLineParserResult.WithParsedAsync(this.RunWithOptionsAsync);
+        }
+
+        /// <summary>
+        /// Creates the console environment.
+        /// </summary>
+        /// <returns>The <see cref="IHostEnvironment"/>.</returns>
+        private static ConsoleCoreEnvironment CreateConsoleEnvironment()
+        {
+            return new ConsoleCoreEnvironment
             {
                 EnvironmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production",
                 ApplicationName = AppDomain.CurrentDomain.FriendlyName,
                 ContentRootPath = Environment.CurrentDirectory,
+                ContentRootFileProvider = null!,
             };
         }
 
-        private static IConfiguration ApplyDefaultConfiguration(ConsoleAppEnvironment environment, string[] args)
+        /// <summary>
+        /// Applies the default configuration to the console application.
+        /// </summary>
+        /// <param name="environment">The environment.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>The <see cref="IConfiguration"/>.</returns>
+        private static IConfiguration ApplyDefaultConfiguration(ConsoleCoreEnvironment environment, string[] args)
         {
             var configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(Environment.CurrentDirectory)
@@ -90,9 +143,14 @@
             }
 
             configurationBuilder.AddEnvironmentVariables();
+
             return configurationBuilder.Build();
         }
 
+        /// <summary>
+        /// Adjusts the default builder logging providers.
+        /// </summary>
+        /// <param name="logging">The logging.</param>
         private static void AdjustDefaultBuilderLoggingProviders(ILoggingBuilder logging)
         {
             // Remove the default logging providers
@@ -109,79 +167,17 @@
             }
         }
 
+        /// <summary>
+        /// Adds the command line configuration.
+        /// </summary>
+        /// <param name="configBuilder">The configuration builder.</param>
+        /// <param name="args">The arguments.</param>
         private static void AddCommandLineConfig(IConfigurationBuilder configBuilder, string[]? args)
         {
             if (args is { Length: > 0 })
             {
                 configBuilder.AddCommandLine(args);
             }
-        }
-    }
-
-    public class SlimApplicationBuilder
-    {
-        private readonly IHostBuilder hostBuilder;
-        private readonly ParserResult<object> commandLineParserResult;
-
-        public SlimApplicationBuilder(IHostBuilder hostBuilder, IConfiguration configuration, IHostEnvironment environment, ParserResult<object> commandLineParserResult)
-        {
-            this.hostBuilder = hostBuilder;
-            this.commandLineParserResult = commandLineParserResult;
-            this.Configuration = configuration;
-            this.Environment = environment;
-        }
-
-        /// <summary>
-        /// A collection of configuration providers for the application to compose. This is useful for adding new configuration sources and providers.
-        /// </summary>
-        public IConfiguration Configuration { get; }
-
-        /// <summary>
-        /// Provides information about the host environment an application is running in.
-        /// </summary>
-        public IHostEnvironment Environment { get; }
-
-        public IServiceCollection Services
-        {
-            get
-            {
-                // We expose host builders service collection to allow adding additional services
-                var services = new ServiceCollection();
-                this.hostBuilder.ConfigureServices((_, collection) =>
-                {
-                    foreach (var service in services)
-                    {
-                        collection.Add(service);
-                    }
-                });
-
-                return services;
-            }
-        }
-
-        public SlimApplication Build()
-        {
-            var host = this.hostBuilder.Build();
-            return new SlimApplication(host, this.commandLineParserResult);
-        }
-    }
-
-    public class SlimApplication
-    {
-        private readonly IHost host;
-        private readonly ParserResult<object> commandLineParserResult;
-
-        public SlimApplication(IHost host, ParserResult<object> commandLineParserResult)
-        {
-            this.host = host;
-            this.commandLineParserResult = commandLineParserResult;
-        }
-
-        public IServiceProvider Services => this.host.Services;
-
-        public async Task RunAsync()
-        {
-            await this.commandLineParserResult.WithParsedAsync(this.RunWithOptionsAsync);
         }
 
         /// <summary>
@@ -197,13 +193,13 @@
 
             // Determine the type of the options object to find the corresponding command type
             var dataType = new[] { options.GetType() };
-            var genericBase = typeof(IAsyncConsoleAppCommand<>);
+            var genericBase = typeof(IConsoleAppCommand<>);
             var commandType = genericBase.MakeGenericType(dataType);
-            var commandEntryPointMethodInfo = commandType.GetMethod(nameof(IAsyncConsoleAppCommand<object>.RunAsync));
+            var commandEntryPointMethodInfo = commandType.GetMethod(nameof(IConsoleAppCommand<object>.RunAsync));
 
             // Resolve the command from the service provider by the determined type and invoke the entry point method (RunAsync)
             var command = scope.ServiceProvider.GetRequiredService(commandType);
-            var result = (Task)commandEntryPointMethodInfo?.Invoke(command, new[] { options });
+            var result = commandEntryPointMethodInfo?.Invoke(command, new[] { options }) as Task;
             if (result is null)
             {
                 await Task.CompletedTask;

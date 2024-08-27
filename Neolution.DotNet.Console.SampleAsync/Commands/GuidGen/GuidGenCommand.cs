@@ -8,8 +8,8 @@
     /// <summary>
     /// Prints a randomly generated GUID in the console window
     /// </summary>
-    /// <seealso cref="IAsyncConsoleAppCommand{TOptions}" />
-    public class GuidGenCommand : IAsyncConsoleAppCommand<GuidGenOptions>
+    /// <seealso cref="IConsoleAppCommand{TOptions}" />
+    public class GuidGenCommand : IConsoleAppCommand<GuidGenOptions>
     {
         /// <summary>
         /// The logger

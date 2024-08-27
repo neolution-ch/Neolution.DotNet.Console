@@ -10,28 +10,28 @@
     /// Customized (for console apps) variant of Microsoft's HostingEnvironment
     /// Source: https://github.com/dotnet/runtime/blob/main/src/libraries/Microsoft.Extensions.Hosting/src/Internal/HostingEnvironment.cs
     /// </remarks>
-    public class ConsoleAppEnvironment : IHostEnvironment
+    public class ConsoleCoreEnvironment : IHostEnvironment
     {
         /// <summary>
         /// Gets or sets the name of the environment. The host automatically sets this property to the value of the
         /// of the "environment" key as specified in configuration.
         /// </summary>
-        public string EnvironmentName { get; set; }
+        public string EnvironmentName { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the name of the application. This property is automatically set by the host to the assembly containing
         /// the application entry point.
         /// </summary>
-        public string ApplicationName { get; set; }
+        public string ApplicationName { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the absolute path to the directory that contains the application content files.
         /// </summary>
-        public string ContentRootPath { get; set; }
+        public string ContentRootPath { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets an <see cref="IFileProvider"/> pointing at <see cref="ContentRootPath"/>.
         /// </summary>
-        public IFileProvider ContentRootFileProvider { get; set; }
+        public IFileProvider ContentRootFileProvider { get; set; } = null!;
     }
 }
