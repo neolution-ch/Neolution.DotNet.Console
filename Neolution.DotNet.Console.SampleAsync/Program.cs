@@ -1,6 +1,7 @@
 ﻿namespace Neolution.DotNet.Console.SampleAsync
 {
     using System;
+    using System.Globalization;
     using Microsoft.Extensions.DependencyInjection;
     using NLog;
     using NLog.Extensions.Logging;
@@ -18,13 +19,15 @@
         public static async Task Main(string[] args)
         {
             var builder = DotNetConsole.CreateDefaultBuilder(args);
-            Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
-            Console.WriteLine($"Setting Value: {builder.Configuration["NLog:throwConfigExceptions"]}");
 
             var logger = LogManager.Setup().LoadConfigurationFromSection(builder.Configuration).GetCurrentClassLogger();
 
             try
             {
+                // Check if IHostEnvironment and IConfiguration are available before building the app
+                logger.Debug(CultureInfo.InvariantCulture, message: $"Environment: {builder.Environment.EnvironmentName}");
+                logger.Debug(CultureInfo.InvariantCulture, message: $"Setting Value: {builder.Configuration["NLog:throwConfigExceptions"]}");
+
                 // Add services
                 builder.Services.AddHttpClient();
 

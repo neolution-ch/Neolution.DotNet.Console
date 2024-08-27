@@ -9,7 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Updated to .NET 8
+- Updated everything to .NET 8
+- Enabled nullable reference types
+- Changed app builder to resemble the current default ASP.NET Core hosting model
+- Changed name of `IAsyncConsoleAppCommand` interface to `IConsoleAppCommand` because all commands are now async by default
+- Updated NLog to v5.3.3
+- Updated NLog.Extensions.Logging to v5.3.12
+
+### Removed
+
+- Lots of classes that were copied from the ASP.NET Core hosting model source code
 
 ## [2.0.2] - 2024-06-06
 

@@ -12,6 +12,28 @@ To help you kickstart your console application, we've provided sample applicatio
 
 # Guides
 
+## Migrate from V2 to V3
+
+.NET 6 changed the hosting model for ASP.NET Core applications, we adjusted to that to fulfill the primary goal of this package: to provide a seamless and intuitive user experience. This introduces breaking changes.
+
+### Removed `ICompositionRoot` interface and `UseCompositionRoot` extension method
+The builder returned from calling `DotNetConsole.CreateDefaultBuilder(args)` now has a `Services` property that can be used to register services. Like in ASP.NET, this can now be done directly in `Program.cs`.
+
+    public static async Task Main(string[] args)
+    {
+        var builder = DotNetConsole.CreateDefaultBuilder(args);
+
+        // Register your services here...
+        builder.Services.AddHttpClient();
+        builder.Services.AddScoped<IScopedService, ServiceA>();
+        builder.Services.AddSingleton<ISingletonService, ServiceB>();
+
+        await builder.Build().RunAsync();
+    }
+
+### Async by default
+All commands are now async by default. The `IAsyncConsoleAppCommand` has been removed and the `IConsoleAppCommand` interface now requires the implementation of the `RunAsync` method.
+
 ## Migrate from V1 to V2
 
 V2 **introduces breaking changes** from V1, primarily because it upgrades NLog to Version 5. For a detailed review of these changes, please refer to the [official NLog release notes](https://nlog-project.org/2021/08/25/nlog-5-0-preview1-ready.html).
