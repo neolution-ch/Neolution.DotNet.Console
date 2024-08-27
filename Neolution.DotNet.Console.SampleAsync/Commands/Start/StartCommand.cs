@@ -34,11 +34,34 @@
         /// <inheritdoc />
         public async Task RunAsync(StartOptions options)
         {
-            var response = await this.httpClient.GetAsync(new Uri("http://www.google.com"));
-            var html = await response.Content.ReadAsStringAsync();
+            this.logger.LogDebug("Check if Google is online");
+            var response = await this.httpClient.GetAsync(new Uri("https://www.google.com"));
+            if (response.IsSuccessStatusCode)
+            {
+                this.logger.LogTrace("Internet connection is available");
+            }
+            else
+            {
+                this.logger.LogError("No internet connection detected!");
+            }
 
-            this.logger.LogInformation("Hello World!");
-            this.logger.LogInformation("Response: {PartOfHtml}...", html[..100]);
+            this.logger.LogTrace("Trace: Message");
+            this.logger.LogDebug("Debug: Message");
+            this.logger.LogInformation("Information: Message");
+            this.logger.LogWarning("Warning: Message");
+            this.logger.LogError("Error: Message");
+            this.logger.LogCritical("Critical: Message");
+
+            try
+            {
+                throw new NotSupportedException("Test exception");
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Exception: Message");
+            }
+
+            this.logger.LogInformation("Run ended");
         }
     }
 }
