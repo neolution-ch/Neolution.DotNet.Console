@@ -4,11 +4,7 @@ Neolution.DotNet.Console is a versatile package designed as a launchpad for .NET
 
 # Getting Started
 
-To help you kickstart your console application, we've provided sample applications for reference:
-
-1. [Sample Application](/Neolution.DotNet.Console.Sample/Program.cs): This demonstrates the basic usage of this package.
-
-2. [Async Sample Application](/Neolution.DotNet.Console.SampleAsync/Program.cs): Here's an async variant to illustrate how you can incorporate async programming into your application.
+To help you kickstart your console application, we've provided a a [sample application](/Neolution.DotNet.Console.SampleAsync/Program.cs) that should demonstrate the basic usage of this package.
 
 # Guides
 
@@ -33,6 +29,9 @@ The builder returned from calling `DotNetConsole.CreateDefaultBuilder(args)` now
 
 ### Async by default
 All commands are now async by default. The `IAsyncConsoleAppCommand` has been removed and the `IConsoleAppCommand` interface now requires the implementation of the `RunAsync` method.
+
+### Service registration validation
+The service registrations are now validated when `app.Build()` is called. This means that the application will not start if not all services that are registered (even if not used during runtime) can be created by the DI container or when there are scope/lifetime issues with the services.
 
 ## Migrate from V1 to V2
 

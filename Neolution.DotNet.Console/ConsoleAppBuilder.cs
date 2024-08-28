@@ -21,6 +21,11 @@
         private readonly ParserResult<object> commandLineParserResult;
 
         /// <summary>
+        /// The service collection
+        /// </summary>
+        private readonly ServiceCollection serviceCollection = new();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ConsoleAppBuilder"/> class.
         /// </summary>
         /// <param name="hostBuilder">The host builder.</param>
@@ -46,25 +51,9 @@
         public IConfiguration Configuration { get; }
 
         /// <summary>
-        /// Gets the services.
+        /// Gets the collection of services for the application to compose. This is useful for adding user provided or framework provided services.
         /// </summary>
-        public IServiceCollection Services
-        {
-            get
-            {
-                // We expose host builders service collection to allow adding additional services
-                var services = new ServiceCollection();
-                this.hostBuilder.ConfigureServices((_, collection) =>
-                {
-                    foreach (var service in services)
-                    {
-                        collection.Add(service);
-                    }
-                });
-
-                return services;
-            }
-        }
+        public IServiceCollection Services => this.serviceCollection;
 
         /// <summary>
         /// Builds this instance.
@@ -72,6 +61,15 @@
         /// <returns>The <see cref="DotNetConsole"/>.</returns>
         public DotNetConsole Build()
         {
+            // Copy over the services to host builder before it gets built
+            this.hostBuilder.ConfigureServices(services =>
+            {
+                foreach (var service in this.serviceCollection)
+                {
+                    services.Add(service);
+                }
+            });
+
             var host = this.hostBuilder.Build();
             return new DotNetConsole(host, this.commandLineParserResult);
         }

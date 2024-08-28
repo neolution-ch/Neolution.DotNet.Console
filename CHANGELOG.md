@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- Lots of classes that were copied from the ASP.NET Core hosting model source code
+- Lots of classes that were originally copied from the ASP.NET Core hosting model source code and are now no longer needed
 
 ## [2.0.2] - 2024-06-06
 
