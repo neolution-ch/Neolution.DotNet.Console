@@ -9,8 +9,8 @@
     /// <summary>
     /// Prints the command line parameter into the console window
     /// </summary>
-    /// <seealso cref="IConsoleAppCommand{TOptions}" />
-    public class EchoCommand : IConsoleAppCommand<EchoOptions>
+    /// <seealso cref="IDotNetConsoleCommand{TOptions}" />
+    public class EchoCommand : IDotNetConsoleCommand<EchoOptions>
     {
         /// <summary>
         /// The logger

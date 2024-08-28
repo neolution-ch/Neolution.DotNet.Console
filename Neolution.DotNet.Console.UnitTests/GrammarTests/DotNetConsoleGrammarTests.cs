@@ -1,19 +1,20 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.ConsoleAppGrammar
+﻿namespace Neolution.DotNet.Console.UnitTests.GrammarTests
 {
-    using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Neolution.DotNet.Console.UnitTests.Common.Fakes;
     using Neolution.DotNet.Console.UnitTests.Common.Spies;
-    using Neolution.DotNet.Console.UnitTests.ConsoleAppGrammar.Fakes;
+    using Neolution.DotNet.Console.UnitTests.GrammarTests.Fakes;
     using Shouldly;
     using Xunit;
 
     /// <summary>
     /// Command line arguments grammar tests
     /// </summary>
-    public class ConsoleAppGrammarTests
+    [Collection("Production Environment Tests")]
+    public class DotNetConsoleGrammarTests
     {
         /// <summary>
         /// When calling the console app without specifying a verb, it should run the command of the default verb.
@@ -31,7 +32,7 @@
             await console.RunAsync();
 
             // Assert
-            logger.LoggedObjects.First().ShouldBeOfType<DefaultOptions>();
+            logger.LoggedObjects["options"].ShouldBeOfType<DefaultOptions>();
         }
 
         /// <summary>
@@ -50,7 +51,7 @@
             await console.RunAsync();
 
             // Assert
-            var options = (EchoOptions)logger.LoggedObjects.First();
+            var options = (EchoOptions)logger.LoggedObjects["options"];
             options.Message.ShouldBeNull();
         }
 
@@ -70,7 +71,7 @@
             await console.RunAsync();
 
             // Assert
-            var options = (EchoOptions)logger.LoggedObjects.First();
+            var options = (EchoOptions)logger.LoggedObjects["options"];
             options.Message.ShouldBe("hello");
         }
 
@@ -90,7 +91,7 @@
             await console.RunAsync();
 
             // Assert
-            var options = (EchoOptions)logger.LoggedObjects.First();
+            var options = (EchoOptions)logger.LoggedObjects["options"];
             options.Message.ShouldBe("hello");
             options.Upper.ShouldBe(true);
         }
@@ -111,7 +112,7 @@
             await console.RunAsync();
 
             // Assert
-            var options = (EchoOptions)logger.LoggedObjects.First();
+            var options = (EchoOptions)logger.LoggedObjects["options"];
             options.Message.ShouldBe("hello");
             options.Upper.ShouldBe(true);
             options.Repeat.ShouldBe(2);

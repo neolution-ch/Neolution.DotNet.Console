@@ -6,7 +6,7 @@
     /// An async console app command that can be started by using a verb from the command line.
     /// </summary>
     /// <typeparam name="TOptions">The type of the verb options.</typeparam>
-    public interface IConsoleAppCommand<in TOptions>
+    public interface IDotNetConsoleCommand<in TOptions>
     {
         /// <summary>
         /// Runs the command with the specified options asynchronously.

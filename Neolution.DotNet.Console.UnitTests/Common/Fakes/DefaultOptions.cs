@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.ConsoleAppGrammar.Fakes
+﻿namespace Neolution.DotNet.Console.UnitTests.Common.Fakes
 {
     using CommandLine;
 

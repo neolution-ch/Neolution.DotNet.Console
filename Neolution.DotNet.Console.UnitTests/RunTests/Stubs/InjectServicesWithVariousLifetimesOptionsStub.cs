@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.ConsoleAppStartup.Stubs
+﻿namespace Neolution.DotNet.Console.UnitTests.RunTests.Stubs
 {
     using CommandLine;
     using Neolution.DotNet.Console.UnitTests.Common;

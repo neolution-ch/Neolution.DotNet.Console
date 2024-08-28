@@ -1,13 +1,13 @@
 ﻿namespace Neolution.DotNet.Console
 {
     using System;
-    using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
     using CommandLine;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Neolution.DotNet.Console.Abstractions;
@@ -49,14 +49,14 @@
         /// Creates the default builder.
         /// </summary>
         /// <param name="args">The arguments.</param>
-        /// <returns>The <see cref="ConsoleAppBuilder"/>.</returns>
-        public static ConsoleAppBuilder CreateDefaultBuilder(string[] args)
+        /// <returns>The <see cref="DotNetConsoleBuilder"/>.</returns>
+        public static DotNetConsoleBuilder CreateDefaultBuilder(string[] args)
         {
             // Get the entry assembly of the console application. It will later be scanned to find commands and verbs and their options.
             var assembly = Assembly.GetEntryAssembly();
             if (assembly is null)
             {
-                throw new ConsoleAppException("Could not determine entry assembly");
+                throw new DotNetConsoleException("Could not determine entry assembly");
             }
 
             return CreateBuilderInternal(assembly, args);
@@ -68,10 +68,10 @@
         /// <param name="assembly">The assembly.</param>
         /// <param name="args">The arguments.</param>
         /// <returns>
-        /// The <see cref="ConsoleAppBuilder" />.
+        /// The <see cref="DotNetConsoleBuilder" />.
         /// </returns>
-        /// <exception cref="Neolution.DotNet.Console.ConsoleAppException">Could not determine entry assembly</exception>
-        public static ConsoleAppBuilder CreateBuilderWithReference(Assembly assembly, string[] args)
+        /// <exception cref="DotNetConsoleException">Could not determine entry assembly</exception>
+        public static DotNetConsoleBuilder CreateBuilderWithReference(Assembly assembly, string[] args)
         {
             if (assembly is null)
             {
@@ -96,9 +96,9 @@
         /// <param name="assembly">The assembly.</param>
         /// <param name="args">The arguments.</param>
         /// <returns>
-        /// The <see cref="ConsoleAppBuilder" />.
+        /// The <see cref="DotNetConsoleBuilder" />.
         /// </returns>
-        private static ConsoleAppBuilder CreateBuilderInternal(Assembly assembly, string[] args)
+        private static DotNetConsoleBuilder CreateBuilderInternal(Assembly assembly, string[] args)
         {
             // Create a HostBuilder
             var hostBuilder = Host.CreateDefaultBuilder(args)
@@ -111,44 +111,51 @@
                 {
                     // Register all commands found in the entry assembly.
                     services.Scan(selector => selector.FromAssemblies(assembly)
-                        .AddClasses(classes => classes.AssignableTo(typeof(IConsoleAppCommand<>)))
+                        .AddClasses(classes => classes.AssignableTo(typeof(IDotNetConsoleCommand<>)))
                         .AsImplementedInterfaces());
                 });
 
             // Manually build configuration and environment again, because we unfortunately can't access them from the host builder we just created, but want to provide them in the ConsoleApplicationBuilder.
-            var environment = CreateConsoleEnvironment();
-            var configuration = ApplyDefaultConfiguration(environment, args);
+            var environment = CreateConsoleEnvironment(args);
+            var configuration = ApplyDefaultConfiguration(assembly, args, environment);
 
             // Compile all available verbs for this run by looking for classes with the Verb attribute in the entry assembly
             var availableVerbs = assembly.GetTypes()
                 .Where(t => CustomAttributeExtensions.GetCustomAttribute<VerbAttribute>((MemberInfo)t) != null)
                 .ToArray();
 
-            return new ConsoleAppBuilder(hostBuilder, Parser.Default.ParseArguments(args, availableVerbs), environment, configuration);
+            return new DotNetConsoleBuilder(hostBuilder, Parser.Default.ParseArguments(args, availableVerbs), environment, configuration);
         }
 
         /// <summary>
         /// Creates the console environment.
         /// </summary>
+        /// <param name="args">The command line arguments.</param>
         /// <returns>The <see cref="IHostEnvironment"/>.</returns>
-        private static ConsoleAppEnvironment CreateConsoleEnvironment()
+        private static DotNetConsoleEnvironment CreateConsoleEnvironment(string[] args)
         {
-            return new ConsoleAppEnvironment
+            var configuration = new ConfigurationBuilder()
+                .AddEnvironmentVariables(prefix: "DOTNET_")
+                .AddCommandLine(args)
+                .Build();
+
+            return new DotNetConsoleEnvironment
             {
-                EnvironmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production",
+                EnvironmentName = configuration[HostDefaults.EnvironmentKey] ?? "Production",
                 ApplicationName = AppDomain.CurrentDomain.FriendlyName,
                 ContentRootPath = Environment.CurrentDirectory,
-                ContentRootFileProvider = null!,
+                ContentRootFileProvider = new PhysicalFileProvider(Environment.CurrentDirectory),
             };
         }
 
         /// <summary>
         /// Applies the default configuration to the console application.
         /// </summary>
-        /// <param name="environment">The environment.</param>
+        /// <param name="assembly">The assembly.</param>
         /// <param name="args">The arguments.</param>
-        /// <returns>The <see cref="IConfiguration"/>.</returns>
-        private static IConfiguration ApplyDefaultConfiguration(ConsoleAppEnvironment environment, string[] args)
+        /// <param name="environment">The environment.</param>
+        /// <returns>The <see cref="IConfiguration" />.</returns>
+        private static IConfiguration ApplyDefaultConfiguration(Assembly assembly, string[] args, DotNetConsoleEnvironment environment)
         {
             var configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(Environment.CurrentDirectory)
@@ -160,17 +167,9 @@
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
-            if (environment.IsDevelopment() && environment.ApplicationName is { Length: > 0 })
+            if (environment.IsDevelopment())
             {
-                try
-                {
-                    var appAssembly = Assembly.Load(new AssemblyName(environment.ApplicationName));
-                    configurationBuilder.AddUserSecrets(appAssembly, optional: true, reloadOnChange: true);
-                }
-                catch (FileNotFoundException)
-                {
-                    // The assembly cannot be found, so just skip it.
-                }
+                configurationBuilder.AddUserSecrets(assembly, optional: true, reloadOnChange: true);
             }
 
             configurationBuilder.AddEnvironmentVariables();
@@ -224,9 +223,9 @@
 
             // Determine the type of the options object to find the corresponding command type
             var dataType = new[] { options.GetType() };
-            var genericBase = typeof(IConsoleAppCommand<>);
+            var genericBase = typeof(IDotNetConsoleCommand<>);
             var commandType = genericBase.MakeGenericType(dataType);
-            var commandEntryPointMethodInfo = commandType.GetMethod(nameof(IConsoleAppCommand<object>.RunAsync));
+            var commandEntryPointMethodInfo = commandType.GetMethod(nameof(IDotNetConsoleCommand<object>.RunAsync));
 
             // Resolve the command from the service provider by the determined type and invoke the entry point method (RunAsync)
             var command = scope.ServiceProvider.GetRequiredService(commandType);

@@ -1,43 +1,44 @@
 ﻿namespace Neolution.DotNet.Console
 {
     using System;
+    using System.Runtime.Serialization;
 
     /// <inheritdoc />
     [Serializable]
-    public class ConsoleAppException : Exception
+    public class DotNetConsoleException : Exception
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConsoleAppException"/> class.
+        /// Initializes a new instance of the <see cref="DotNetConsoleException"/> class.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
-        public ConsoleAppException(string message)
+        public DotNetConsoleException(string message)
             : base(message)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConsoleAppException"/> class.
+        /// Initializes a new instance of the <see cref="DotNetConsoleException"/> class.
         /// </summary>
         /// <param name="message">The error message that explains the reason for the exception.</param>
         /// <param name="innerException">The exception that is the cause of the current exception, or a null reference (Nothing in Visual Basic) if no inner exception is specified.</param>
-        public ConsoleAppException(string message, Exception innerException)
+        public DotNetConsoleException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConsoleAppException"/> class.
+        /// Initializes a new instance of the <see cref="DotNetConsoleException"/> class.
         /// </summary>
-        public ConsoleAppException()
+        public DotNetConsoleException()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConsoleAppException"/> class.
+        /// Initializes a new instance of the <see cref="DotNetConsoleException"/> class.
         /// </summary>
         /// <param name="serializationInfo">The serialization information.</param>
         /// <param name="streamingContext">The streaming context.</param>
-        protected ConsoleAppException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext)
+        protected DotNetConsoleException(SerializationInfo serializationInfo, StreamingContext streamingContext)
             : base(serializationInfo, streamingContext)
         {
         }

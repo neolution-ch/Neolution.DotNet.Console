@@ -11,14 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated everything to .NET 8
 - Enabled nullable reference types
-- Changed app builder to resemble the current default ASP.NET Core hosting model
-- Changed name of `IAsyncConsoleAppCommand` interface to `IConsoleAppCommand` because all commands are now async by default
+- Changed app builder initialization code to resemble the current default ASP.NET Core hosting model
 - Updated NLog to v5.3.3
 - Updated NLog.Extensions.Logging to v5.3.12
+
+### Added
+- Commands are now async by default, they must use the new `IDotNetConsoleCommand` interface instead of `IConsoleAppCommand` and `IAsyncConsoleAppCommand`.
 
 ### Removed
 
 - Lots of classes that were originally copied from the ASP.NET Core hosting model source code and are now no longer needed
+- Removed `IAsyncConsoleAppCommand` and `IConsoleAppCommand` in favor of the new `IDotNetConsoleCommand` interface
 
 ## [2.0.2] - 2024-06-06
 

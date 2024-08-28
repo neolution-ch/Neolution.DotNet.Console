@@ -1,14 +1,14 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.ConsoleAppStartup.Stubs
+﻿namespace Neolution.DotNet.Console.UnitTests.RunTests.Stubs
 {
     using System.Threading.Tasks;
     using Neolution.DotNet.Console.Abstractions;
     using Neolution.DotNet.Console.UnitTests.Common.Stubs;
 
     /// <summary>
-    /// Composition root stub used to check if DI can resolve services with different lifetimes.
+    /// Command stub used to check if
     /// </summary>
-    /// <seealso cref="IConsoleAppCommand{InjectServicesWithVariousLifetimesOptionsStub}" />
-    public class InjectServicesWithVariousLifetimesCommandStub : IConsoleAppCommand<InjectServicesWithVariousLifetimesOptionsStub>
+    /// <seealso cref="IDotNetConsoleCommand{TOptions}" />
+    public class InjectServicesWithVariousLifetimesCommandStub : IDotNetConsoleCommand<InjectServicesWithVariousLifetimesOptionsStub>
     {
         /// <summary>
         /// The transient service

@@ -7,8 +7,8 @@
     /// <summary>
     /// The default command of the application.
     /// </summary>
-    /// <seealso cref="IConsoleAppCommand{TOptions}" />
-    public class StartCommand : IConsoleAppCommand<StartOptions>
+    /// <seealso cref="IDotNetConsoleCommand{TOptions}" />
+    public class StartCommand : IDotNetConsoleCommand<StartOptions>
     {
         /// <summary>
         /// The logger

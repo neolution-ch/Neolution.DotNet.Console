@@ -10,12 +10,13 @@
         /// <summary>
         /// Gets the logged objects.
         /// </summary>
-        public IList<object> LoggedObjects { get; }
+        IDictionary<string, object> LoggedObjects { get; }
 
         /// <summary>
         /// Logs the specified object.
         /// </summary>
+        /// <param name="key">The key.</param>
         /// <param name="obj">The object.</param>
-        void Log(object obj);
+        void Log(string key, object obj);
     }
 }

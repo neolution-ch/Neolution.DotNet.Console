@@ -10,7 +10,7 @@ To help you kickstart your console application, we've provided a a [sample appli
 
 ## Migrate from V2 to V3
 
-.NET 6 changed the hosting model for ASP.NET Core applications, we adjusted to that to fulfill the primary goal of this package: to provide a seamless and intuitive user experience. This introduces breaking changes.
+In .NET 6 the hosting model for ASP.NET Core applications was changed, we adjusted to that to fulfill the primary goal of this package: to provide a seamless and intuitive user experience. This introduces breaking changes that are explained below.
 
 ### Removed `ICompositionRoot` interface and `UseCompositionRoot` extension method
 The builder returned from calling `DotNetConsole.CreateDefaultBuilder(args)` now has a `Services` property that can be used to register services. Like in ASP.NET, this can now be done directly in `Program.cs`.
@@ -28,7 +28,7 @@ The builder returned from calling `DotNetConsole.CreateDefaultBuilder(args)` now
     }
 
 ### Async by default
-All commands are now async by default. The `IAsyncConsoleAppCommand` has been removed and the `IConsoleAppCommand` interface now requires the implementation of the `RunAsync` method.
+All commands are now async by default. Use the new `IDotNetConsoleCommand` interface instead of `IConsoleAppCommand` and `IAsyncConsoleAppCommand`.
 
 ### Service registration validation
 The service registrations are now validated when `app.Build()` is called. This means that the application will not start if not all services that are registered (even if not used during runtime) can be created by the DI container or when there are scope/lifetime issues with the services.

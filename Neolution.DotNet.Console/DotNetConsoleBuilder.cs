@@ -8,7 +8,7 @@
     /// <summary>
     /// The console application builder.
     /// </summary>
-    public class ConsoleAppBuilder
+    public class DotNetConsoleBuilder
     {
         /// <summary>
         /// The host builder
@@ -26,13 +26,13 @@
         private readonly ServiceCollection serviceCollection = new();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConsoleAppBuilder"/> class.
+        /// Initializes a new instance of the <see cref="DotNetConsoleBuilder"/> class.
         /// </summary>
         /// <param name="hostBuilder">The host builder.</param>
         /// <param name="commandLineParserResult">The command line parser result.</param>
         /// <param name="environment">The environment.</param>
         /// <param name="configuration">The configuration.</param>
-        public ConsoleAppBuilder(IHostBuilder hostBuilder, ParserResult<object> commandLineParserResult, IHostEnvironment environment, IConfiguration configuration)
+        public DotNetConsoleBuilder(IHostBuilder hostBuilder, ParserResult<object> commandLineParserResult, IHostEnvironment environment, IConfiguration configuration)
         {
             this.hostBuilder = hostBuilder;
             this.commandLineParserResult = commandLineParserResult;
