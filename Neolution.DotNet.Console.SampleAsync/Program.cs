@@ -31,8 +31,8 @@
                 // Add services
                 builder.Services.AddHttpClient();
 
-                var app = builder.Build();
-                await app.RunAsync().ConfigureAwait(false);
+                var console = builder.Build();
+                await console.RunAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
