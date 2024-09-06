@@ -15,7 +15,7 @@
     /// Run tests for the <see cref="DotNetConsole"/>.
     /// </summary>
     [Collection("Non-Parallel Tests")]
-    public class DotNetConsoleRunTests
+    public class DotNetConsoleEnvironmentTests
     {
         /// <summary>
         /// Given an environment variable with an environment name, when running the console application, then the environment name of the app should match.

@@ -1,6 +1,7 @@
 ﻿namespace Neolution.DotNet.Console
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
@@ -59,18 +60,16 @@
                 throw new DotNetConsoleException("Could not determine entry assembly");
             }
 
-            return CreateBuilderInternal(assembly, args);
+            return CreateBuilderInternal(assembly, null, args);
         }
 
         /// <summary>
-        /// Creates the builder with a reference to the specified assembly. This is useful when the assembly that contains the commands is not the same as the entry assembly.
+        /// Creates the builder with explicitly specified assembly.
+        /// This is useful when the assembly that contains the commands and verbs is not the same as the entry assembly.
         /// </summary>
         /// <param name="assembly">The assembly.</param>
         /// <param name="args">The arguments.</param>
-        /// <returns>
-        /// The <see cref="DotNetConsoleBuilder" />.
-        /// </returns>
-        /// <exception cref="DotNetConsoleException">Could not determine entry assembly</exception>
+        /// <returns> The <see cref="DotNetConsoleBuilder" />. </returns>
         public static DotNetConsoleBuilder CreateBuilderWithReference(Assembly assembly, string[] args)
         {
             if (assembly is null)
@@ -78,7 +77,25 @@
                 throw new ArgumentNullException(nameof(assembly));
             }
 
-            return CreateBuilderInternal(assembly, args);
+            return CreateBuilderInternal(assembly, null, args);
+        }
+
+        /// <summary>
+        /// Creates the builder with explicitly specified assembly and verb types.
+        /// This is useful when commands and verbs are defined in different assemblies.
+        /// </summary>
+        /// <param name="servicesAssembly">The assembly.</param>
+        /// <param name="verbTypes">The verb types.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns> The <see cref="DotNetConsoleBuilder" />. </returns>
+        public static DotNetConsoleBuilder CreateBuilderWithReference(Assembly servicesAssembly, Type[] verbTypes, string[] args)
+        {
+            if (servicesAssembly is null)
+            {
+                throw new ArgumentNullException(nameof(servicesAssembly));
+            }
+
+            return CreateBuilderInternal(servicesAssembly, verbTypes, args);
         }
 
         /// <summary>
@@ -94,11 +111,12 @@
         /// Creates the default builder.
         /// </summary>
         /// <param name="assembly">The assembly.</param>
+        /// <param name="verbTypes">The verb types.</param>
         /// <param name="args">The arguments.</param>
         /// <returns>
         /// The <see cref="DotNetConsoleBuilder" />.
         /// </returns>
-        private static DotNetConsoleBuilder CreateBuilderInternal(Assembly assembly, string[] args)
+        private static DotNetConsoleBuilder CreateBuilderInternal(Assembly assembly, Type[]? verbTypes, string[] args)
         {
             // Create a HostBuilder
             var hostBuilder = Host.CreateDefaultBuilder(args)
@@ -107,7 +125,7 @@
                     AdjustDefaultBuilderLoggingProviders(logging);
                     logging.AddNLog(context.Configuration);
                 })
-                .ConfigureServices((context, services) =>
+                .ConfigureServices((_, services) =>
                 {
                     // Register all commands found in the entry assembly.
                     services.Scan(selector => selector.FromAssemblies(assembly)
@@ -119,12 +137,45 @@
             var environment = CreateConsoleEnvironment(args);
             var configuration = ApplyDefaultConfiguration(assembly, args, environment);
 
-            // Compile all available verbs for this run by looking for classes with the Verb attribute in the entry assembly
-            var availableVerbs = assembly.GetTypes()
-                .Where(t => CustomAttributeExtensions.GetCustomAttribute<VerbAttribute>((MemberInfo)t) != null)
+            // If verb types were not specified, compile all available verbs for this run by looking for classes with the Verb attribute in the specified assembly
+            verbTypes ??= assembly.GetTypes()
+                .Where(t => t.GetCustomAttribute<VerbAttribute>() != null)
                 .ToArray();
 
-            return new DotNetConsoleBuilder(hostBuilder, Parser.Default.ParseArguments(args, availableVerbs), environment, configuration);
+            EnforceStrictVerbMatching(args, verbTypes);
+            var parsedArguments = Parser.Default.ParseArguments(args, verbTypes);
+
+            return new DotNetConsoleBuilder(hostBuilder, parsedArguments, environment, configuration);
+        }
+
+        /// <summary>
+        /// Enforce strict verb matching if one verb is marked as default. Otherwise, the default verb will be executed even if that was not the users intention.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <param name="availableVerbTypes">The available verb types.</param>
+        /// <exception cref="Neolution.DotNet.Console.DotNetConsoleException">Cannot create builder, because the specified verb '{firstVerb}' matches no command.</exception>
+        private static void EnforceStrictVerbMatching(string[] args, Type[] availableVerbTypes)
+        {
+            var availableVerbs = availableVerbTypes.Select(t => t.GetCustomAttribute<VerbAttribute>()!).ToList();
+            if (!availableVerbs.Any(v => v.IsDefault))
+            {
+                // If no default verb is defined, we do not enforce strict verb matching
+                return;
+            }
+
+            var firstVerb = args.FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(firstVerb))
+            {
+                // If the user passed no verb, but a default verb is defined, the default verb will be executed
+                return;
+            }
+
+            var verbNames = availableVerbs.Select(t => t.Name).ToArray();
+            var verbMatched = verbNames.Any(v => v.Equals(firstVerb, StringComparison.OrdinalIgnoreCase));
+            if (!verbMatched)
+            {
+                throw new DotNetConsoleException($"Cannot create builder, because the specified verb '{firstVerb}' matches no command.");
+            }
         }
 
         /// <summary>
@@ -155,7 +206,7 @@
         /// <param name="args">The arguments.</param>
         /// <param name="environment">The environment.</param>
         /// <returns>The <see cref="IConfiguration" />.</returns>
-        private static IConfiguration ApplyDefaultConfiguration(Assembly assembly, string[] args, DotNetConsoleEnvironment environment)
+        private static IConfiguration ApplyDefaultConfiguration(Assembly assembly, string[] args, IHostEnvironment environment)
         {
             var configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(Environment.CurrentDirectory)

@@ -1,5 +1,7 @@
 ﻿namespace Neolution.DotNet.Console.UnitTests.GrammarTests
 {
+    using System;
+    using System.Collections.Generic;
     using System.Reflection;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +18,39 @@
     [Collection("Production Environment Tests")]
     public class DotNetConsoleGrammarTests
     {
+        /// <summary>
+        /// Given a mistyped verb, when a default verb is defined, then should throw on console building.
+        /// </summary>
+        [Fact]
+        public void GivenMistypedVerb_WhenDefaultVerbIsDefined_ThenShouldThrowOnBuilding()
+        {
+            // Arrange
+            const string args = "eho"; // mistyped verb
+
+            // Act
+
+            // Assert
+            Should.Throw(() => DotNetConsole.CreateBuilderWithReference(Assembly.GetAssembly(typeof(EchoCommand))!, args.Split(" ")), typeof(DotNetConsoleException));
+        }
+
+        /// <summary>
+        /// Given a mistyped verb, when no default verb is defined, then should not throw on console building.
+        /// </summary>
+        [Fact]
+        public void GivenMistypedVerb_WhenNoDefaultVerbIsDefined_ThenShouldNotThrowOnBuilding()
+        {
+            // Arrange
+            const string args = "eho"; // mistyped verb
+
+            var servicesAssembly = Assembly.GetAssembly(typeof(EchoCommand))!;
+            var verbTypes = new List<Type> { typeof(EchoOptions) }.ToArray();
+
+            // Act
+
+            // Assert
+            Should.NotThrow(() => DotNetConsole.CreateBuilderWithReference(servicesAssembly, verbTypes, args.Split(" ")));
+        }
+
         /// <summary>
         /// When calling the console app without specifying a verb, it should run the command of the default verb.
         /// </summary>
