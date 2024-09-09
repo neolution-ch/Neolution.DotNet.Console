@@ -1,7 +1,9 @@
-﻿namespace Neolution.DotNet.Console
+﻿// Disable warnings that are conflicting with a breaking change from .NET 8 SDK (SYSLIB0051)
+#pragma warning disable S4027
+#pragma warning disable S3925
+namespace Neolution.DotNet.Console
 {
     using System;
-    using System.Runtime.Serialization;
 
     /// <inheritdoc />
     [Serializable]
@@ -30,16 +32,6 @@
         /// Initializes a new instance of the <see cref="DotNetConsoleException"/> class.
         /// </summary>
         public DotNetConsoleException()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DotNetConsoleException"/> class.
-        /// </summary>
-        /// <param name="serializationInfo">The serialization information.</param>
-        /// <param name="streamingContext">The streaming context.</param>
-        protected DotNetConsoleException(SerializationInfo serializationInfo, StreamingContext streamingContext)
-            : base(serializationInfo, streamingContext)
         {
         }
     }
