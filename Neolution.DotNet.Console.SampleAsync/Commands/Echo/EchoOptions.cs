@@ -12,6 +12,6 @@
         /// Gets or sets the message to echo.
         /// </summary>
         [Value(0)]
-        public string? Value { get; set; }
+        public string? Message { get; set; }
     }
 }

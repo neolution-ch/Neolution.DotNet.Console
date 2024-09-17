@@ -53,7 +53,7 @@
             var connectionStrings = this.configuration.GetSection("ConnectionStrings").GetChildren();
             this.logger.LogInformation("There are {Amount} connection strings configured", connectionStrings.Count());
 
-            this.logger.LogInformation("ECHO: {Value}", options.Value);
+            this.logger.LogInformation("ECHO: {Value}", options.Message);
             return Task.CompletedTask;
         }
     }
