@@ -9,10 +9,10 @@
     using Xunit;
 
     /// <summary>
-    /// Tests for the Console App Startup class.
+    /// Run tests for the Console App.
     /// </summary>
     [Collection("Production Environment Tests")]
-    public class DotNetConsoleStartupTests
+    public class DotNetConsoleRunTests
     {
         /// <summary>
         /// Given configured services with various (all possible) service lifetimes, when running the console application, then should it not throw.
