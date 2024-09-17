@@ -170,8 +170,14 @@
                 return;
             }
 
-            var verbNames = availableVerbs.Select(t => t.Name).ToArray();
-            var verbMatched = verbNames.Any(v => v.Equals(firstVerb, StringComparison.OrdinalIgnoreCase));
+            // Names reserved by CommandLineParser library
+            var validFirstArguments = new List<string> { "--help", "--version", "help", "version" };
+
+            // Names of all available verbs
+            validFirstArguments.AddRange(availableVerbs.Select(t => t.Name));
+
+            // Check if the first argument can be found in the list of valid arguments
+            var verbMatched = validFirstArguments.Any(v => v.Equals(firstVerb, StringComparison.OrdinalIgnoreCase));
             if (!verbMatched)
             {
                 throw new DotNetConsoleException($"Cannot create builder, because the specified verb '{firstVerb}' matches no command.");

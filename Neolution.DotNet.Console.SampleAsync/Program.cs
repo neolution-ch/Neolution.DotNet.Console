@@ -2,7 +2,6 @@
 {
     using System;
     using System.Globalization;
-    using Microsoft.Extensions.DependencyInjection;
     using NLog;
     using NLog.Extensions.Logging;
 
@@ -24,15 +23,16 @@
 
             try
             {
+                // Use startup class as composition root
+                var startup = new Startup(builder.Environment, builder.Configuration);
+                startup.ConfigureServices(builder.Services);
+
                 // Check if IHostEnvironment and IConfiguration are available before building the app
                 logger.Debug(CultureInfo.InvariantCulture, message: $"Environment: {builder.Environment.EnvironmentName}");
                 logger.Debug(CultureInfo.InvariantCulture, message: $"Setting Value: {builder.Configuration["NLog:throwConfigExceptions"]}");
 
-                // Add services
-                builder.Services.AddHttpClient();
-
                 var console = builder.Build();
-                await console.RunAsync().ConfigureAwait(false);
+                await console.RunAsync();
             }
             catch (Exception ex)
             {
