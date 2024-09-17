@@ -18,7 +18,6 @@
         public static async Task Main(string[] args)
         {
             var builder = DotNetConsole.CreateDefaultBuilder(args);
-
             var logger = LogManager.Setup().LoadConfigurationFromSection(builder.Configuration).GetCurrentClassLogger();
 
             try
