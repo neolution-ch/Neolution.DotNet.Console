@@ -13,8 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enabled nullable reference types
 - Changed app builder initialization code to resemble the current default ASP.NET Core hosting model
 - If a default verb is defined, the verb passed by the user must strictly match one of the available verbs
-- Updated NLog to v5.3.3
-- Updated NLog.Extensions.Logging to v5.3.12
+- Updated NLog to v5.3.4
+- Updated NLog.Extensions.Logging to v5.3.13
 
 ### Added
 

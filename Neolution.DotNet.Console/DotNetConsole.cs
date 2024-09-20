@@ -286,14 +286,10 @@
 
             // Resolve the command from the service provider by the determined type and invoke the entry point method (RunAsync)
             var command = scope.ServiceProvider.GetRequiredService(commandType);
-            var result = commandEntryPointMethodInfo?.Invoke(command, new[] { options }) as Task;
-            if (result is null)
+            if (commandEntryPointMethodInfo?.Invoke(command, new[] { options }) is Task commandRunTask)
             {
-                await Task.CompletedTask;
-                return;
+                await commandRunTask;
             }
-
-            await result;
         }
     }
 }
