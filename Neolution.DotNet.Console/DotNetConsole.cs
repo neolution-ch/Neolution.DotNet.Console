@@ -54,11 +54,7 @@
         public static DotNetConsoleBuilder CreateDefaultBuilder(string[] args)
         {
             // Get the entry assembly of the console application. It will later be scanned to find commands and verbs and their options.
-            var assembly = Assembly.GetEntryAssembly();
-            if (assembly is null)
-            {
-                throw new DotNetConsoleException("Could not determine entry assembly");
-            }
+            var assembly = Assembly.GetEntryAssembly() ?? throw new DotNetConsoleException("Could not determine entry assembly");
 
             return CreateBuilderInternal(assembly, null, args);
         }
@@ -72,10 +68,7 @@
         /// <returns> The <see cref="DotNetConsoleBuilder" />. </returns>
         public static DotNetConsoleBuilder CreateBuilderWithReference(Assembly assembly, string[] args)
         {
-            if (assembly is null)
-            {
-                throw new ArgumentNullException(nameof(assembly));
-            }
+            ArgumentNullException.ThrowIfNull(assembly);
 
             return CreateBuilderInternal(assembly, null, args);
         }
@@ -90,10 +83,7 @@
         /// <returns> The <see cref="DotNetConsoleBuilder" />. </returns>
         public static DotNetConsoleBuilder CreateBuilderWithReference(Assembly servicesAssembly, Type[] verbTypes, string[] args)
         {
-            if (servicesAssembly is null)
-            {
-                throw new ArgumentNullException(nameof(servicesAssembly));
-            }
+            ArgumentNullException.ThrowIfNull(servicesAssembly);
 
             return CreateBuilderInternal(servicesAssembly, verbTypes, args);
         }

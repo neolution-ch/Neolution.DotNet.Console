@@ -1,7 +1,4 @@
-﻿// Disable warnings that are conflicting with a breaking change from .NET 8 SDK (SYSLIB0051)
-#pragma warning disable S4027
-#pragma warning disable S3925
-namespace Neolution.DotNet.Console
+﻿namespace Neolution.DotNet.Console
 {
     using System;
 

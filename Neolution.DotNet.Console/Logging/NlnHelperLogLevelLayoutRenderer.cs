@@ -21,15 +21,8 @@
         /// <param name="logEvent">Logging event.</param>
         protected override void Append(StringBuilder builder, LogEventInfo logEvent)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            if (logEvent == null)
-            {
-                throw new ArgumentNullException(nameof(logEvent));
-            }
+            ArgumentNullException.ThrowIfNull(builder);
+            ArgumentNullException.ThrowIfNull(logEvent);
 
             // Only print LogLevel when it is Error or higher. Otherwise print spaces instead.
             builder.Append(logEvent.Level >= LogLevel.Error ? $"[{logEvent.Level}]" : "       ");

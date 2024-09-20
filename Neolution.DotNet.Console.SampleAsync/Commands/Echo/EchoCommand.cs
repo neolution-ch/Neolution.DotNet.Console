@@ -43,10 +43,7 @@
         /// <inheritdoc />
         public Task RunAsync(EchoOptions options)
         {
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
+            ArgumentNullException.ThrowIfNull(options);
 
             this.logger.LogInformation("App is starting in {EnvironmentName} environment.", this.environment.EnvironmentName);
 
