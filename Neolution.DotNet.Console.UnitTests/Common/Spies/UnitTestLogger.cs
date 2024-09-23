@@ -6,12 +6,12 @@
     public class UnitTestLogger : IUnitTestLogger
     {
         /// <inheritdoc />
-        public IList<object> LoggedObjects { get; } = new List<object>();
+        public IDictionary<string, object> LoggedObjects { get; } = new Dictionary<string, object>();
 
         /// <inheritdoc />
-        public void Log(object obj)
+        public void Log(string key, object obj)
         {
-            this.LoggedObjects.Add(obj);
+            this.LoggedObjects.Add(key, obj);
         }
     }
 }

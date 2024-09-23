@@ -52,5 +52,5 @@ insert_final_newline = true
 charset = utf-8-bom
 
 [*.{cs,vb}]
-# All projects are .NET based and never referenced in .NET Framework projects
+# There is no synchronization context in our console apps, so we do not need to use ConfigureAwait(false)
 dotnet_diagnostic.CA2007.severity = none

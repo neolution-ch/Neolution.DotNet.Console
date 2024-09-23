@@ -1,7 +1,7 @@
 ﻿namespace Neolution.DotNet.Console.SampleAsync
 {
     using System;
-    using Neolution.DotNet.Console.Abstractions;
+    using System.Globalization;
     using NLog;
     using NLog.Extensions.Logging;
 
@@ -17,11 +17,20 @@
         /// <returns>The <see cref="Task"/>.</returns>
         public static async Task Main(string[] args)
         {
-            var console = CreateConsoleAppBuilder(args).AsyncBuild();
-            var logger = LogManager.Setup().LoadConfigurationFromSection(console.Configuration).GetCurrentClassLogger();
+            var builder = DotNetConsole.CreateDefaultBuilder(args);
+            var logger = LogManager.Setup().LoadConfigurationFromSection(builder.Configuration).GetCurrentClassLogger();
 
             try
             {
+                // Use startup class as composition root
+                var startup = new Startup(builder.Environment, builder.Configuration);
+                startup.ConfigureServices(builder.Services);
+
+                // Check if IHostEnvironment and IConfiguration are available before building the app
+                logger.Debug(CultureInfo.InvariantCulture, message: $"Environment: {builder.Environment.EnvironmentName}");
+                logger.Debug(CultureInfo.InvariantCulture, message: $"Setting Value: {builder.Configuration["NLog:throwConfigExceptions"]}");
+
+                var console = builder.Build();
                 await console.RunAsync();
             }
             catch (Exception ex)
@@ -35,17 +44,6 @@
                 // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
                 LogManager.Shutdown();
             }
-        }
-
-        /// <summary>
-        /// Creates the console application builder.
-        /// </summary>
-        /// <param name="args">The arguments.</param>
-        /// <returns>The console app builder.</returns>
-        private static IConsoleAppBuilder CreateConsoleAppBuilder(string[] args)
-        {
-            return DotNetConsole.CreateDefaultBuilder(args)
-                .UseCompositionRoot<Startup>();
         }
     }
 }
