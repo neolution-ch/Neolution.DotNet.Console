@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2024-09-30
+
 ### Changed
 
 - Updated everything to .NET 8
@@ -59,7 +61,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed AWS NLog Logger assembly that was used for logging to Amazon CloudWatch
 
-[unreleased]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v2.0.2...HEAD
+[unreleased]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v2.0.2...v3.0.0
 [2.0.2]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v1.1.0-beta1...v2.0.0
