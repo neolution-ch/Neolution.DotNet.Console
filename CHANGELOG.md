@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Bump version number to 3.0.1 to release the package to nuget.org
+
 ## [3.0.0] - 2024-09-30
 
 ### Changed
