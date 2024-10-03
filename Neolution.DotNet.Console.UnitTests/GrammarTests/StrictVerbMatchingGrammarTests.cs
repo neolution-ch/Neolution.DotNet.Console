@@ -47,7 +47,27 @@
         }
 
         /// <summary>
-        /// Givens a reserved argument name, when no default verb is defined, then should not throw on building.
+        /// Given a valid argument, when default verb is defined, then should not throw on building.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        [Theory]
+        [InlineData("")]
+        [InlineData("echo")]
+        [InlineData("--silent")]
+        [InlineData("-s")]
+        public void GivenValidArgument_WhenDefaultVerbIsDefined_ThenShouldNotThrowOnBuilding(string args)
+        {
+            // Arrange
+            var servicesAssembly = Assembly.GetAssembly(typeof(EchoCommand))!;
+
+            // Act
+
+            // Assert
+            Should.NotThrow(() => DotNetConsole.CreateBuilderWithReference(servicesAssembly, args.Split(" ")));
+        }
+
+        /// <summary>
+        /// Given a reserved argument name, when default verb is defined, then should not throw on building.
         /// </summary>
         /// <param name="args">The arguments.</param>
         [Theory]
@@ -56,16 +76,15 @@
         [InlineData("--help")]
         [InlineData("--version")]
         [InlineData("help echo")]
-        public void GivenReservedArgumentName_WhenNoDefaultVerbIsDefined_ThenShouldNotThrowOnBuilding(string args)
+        public void GivenReservedArgumentName_WhenDefaultVerbIsDefined_ThenShouldNotThrowOnBuilding(string args)
         {
             // Arrange
             var servicesAssembly = Assembly.GetAssembly(typeof(EchoCommand))!;
-            var verbTypes = new List<Type> { typeof(EchoOptions) }.ToArray();
 
             // Act
 
             // Assert
-            Should.NotThrow(() => DotNetConsole.CreateBuilderWithReference(servicesAssembly, verbTypes, args.Split(" ")));
+            Should.NotThrow(() => DotNetConsole.CreateBuilderWithReference(servicesAssembly, args.Split(" ")));
         }
     }
 }
