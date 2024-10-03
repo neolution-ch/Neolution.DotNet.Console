@@ -154,7 +154,7 @@
             }
 
             var firstVerb = args.FirstOrDefault();
-            if (string.IsNullOrWhiteSpace(firstVerb))
+            if (string.IsNullOrWhiteSpace(firstVerb) || firstVerb.StartsWith('-'))
             {
                 // If the user passed no verb, but a default verb is defined, the default verb will be executed
                 return;

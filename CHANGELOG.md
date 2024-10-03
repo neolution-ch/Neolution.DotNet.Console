@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- If a default verb is defined, calls of the application that only use parameters should be allowed
+
+### Changed
+
+- Updated NLog.Extensions.Logging to v5.3.14
+
 ## [3.0.1] - 2024-10-02
 
 ### Fixed

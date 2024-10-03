@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.Common.CollectionDefinitions
+﻿namespace Neolution.DotNet.Console.UnitTests.CollectionDefinitions
 {
     using Xunit;
 

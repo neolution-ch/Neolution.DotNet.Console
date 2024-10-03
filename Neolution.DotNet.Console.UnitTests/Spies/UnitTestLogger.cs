@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.Common.Spies
+﻿namespace Neolution.DotNet.Console.UnitTests.Spies
 {
     using System.Collections.Generic;
 
