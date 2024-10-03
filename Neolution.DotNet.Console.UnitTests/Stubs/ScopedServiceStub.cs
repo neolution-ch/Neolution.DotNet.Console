@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.Common.Stubs
+﻿namespace Neolution.DotNet.Console.UnitTests.Stubs
 {
     using System.Threading.Tasks;
 

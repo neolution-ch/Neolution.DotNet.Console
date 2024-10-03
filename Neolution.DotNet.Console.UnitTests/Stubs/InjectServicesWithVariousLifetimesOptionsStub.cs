@@ -1,7 +1,7 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.RunTests.Stubs
+﻿namespace Neolution.DotNet.Console.UnitTests.Stubs
 {
     using CommandLine;
-    using Neolution.DotNet.Console.UnitTests.Common;
+    using Neolution.DotNet.Console.UnitTests.Setup;
 
     /// <summary>
     /// The options stub for the <see cref="InjectServicesWithVariousLifetimesCommandStub"/>

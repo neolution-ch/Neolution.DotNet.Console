@@ -1,8 +1,8 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.GrammarTests.Fakes
+﻿namespace Neolution.DotNet.Console.UnitTests.Fakes
 {
     using System.Threading.Tasks;
     using Neolution.DotNet.Console.Abstractions;
-    using Neolution.DotNet.Console.UnitTests.Common.Spies;
+    using Neolution.DotNet.Console.UnitTests.Spies;
 
     /// <summary>
     /// Fake command that logs the value passed via command line.

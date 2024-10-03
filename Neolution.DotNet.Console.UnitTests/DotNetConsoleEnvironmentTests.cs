@@ -1,13 +1,13 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.RunTests
+﻿namespace Neolution.DotNet.Console.UnitTests
 {
     using System;
     using System.Reflection;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Neolution.DotNet.Console.UnitTests.Common.Fakes;
-    using Neolution.DotNet.Console.UnitTests.Common.Spies;
-    using Neolution.DotNet.Console.UnitTests.Common.Stubs;
+    using Neolution.DotNet.Console.UnitTests.Fakes;
+    using Neolution.DotNet.Console.UnitTests.Spies;
+    using Neolution.DotNet.Console.UnitTests.Stubs;
     using Shouldly;
     using Xunit;
 

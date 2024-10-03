@@ -1,11 +1,11 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.Common.Stubs
+﻿namespace Neolution.DotNet.Console.UnitTests.Stubs
 {
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Stub for a generic scoped service.
+    /// Stub for a generic transient service.
     /// </summary>
-    public interface IScopedServiceStub
+    public interface ITransientServiceStub
     {
         /// <summary>
         /// Does something.

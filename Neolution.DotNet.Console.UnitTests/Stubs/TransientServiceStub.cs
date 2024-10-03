@@ -1,11 +1,11 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.Common.Stubs
+﻿namespace Neolution.DotNet.Console.UnitTests.Stubs
 {
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Stub for a generic singleton service implementation.
+    /// Stub for a generic transient service implementation.
     /// </summary>
-    public class SingletonServiceStub : ISingletonServiceStub
+    public class TransientServiceStub : ITransientServiceStub
     {
         /// <inheritdoc />
         public async Task DoSomethingAsync()

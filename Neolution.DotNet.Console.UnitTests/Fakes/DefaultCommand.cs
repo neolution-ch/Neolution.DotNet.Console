@@ -1,9 +1,9 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.Common.Fakes
+﻿namespace Neolution.DotNet.Console.UnitTests.Fakes
 {
     using System.Threading.Tasks;
     using Microsoft.Extensions.Hosting;
     using Neolution.DotNet.Console.Abstractions;
-    using Neolution.DotNet.Console.UnitTests.Common.Spies;
+    using Neolution.DotNet.Console.UnitTests.Spies;
 
     /// <summary>
     /// The command for the default verb.

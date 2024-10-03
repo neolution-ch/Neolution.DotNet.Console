@@ -1,8 +1,7 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.RunTests.Stubs
+﻿namespace Neolution.DotNet.Console.UnitTests.Stubs
 {
     using System.Threading.Tasks;
     using Neolution.DotNet.Console.Abstractions;
-    using Neolution.DotNet.Console.UnitTests.Common.Stubs;
 
     /// <summary>
     /// Command stub used to check if

@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.Common
+﻿namespace Neolution.DotNet.Console.UnitTests.Setup
 {
     /// <summary>
     /// Constant values to use in Tests

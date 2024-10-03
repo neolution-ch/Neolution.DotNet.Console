@@ -1,12 +1,11 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.GrammarTests
+﻿namespace Neolution.DotNet.Console.UnitTests
 {
     using System.Reflection;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
-    using Neolution.DotNet.Console.UnitTests.Common.Fakes;
-    using Neolution.DotNet.Console.UnitTests.Common.Spies;
-    using Neolution.DotNet.Console.UnitTests.GrammarTests.Fakes;
+    using Neolution.DotNet.Console.UnitTests.Fakes;
+    using Neolution.DotNet.Console.UnitTests.Spies;
     using Shouldly;
     using Xunit;
 

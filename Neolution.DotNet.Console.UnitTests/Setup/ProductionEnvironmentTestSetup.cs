@@ -1,11 +1,11 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.Common
+﻿namespace Neolution.DotNet.Console.UnitTests.Setup
 {
     using System;
 
     /// <summary>
     /// Fixture that sets the environment variable to Production.
     /// </summary>
-    /// <seealso cref="System.IDisposable" />
+    /// <seealso cref="IDisposable" />
     public sealed class ProductionEnvironmentTestSetup : IDisposable
     {
         /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.UnitTests.GrammarTests.Fakes
+﻿namespace Neolution.DotNet.Console.UnitTests.Fakes
 {
     using CommandLine;
 
@@ -23,7 +23,7 @@
         /// <value>
         ///   <c>true</c> if upper; otherwise, <c>false</c>.
         /// </value>
-        [Option]
+        [Option('u', "upper")]
         public bool Upper { get; set; }
 
         /// <summary>
