@@ -23,7 +23,7 @@ jobs:
           source-url: ${{ env.ARTIFACTS_FEED_URL }}
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API_KEY_NEOLUTION }}
-      
+
       - name: Determine version for NuGet package
         run: echo NUGET_VERSION=${GITHUB_REF#refs/tags/v} >> $GITHUB_ENV
 

@@ -1,19 +1,12 @@
 ﻿namespace Neolution.DotNet.Console
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
     using CommandLine;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Logging;
     using Neolution.DotNet.Console.Abstractions;
-    using Neolution.DotNet.Console.Internal;
-    using NLog.Extensions.Logging;
 
     /// <summary>
     /// The console application.
@@ -56,7 +49,7 @@
             // Get the entry assembly of the console application. It will later be scanned to find commands and verbs and their options.
             var assembly = Assembly.GetEntryAssembly() ?? throw new DotNetConsoleException("Could not determine entry assembly");
 
-            return CreateBuilderInternal(assembly, null, args);
+            return DotNetConsoleBuilder.CreateBuilderInternal(assembly, null, args);
         }
 
         /// <summary>
@@ -70,7 +63,7 @@
         {
             ArgumentNullException.ThrowIfNull(assembly);
 
-            return CreateBuilderInternal(assembly, null, args);
+            return DotNetConsoleBuilder.CreateBuilderInternal(assembly, null, args);
         }
 
         /// <summary>
@@ -85,7 +78,7 @@
         {
             ArgumentNullException.ThrowIfNull(servicesAssembly);
 
-            return CreateBuilderInternal(servicesAssembly, verbTypes, args);
+            return DotNetConsoleBuilder.CreateBuilderInternal(servicesAssembly, verbTypes, args);
         }
 
         /// <summary>
@@ -95,166 +88,6 @@
         public async Task RunAsync()
         {
             await this.commandLineParserResult.WithParsedAsync(this.RunWithOptionsAsync);
-        }
-
-        /// <summary>
-        /// Creates the default builder.
-        /// </summary>
-        /// <param name="assembly">The assembly.</param>
-        /// <param name="verbTypes">The verb types.</param>
-        /// <param name="args">The arguments.</param>
-        /// <returns>
-        /// The <see cref="DotNetConsoleBuilder" />.
-        /// </returns>
-        private static DotNetConsoleBuilder CreateBuilderInternal(Assembly assembly, Type[]? verbTypes, string[] args)
-        {
-            // Create a HostBuilder
-            var hostBuilder = Host.CreateDefaultBuilder(args)
-                .ConfigureLogging((context, logging) =>
-                {
-                    AdjustDefaultBuilderLoggingProviders(logging);
-                    logging.AddNLog(context.Configuration);
-                })
-                .ConfigureServices((_, services) =>
-                {
-                    // Register all commands found in the entry assembly.
-                    services.Scan(selector => selector.FromAssemblies(assembly)
-                        .AddClasses(classes => classes.AssignableTo(typeof(IDotNetConsoleCommand<>)))
-                        .AsImplementedInterfaces());
-                });
-
-            // Manually build configuration and environment again, because we unfortunately can't access them from the host builder we just created, but want to provide them in the ConsoleApplicationBuilder.
-            var environment = CreateConsoleEnvironment(args);
-            var configuration = ApplyDefaultConfiguration(assembly, args, environment);
-
-            // If verb types were not specified, compile all available verbs for this run by looking for classes with the Verb attribute in the specified assembly
-            verbTypes ??= assembly.GetTypes()
-                .Where(t => t.GetCustomAttribute<VerbAttribute>() != null)
-                .ToArray();
-
-            EnforceStrictVerbMatching(args, verbTypes);
-            var parsedArguments = Parser.Default.ParseArguments(args, verbTypes);
-
-            return new DotNetConsoleBuilder(hostBuilder, parsedArguments, environment, configuration);
-        }
-
-        /// <summary>
-        /// Enforce strict verb matching if one verb is marked as default. Otherwise, the default verb will be executed even if that was not the users intention.
-        /// </summary>
-        /// <param name="args">The arguments.</param>
-        /// <param name="availableVerbTypes">The available verb types.</param>
-        /// <exception cref="Neolution.DotNet.Console.DotNetConsoleException">Cannot create builder, because the specified verb '{firstVerb}' matches no command.</exception>
-        private static void EnforceStrictVerbMatching(string[] args, Type[] availableVerbTypes)
-        {
-            var availableVerbs = availableVerbTypes.Select(t => t.GetCustomAttribute<VerbAttribute>()!).ToList();
-            if (!availableVerbs.Any(v => v.IsDefault))
-            {
-                // If no default verb is defined, we do not enforce strict verb matching
-                return;
-            }
-
-            var firstVerb = args.FirstOrDefault();
-            if (string.IsNullOrWhiteSpace(firstVerb) || firstVerb.StartsWith('-'))
-            {
-                // If the user passed no verb, but a default verb is defined, the default verb will be executed
-                return;
-            }
-
-            // Names reserved by CommandLineParser library
-            var validFirstArguments = new List<string> { "--help", "--version", "help", "version" };
-
-            // Names of all available verbs
-            validFirstArguments.AddRange(availableVerbs.Select(t => t.Name));
-
-            // Check if the first argument can be found in the list of valid arguments
-            var verbMatched = validFirstArguments.Any(v => v.Equals(firstVerb, StringComparison.OrdinalIgnoreCase));
-            if (!verbMatched)
-            {
-                throw new DotNetConsoleException($"Cannot create builder, because the specified verb '{firstVerb}' matches no command.");
-            }
-        }
-
-        /// <summary>
-        /// Creates the console environment.
-        /// </summary>
-        /// <param name="args">The command line arguments.</param>
-        /// <returns>The <see cref="IHostEnvironment"/>.</returns>
-        private static DotNetConsoleEnvironment CreateConsoleEnvironment(string[] args)
-        {
-            var configuration = new ConfigurationBuilder()
-                .AddEnvironmentVariables(prefix: "DOTNET_")
-                .AddCommandLine(args)
-                .Build();
-
-            return new DotNetConsoleEnvironment
-            {
-                EnvironmentName = configuration[HostDefaults.EnvironmentKey] ?? "Production",
-                ApplicationName = AppDomain.CurrentDomain.FriendlyName,
-                ContentRootPath = AppContext.BaseDirectory,
-                ContentRootFileProvider = new PhysicalFileProvider(AppContext.BaseDirectory),
-            };
-        }
-
-        /// <summary>
-        /// Applies the default configuration to the console application.
-        /// </summary>
-        /// <param name="assembly">The assembly.</param>
-        /// <param name="args">The arguments.</param>
-        /// <param name="environment">The environment.</param>
-        /// <returns>The <see cref="IConfiguration" />.</returns>
-        private static IConfiguration ApplyDefaultConfiguration(Assembly assembly, string[] args, IHostEnvironment environment)
-        {
-            var configurationBuilder = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
-                .AddEnvironmentVariables(prefix: "DOTNET_");
-
-            AddCommandLineConfig(configurationBuilder, args);
-
-            configurationBuilder
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
-
-            if (environment.IsDevelopment())
-            {
-                configurationBuilder.AddUserSecrets(assembly, optional: true, reloadOnChange: true);
-            }
-
-            configurationBuilder.AddEnvironmentVariables();
-
-            return configurationBuilder.Build();
-        }
-
-        /// <summary>
-        /// Adjusts the default builder logging providers.
-        /// </summary>
-        /// <param name="logging">The logging.</param>
-        private static void AdjustDefaultBuilderLoggingProviders(ILoggingBuilder logging)
-        {
-            // Remove the default logging providers
-            logging.ClearProviders();
-
-            // Re-add other logging providers that are assigned in Host.CreateDefaultBuilder
-            logging.AddDebug();
-            logging.AddEventSourceLogger();
-
-            if (OperatingSystem.IsWindows())
-            {
-                // Add the EventLogLoggerProvider on windows machines
-                logging.AddEventLog();
-            }
-        }
-
-        /// <summary>
-        /// Adds the command line configuration.
-        /// </summary>
-        /// <param name="configBuilder">The configuration builder.</param>
-        /// <param name="args">The arguments.</param>
-        private static void AddCommandLineConfig(IConfigurationBuilder configBuilder, string[]? args)
-        {
-            if (args is { Length: > 0 })
-            {
-                configBuilder.AddCommandLine(args);
-            }
         }
 
         /// <summary>

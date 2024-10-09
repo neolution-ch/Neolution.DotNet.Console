@@ -12,7 +12,7 @@ on:
           - beta
           - rc
           - stable
-          
+
       bump_version_number:
         type: choice
         description: Bump Version Number
