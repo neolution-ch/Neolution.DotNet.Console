@@ -1,5 +1,6 @@
 ﻿namespace Neolution.DotNet.Console.Abstractions
 {
+    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -12,7 +13,8 @@
         /// Runs the command with the specified options asynchronously.
         /// </summary>
         /// <param name="options">The options.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        Task RunAsync(TOptions options);
+        Task RunAsync(TOptions options, CancellationToken cancellationToken);
     }
 }

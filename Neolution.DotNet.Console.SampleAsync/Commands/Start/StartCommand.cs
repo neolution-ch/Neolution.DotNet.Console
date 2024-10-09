@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.SampleAsync.Commands.Start
+namespace Neolution.DotNet.Console.SampleAsync.Commands.Start
 {
     using System;
     using Microsoft.Extensions.Logging;
@@ -32,10 +32,10 @@
         }
 
         /// <inheritdoc />
-        public async Task RunAsync(StartOptions options)
+        public async Task RunAsync(StartOptions options, CancellationToken cancellationToken)
         {
             this.logger.LogDebug("Check if Google is online");
-            var response = await this.httpClient.GetAsync(new Uri("https://www.google.com"));
+            var response = await this.httpClient.GetAsync(new Uri("https://www.google.com"), cancellationToken);
             if (response.IsSuccessStatusCode)
             {
                 this.logger.LogTrace("Internet connection is available");

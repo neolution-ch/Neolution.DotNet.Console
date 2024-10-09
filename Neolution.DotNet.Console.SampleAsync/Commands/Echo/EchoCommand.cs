@@ -41,7 +41,7 @@
         }
 
         /// <inheritdoc />
-        public Task RunAsync(EchoOptions options)
+        public Task RunAsync(EchoOptions options, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(options);
 
