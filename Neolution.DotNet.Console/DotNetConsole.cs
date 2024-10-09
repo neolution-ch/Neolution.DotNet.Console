@@ -190,8 +190,8 @@
             {
                 EnvironmentName = configuration[HostDefaults.EnvironmentKey] ?? "Production",
                 ApplicationName = AppDomain.CurrentDomain.FriendlyName,
-                ContentRootPath = Environment.CurrentDirectory,
-                ContentRootFileProvider = new PhysicalFileProvider(Environment.CurrentDirectory),
+                ContentRootPath = AppContext.BaseDirectory,
+                ContentRootFileProvider = new PhysicalFileProvider(AppContext.BaseDirectory),
             };
         }
 
@@ -205,7 +205,7 @@
         private static IConfiguration ApplyDefaultConfiguration(Assembly assembly, string[] args, IHostEnvironment environment)
         {
             var configurationBuilder = new ConfigurationBuilder()
-                .SetBasePath(Environment.CurrentDirectory)
+                .SetBasePath(AppContext.BaseDirectory)
                 .AddEnvironmentVariables(prefix: "DOTNET_");
 
             AddCommandLineConfig(configurationBuilder, args);
