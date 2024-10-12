@@ -123,7 +123,7 @@
         /// <param name="args">The arguments.</param>
         /// <param name="tracker">The logger.</param>
         /// <returns>A built console app ready to run.</returns>
-        private static DotNetConsole CreateConsoleAppWithLogger(string args, IUnitTestLogger tracker)
+        private static IDotNetConsole CreateConsoleAppWithLogger(string args, IUnitTestLogger tracker)
         {
             var builder = DotNetConsole.CreateBuilderWithReference(Assembly.GetAssembly(typeof(DefaultCommand))!, args.Split(" "));
 

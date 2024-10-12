@@ -35,6 +35,11 @@
         private readonly ServiceCollection serviceCollection = new();
 
         /// <summary>
+        /// No operation flag
+        /// </summary>
+        private bool isNoOperation;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DotNetConsoleBuilder"/> class.
         /// </summary>
         /// <param name="hostBuilder">The host builder.</param>
@@ -68,7 +73,7 @@
         /// Builds this instance.
         /// </summary>
         /// <returns>The <see cref="DotNetConsole"/>.</returns>
-        public DotNetConsole Build()
+        public IDotNetConsole Build()
         {
             // Copy over the services to host builder before it gets built
             this.hostBuilder.ConfigureServices(services =>
@@ -78,6 +83,13 @@
                     services.Add(service);
                 }
             });
+
+            if (this.isNoOperation)
+            {
+                this.hostBuilder.UseEnvironment("Development");
+                this.hostBuilder.Build();
+                return new NoOperationConsole();
+            }
 
             var host = this.hostBuilder.Build();
             return new DotNetConsole(host, this.commandLineParserResult);
@@ -118,46 +130,16 @@
                 .Where(t => t.GetCustomAttribute<VerbAttribute>() != null)
                 .ToArray();
 
-            EnforceStrictVerbMatching(args, verbTypes);
             var parsedArguments = Parser.Default.ParseArguments(args, verbTypes);
+            var consoleBuilder = new DotNetConsoleBuilder(builder, parsedArguments, environment, configuration);
 
-            return new DotNetConsoleBuilder(builder, parsedArguments, environment, configuration);
-        }
-
-        /// <summary>
-        /// Enforce strict verb matching if one verb is marked as default. Otherwise, the default verb will be executed even if that was not the users intention.
-        /// </summary>
-        /// <param name="args">The arguments.</param>
-        /// <param name="availableVerbTypes">The available verb types.</param>
-        /// <exception cref="Neolution.DotNet.Console.DotNetConsoleException">Cannot create builder, because the specified verb '{firstVerb}' matches no command.</exception>
-        private static void EnforceStrictVerbMatching(string[] args, Type[] availableVerbTypes)
-        {
-            var availableVerbs = availableVerbTypes.Select(t => t.GetCustomAttribute<VerbAttribute>()!).ToList();
-            if (!availableVerbs.Any(v => v.IsDefault))
+            if (args.Length == 1 && string.Equals(args[0], "noop", StringComparison.OrdinalIgnoreCase))
             {
-                // If no default verb is defined, we do not enforce strict verb matching
-                return;
+                return NoOperationBuilder(consoleBuilder);
             }
 
-            var firstVerb = args.FirstOrDefault();
-            if (string.IsNullOrWhiteSpace(firstVerb) || firstVerb.StartsWith('-'))
-            {
-                // If the user passed no verb, but a default verb is defined, the default verb will be executed
-                return;
-            }
-
-            // Names reserved by CommandLineParser library
-            var validFirstArguments = new List<string> { "--help", "--version", "help", "version" };
-
-            // Names of all available verbs
-            validFirstArguments.AddRange(availableVerbs.Select(t => t.Name));
-
-            // Check if the first argument can be found in the list of valid arguments
-            var verbMatched = validFirstArguments.Any(v => v.Equals(firstVerb, StringComparison.OrdinalIgnoreCase));
-            if (!verbMatched)
-            {
-                throw new DotNetConsoleException($"Cannot create builder, because the specified verb '{firstVerb}' matches no command.");
-            }
+            CheckStrictVerbMatching(args, verbTypes);
+            return consoleBuilder;
         }
 
         /// <summary>
@@ -240,6 +222,53 @@
             if (args is { Length: > 0 })
             {
                 configBuilder.AddCommandLine(args);
+            }
+        }
+
+        /// <summary>
+        /// Creates the no operation builder.
+        /// </summary>
+        /// <param name="consoleBuilder">The console builder.</param>
+        /// <returns>The <see cref="DotNetConsoleBuilder"/>.</returns>
+        private static DotNetConsoleBuilder NoOperationBuilder(DotNetConsoleBuilder consoleBuilder)
+        {
+            consoleBuilder.isNoOperation = true;
+            return consoleBuilder;
+        }
+
+        /// <summary>
+        /// Enforce strict verb matching if one verb is marked as default. Otherwise, the default verb will be executed even if that was not the users intention.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <param name="availableVerbTypes">The available verb types.</param>
+        /// <exception cref="Neolution.DotNet.Console.DotNetConsoleException">Cannot create builder, because the specified verb '{firstVerb}' matches no command.</exception>
+        private static void CheckStrictVerbMatching(string[] args, Type[] availableVerbTypes)
+        {
+            var availableVerbs = availableVerbTypes.Select(t => t.GetCustomAttribute<VerbAttribute>()!).ToList();
+            if (!availableVerbs.Any(v => v.IsDefault))
+            {
+                // If no default verb is defined, we do not enforce strict verb matching
+                return;
+            }
+
+            var firstVerb = args.FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(firstVerb) || firstVerb.StartsWith('-'))
+            {
+                // If the user passed no verb, but a default verb is defined, the default verb will be executed
+                return;
+            }
+
+            // Names reserved by CommandLineParser library
+            var validFirstArguments = new List<string> { "--help", "--version", "help", "version" };
+
+            // Names of all available verbs
+            validFirstArguments.AddRange(availableVerbs.Select(t => t.Name));
+
+            // Check if the first argument can be found in the list of valid arguments
+            var verbMatched = validFirstArguments.Any(v => v.Equals(firstVerb, StringComparison.OrdinalIgnoreCase));
+            if (!verbMatched)
+            {
+                throw new DotNetConsoleException($"Cannot create builder, because the specified verb '{firstVerb}' matches no command.");
             }
         }
     }
