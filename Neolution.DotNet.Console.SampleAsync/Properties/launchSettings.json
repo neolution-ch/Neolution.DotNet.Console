@@ -1,7 +1,14 @@
 {
   "profiles": {
-    "Neolution.DotNet.Console.SampleAsync": {
+    "Sample Console App": {
       "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Sample Console App: NoOperation": {
+      "commandName": "Project",
+      "commandLineArgs": "noop",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

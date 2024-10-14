@@ -54,6 +54,7 @@
         [InlineData("--version")]
         [InlineData("help echo")]
         [InlineData("echo --help")]
+        [InlineData("noop")]
         public void GivenValidArguments_WhenNoDefaultVerbIsDefined_ThenShouldNotThrow([NotNull] string args)
         {
             if (args == null)
@@ -66,6 +67,10 @@
 
             var logger = new UnitTestLogger();
             builder.Services.AddSingleton(typeof(IUnitTestLogger), logger);
+
+            builder.Services.AddTransient<ITransientServiceStub, TransientServiceStub>();
+            builder.Services.AddScoped<IScopedServiceStub, ScopedServiceStub>();
+            builder.Services.AddSingleton<ISingletonServiceStub, SingletonServiceStub>();
 
             var console = builder.Build();
 
