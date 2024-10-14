@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Neolution.DotNet.Console.Abstractions;
     using Neolution.DotNet.Console.UnitTests.Fakes;
     using Neolution.DotNet.Console.UnitTests.Spies;
     using Shouldly;

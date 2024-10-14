@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added internal "No operation" (NOOP) command that does nothing when executed, but service registrations are still validated, making it a good candidate for testing if a console application has all services registered that could be requested during runtime.
+
 ## [3.0.3] - 2024-10-09
 
 ### Fixed
