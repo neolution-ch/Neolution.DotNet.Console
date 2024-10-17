@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+Added a built-in `verify-dependencies` command that validates the application's Dependency Injection setup by ensuring all required services are fully and correctly registered in the composition root.
+
 ## [3.0.3] - 2024-10-09
 
 ### Fixed
