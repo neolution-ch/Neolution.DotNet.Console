@@ -54,7 +54,7 @@
         [InlineData("--version")]
         [InlineData("help echo")]
         [InlineData("echo --help")]
-        [InlineData("noop")]
+        [InlineData("verify-dependencies")]
         public void GivenValidArguments_WhenNoDefaultVerbIsDefined_ThenShouldNotThrow([NotNull] string args)
         {
             if (args == null)

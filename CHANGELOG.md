@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added internal "No operation" (NOOP) command that does nothing when executed, but service registrations are still validated, making it a good candidate for testing if a console application has all services registered that could be requested during runtime.
+Added a built-in `verify-dependencies` command that validates the application's Dependency Injection setup by ensuring all required services are fully and correctly registered in the composition root.
 
 ## [3.0.3] - 2024-10-09
 

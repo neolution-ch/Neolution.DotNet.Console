@@ -1,9 +1,4 @@
-﻿using Neolution;
-using Neolution.DotNet;
-using Neolution.DotNet.Console;
-using Neolution.DotNet.Console.Abstractions;
-
-namespace Neolution.DotNet.Console.Abstractions
+﻿namespace Neolution.DotNet.Console.Abstractions
 {
     using System;
     using System.Threading.Tasks;

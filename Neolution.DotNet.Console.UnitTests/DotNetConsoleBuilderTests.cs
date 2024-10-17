@@ -92,13 +92,13 @@
         }
 
         /// <summary>
-        /// Given the no operation builder, when registration is missing, then should throw on console building.
+        /// Given the verify-dependencies builder, when registration is missing, then should throw on console building.
         /// </summary>
         [Fact]
-        public void GivenNoOperation_WhenRegistrationIsMissing_ThenShouldThrow()
+        public void GivenVerifyDependenciesCommand_WhenRegistrationIsMissing_ThenShouldThrow()
         {
             // Arrange
-            var builder = DotNetConsole.CreateBuilderWithReference(Assembly.GetAssembly(typeof(DefaultCommand))!, new[] { "noop" });
+            var builder = DotNetConsole.CreateBuilderWithReference(Assembly.GetAssembly(typeof(DefaultCommand))!, new[] { "verify-dependencies" });
 
             // Intentionally only registering the transient service and not the scoped and singleton services.
             builder.Services.AddTransient<ITransientServiceStub, TransientServiceStub>();

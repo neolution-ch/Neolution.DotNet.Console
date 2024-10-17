@@ -1,8 +1,9 @@
-﻿namespace Neolution.DotNet.Console
+﻿namespace Neolution.DotNet.Console.Internal
 {
     using System;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
+    using Neolution.DotNet.Console.Abstractions;
 
     /// <summary>
     /// The no operation console application.

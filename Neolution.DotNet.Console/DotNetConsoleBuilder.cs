@@ -35,9 +35,9 @@
         private readonly ServiceCollection serviceCollection = new();
 
         /// <summary>
-        /// No operation flag
+        /// Run only to verify dependencies.
         /// </summary>
-        private bool isNoOperation;
+        private bool verifyDependencies;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DotNetConsoleBuilder"/> class.
@@ -84,7 +84,7 @@
                 }
             });
 
-            if (this.isNoOperation)
+            if (this.verifyDependencies)
             {
                 this.hostBuilder.UseEnvironment("Development");
                 this.hostBuilder.Build();
@@ -133,9 +133,10 @@
             var parsedArguments = Parser.Default.ParseArguments(args, verbTypes);
             var consoleBuilder = new DotNetConsoleBuilder(builder, parsedArguments, environment, configuration);
 
-            if (args.Length == 1 && string.Equals(args[0], "noop", StringComparison.OrdinalIgnoreCase))
+            if (args.Length == 1 && string.Equals(args[0], "verify-dependencies", StringComparison.OrdinalIgnoreCase))
             {
-                return NoOperationBuilder(consoleBuilder);
+                consoleBuilder.verifyDependencies = true;
+                return consoleBuilder;
             }
 
             CheckStrictVerbMatching(args, verbTypes);
@@ -223,17 +224,6 @@
             {
                 configBuilder.AddCommandLine(args);
             }
-        }
-
-        /// <summary>
-        /// Creates the no operation builder.
-        /// </summary>
-        /// <param name="consoleBuilder">The console builder.</param>
-        /// <returns>The <see cref="DotNetConsoleBuilder"/>.</returns>
-        private static DotNetConsoleBuilder NoOperationBuilder(DotNetConsoleBuilder consoleBuilder)
-        {
-            consoleBuilder.isNoOperation = true;
-            return consoleBuilder;
         }
 
         /// <summary>
