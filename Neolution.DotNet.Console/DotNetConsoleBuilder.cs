@@ -1,4 +1,4 @@
-namespace Neolution.DotNet.Console
+﻿namespace Neolution.DotNet.Console
 {
     using System;
     using System.Collections.Generic;
@@ -94,7 +94,8 @@ namespace Neolution.DotNet.Console
         /// </returns>
         internal static DotNetConsoleBuilder CreateBuilderInternal(Assembly assembly, Type[]? verbTypes, string[] args)
         {
-            // Create read-only configuration and environment that are only valid before the host is built, because we want to expose these as properties of our DotNetConsoleBuilder.
+            // Create configuration and environment instances that are only valid before the host is built.
+            // We want to expose these as read-only properties in the DotNetConsoleBuilder.
             var environment = CreateConsoleEnvironment(args);
             var configuration = CreateConsoleConfiguration(assembly, args, environment);
 
