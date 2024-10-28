@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console
+namespace Neolution.DotNet.Console
 {
     using System;
     using System.Collections.Generic;
@@ -94,8 +94,13 @@
         /// </returns>
         internal static DotNetConsoleBuilder CreateBuilderInternal(Assembly assembly, Type[]? verbTypes, string[] args)
         {
+            // Create read-only configuration and environment that are only valid before the host is built, because we want to expose these as properties of our DotNetConsoleBuilder.
+            var environment = CreateConsoleEnvironment(args);
+            var configuration = CreateConsoleConfiguration(assembly, args, environment);
+
             // Create a HostBuilder
             var builder = Host.CreateDefaultBuilder(args)
+                .UseContentRoot(environment.ContentRootPath)
                 .ConfigureLogging((context, logging) =>
                 {
                     AdjustDefaultBuilderLoggingProviders(logging);
@@ -108,10 +113,6 @@
                         .AddClasses(classes => classes.AssignableTo(typeof(IDotNetConsoleCommand<>)))
                         .AsImplementedInterfaces());
                 });
-
-            // Manually build configuration and environment again, because we unfortunately can't access them from the host builder we just created, but want to provide them in the ConsoleApplicationBuilder.
-            var environment = CreateConsoleEnvironment(args);
-            var configuration = ApplyDefaultConfiguration(assembly, args, environment);
 
             // If verb types were not specified, compile all available verbs for this run by looking for classes with the Verb attribute in the specified assembly
             verbTypes ??= assembly.GetTypes()
@@ -172,12 +173,15 @@
                 .AddCommandLine(args)
                 .Build();
 
+            // The apps root directory is where the appsettings.json are located
+            var appRootDirectory = AppContext.BaseDirectory;
+
             return new DotNetConsoleEnvironment
             {
-                EnvironmentName = configuration[HostDefaults.EnvironmentKey] ?? "Production",
+                EnvironmentName = configuration[HostDefaults.EnvironmentKey] ?? Environments.Production,
                 ApplicationName = AppDomain.CurrentDomain.FriendlyName,
-                ContentRootPath = AppContext.BaseDirectory,
-                ContentRootFileProvider = new PhysicalFileProvider(AppContext.BaseDirectory),
+                ContentRootPath = appRootDirectory,
+                ContentRootFileProvider = new PhysicalFileProvider(appRootDirectory),
             };
         }
 
@@ -188,10 +192,10 @@
         /// <param name="args">The arguments.</param>
         /// <param name="environment">The environment.</param>
         /// <returns>The <see cref="IConfiguration" />.</returns>
-        private static IConfiguration ApplyDefaultConfiguration(Assembly assembly, string[] args, IHostEnvironment environment)
+        private static IConfiguration CreateConsoleConfiguration(Assembly assembly, string[] args, IHostEnvironment environment)
         {
             var configurationBuilder = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
+                .SetBasePath(environment.ContentRootPath)
                 .AddEnvironmentVariables(prefix: "DOTNET_");
 
             AddCommandLineConfig(configurationBuilder, args);
