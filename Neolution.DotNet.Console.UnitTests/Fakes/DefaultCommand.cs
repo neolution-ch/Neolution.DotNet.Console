@@ -1,5 +1,6 @@
 ﻿namespace Neolution.DotNet.Console.UnitTests.Fakes
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Hosting;
     using Neolution.DotNet.Console.Abstractions;
@@ -33,7 +34,7 @@
         }
 
         /// <inheritdoc />
-        public async Task RunAsync(DefaultOptions options)
+        public async Task RunAsync(DefaultOptions options, CancellationToken cancellationToken)
         {
             this.logger.Log("options", options);
             this.logger.Log("environment", this.environment);

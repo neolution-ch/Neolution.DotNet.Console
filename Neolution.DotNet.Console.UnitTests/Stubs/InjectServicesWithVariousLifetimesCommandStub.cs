@@ -1,5 +1,6 @@
 ﻿namespace Neolution.DotNet.Console.UnitTests.Stubs
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Neolution.DotNet.Console.Abstractions;
 
@@ -38,7 +39,7 @@
         }
 
         /// <inheritdoc />
-        public async Task RunAsync(InjectServicesWithVariousLifetimesOptionsStub options)
+        public async Task RunAsync(InjectServicesWithVariousLifetimesOptionsStub options, CancellationToken cancellationToken)
         {
             await this.transientService.DoSomethingAsync();
             await this.scopedService.DoSomethingAsync();
