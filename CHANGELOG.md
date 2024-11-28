@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Resolved another case where appsettings.json was being loaded from the current working directory instead of the executable's directory.
+
 ## [3.0.3] - 2024-10-09
 
 ### Fixed
