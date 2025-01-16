@@ -7,7 +7,6 @@
     using CommandLine;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Neolution.DotNet.Console.Abstractions;
@@ -108,8 +107,8 @@
         {
             // Create configuration and environment instances that are only valid before the host is built.
             // We want to expose these as read-only properties in the DotNetConsoleBuilder.
-            var environment = CreateConsoleEnvironment(args);
-            var configuration = CreateConsoleConfiguration(assembly, args, environment);
+            var environment = DotNetConsoleDefaults.CreateConsoleEnvironment(args);
+            var configuration = DotNetConsoleDefaults.CreateConsoleConfiguration(assembly, args, environment);
 
             // Create a HostBuilder
             var builder = Host.CreateDefaultBuilder(args)
@@ -146,59 +145,6 @@
         }
 
         /// <summary>
-        /// Creates the console environment.
-        /// </summary>
-        /// <param name="args">The command line arguments.</param>
-        /// <returns>The <see cref="IHostEnvironment"/>.</returns>
-        private static DotNetConsoleEnvironment CreateConsoleEnvironment(string[] args)
-        {
-            var configuration = new ConfigurationBuilder()
-                .AddEnvironmentVariables(prefix: "DOTNET_")
-                .AddCommandLine(args)
-                .Build();
-
-            // The apps root directory is where the appsettings.json are located
-            var appRootDirectory = AppContext.BaseDirectory;
-
-            return new DotNetConsoleEnvironment
-            {
-                EnvironmentName = configuration[HostDefaults.EnvironmentKey] ?? Environments.Production,
-                ApplicationName = AppDomain.CurrentDomain.FriendlyName,
-                ContentRootPath = appRootDirectory,
-                ContentRootFileProvider = new PhysicalFileProvider(appRootDirectory),
-            };
-        }
-
-        /// <summary>
-        /// Applies the default configuration to the console application.
-        /// </summary>
-        /// <param name="assembly">The assembly.</param>
-        /// <param name="args">The arguments.</param>
-        /// <param name="environment">The environment.</param>
-        /// <returns>The <see cref="IConfiguration" />.</returns>
-        private static IConfiguration CreateConsoleConfiguration(Assembly assembly, string[] args, IHostEnvironment environment)
-        {
-            var configurationBuilder = new ConfigurationBuilder()
-                .SetBasePath(environment.ContentRootPath)
-                .AddEnvironmentVariables(prefix: "DOTNET_");
-
-            AddCommandLineConfig(configurationBuilder, args);
-
-            configurationBuilder
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
-
-            if (environment.IsDevelopment())
-            {
-                configurationBuilder.AddUserSecrets(assembly, optional: true, reloadOnChange: true);
-            }
-
-            configurationBuilder.AddEnvironmentVariables();
-
-            return configurationBuilder.Build();
-        }
-
-        /// <summary>
         /// Adjusts the default builder logging providers.
         /// </summary>
         /// <param name="logging">The logging.</param>
@@ -215,19 +161,6 @@
             {
                 // Add the EventLogLoggerProvider on windows machines
                 logging.AddEventLog();
-            }
-        }
-
-        /// <summary>
-        /// Adds the command line configuration.
-        /// </summary>
-        /// <param name="configBuilder">The configuration builder.</param>
-        /// <param name="args">The arguments.</param>
-        private static void AddCommandLineConfig(IConfigurationBuilder configBuilder, string[]? args)
-        {
-            if (args is { Length: > 0 })
-            {
-                configBuilder.AddCommandLine(args);
             }
         }
 
