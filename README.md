@@ -8,6 +8,10 @@ To help you kickstart your console application, we've provided a a [sample appli
 
 # Guides
 
+## Migrate from V3 to V4
+
+To support cancellation tokens, the `IDotNetConsoleCommand` interface had to be changed: The `RunAsync` method now requires also a `CancellationToken` as a parameter. This change is breaking, so you will need to update your commands to reflect this change.
+
 ## Migrate from V2 to V3
 
 In .NET 6 the hosting model for ASP.NET Core applications was changed, we adjusted to that to fulfill the primary goal of this package: to provide a seamless and intuitive user experience. This introduces breaking changes that are explained below.
