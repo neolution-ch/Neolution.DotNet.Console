@@ -1,6 +1,6 @@
 name: CI
 
-on:  
+on:
   push:
     branches: [ main ]
   pull_request:
@@ -9,7 +9,7 @@ on:
 
 env:
   BUILD_CONFIGURATION: "Release"
-  DOTNET_VERSION: "6.x"
+  DOTNET_VERSION: "8.x"
 
 jobs:
   build:

@@ -1,7 +1,14 @@
 {
   "profiles": {
-    "Neolution.DotNet.Console.SampleAsync": {
+    "Sample Console App": {
       "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Sample Console App: verify-dependencies": {
+      "commandName": "Project",
+      "commandLineArgs": "verify-dependencies",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
