@@ -5,6 +5,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Nullable>enable</Nullable>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +25,7 @@
     </PackageReference>
     <PackageReference Include="NLog" Version="5.3.4" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.3.15" />
-    <PackageReference Include="Scrutor" Version="4.2.2" />
+    <PackageReference Include="Scrutor" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
