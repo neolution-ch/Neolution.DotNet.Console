@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added a built-in `verify-dependencies` command that validates the application's Dependency Injection setup by ensuring all required services are fully and correctly registered in the composition root.
+
+### Changed
+
+- Updated NLog.Extensions.Logging to v5.3.15
+
+## [3.0.4] - 2024-11-28
+
+### Fixed
+
+- Resolved another case where appsettings.json was being loaded from the current working directory instead of the executable's directory.
+
 ## [3.0.3] - 2024-10-09
 
 ### Fixed
@@ -83,11 +97,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed AWS NLog Logger assembly that was used for logging to Amazon CloudWatch
 
-[unreleased]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v3.0.3...HEAD
+[unreleased]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v3.0.4...HEAD
 [3.0.1]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v2.0.2...v3.0.0
 [2.0.2]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v1.1.0-beta1...v2.0.0
+[3.0.4]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v3.0.3...v3.0.4
 [3.0.3]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v3.0.2...v3.0.3
 [3.0.2]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v3.0.2-rc.0...v3.0.2

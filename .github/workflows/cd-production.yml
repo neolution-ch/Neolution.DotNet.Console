@@ -7,7 +7,7 @@ on:
 env:
   ARTIFACTS_FEED_URL: https://api.nuget.org/v3/index.json
   BUILD_CONFIGURATION: "Release"
-  DOTNET_VERSION: "6.x"
+  DOTNET_VERSION: "8.x"
 
 jobs:
   build-pack-push:

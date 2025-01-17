@@ -16,7 +16,7 @@
     /// <summary>
     /// The console application.
     /// </summary>
-    public class DotNetConsole
+    public class DotNetConsole : IDotNetConsole
     {
         /// <summary>
         /// The host
@@ -39,9 +39,7 @@
             this.commandLineParserResult = commandLineParserResult;
         }
 
-        /// <summary>
-        /// Gets the services.
-        /// </summary>
+        /// <inheritdoc />
         public IServiceProvider Services => this.host.Services;
 
         /// <summary>
@@ -86,10 +84,7 @@
             return DotNetConsoleBuilder.CreateBuilderInternal(servicesAssembly, verbTypes, args);
         }
 
-        /// <summary>
-        /// Runs the application.
-        /// </summary>
-        /// <returns>The <see cref="Task"/>.</returns>
+        /// <inheritdoc />
         public async Task RunAsync()
         {
             using var cancellationTokenSource = new CancellationTokenSource();
