@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Updated Scrutor to v6.0.1
 - Updated NLog.Extensions.Logging to v5.3.15
 - Updated Microsoft.Extensions.Configuration.Json to v8.0.1
 - Updated Microsoft.Extensions.Configuration.UserSecrets to v8.0.1
