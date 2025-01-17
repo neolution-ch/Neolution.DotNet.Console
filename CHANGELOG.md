@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated NLog.Extensions.Logging to v5.3.15
+- Updated Microsoft.Extensions.Configuration.Json to v8.0.1
+- Updated Microsoft.Extensions.Configuration.UserSecrets to v8.0.1
+- Updated Microsoft.Extensions.DependencyInjection to v8.0.1
+- Updated Microsoft.Extensions.Hosting to v8.0.1
+- Updated Microsoft.Extensions.Logging to v8.0.1
+- Updated Microsoft.Extensions.Logging.Configuration to v8.0.1
 
 ## [3.0.4] - 2024-11-28
 
