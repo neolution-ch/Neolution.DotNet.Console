@@ -1,5 +1,6 @@
 ﻿namespace Neolution.DotNet.Console.UnitTests.Fakes
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Neolution.DotNet.Console.Abstractions;
     using Neolution.DotNet.Console.UnitTests.Spies;
@@ -25,7 +26,7 @@
         }
 
         /// <inheritdoc />
-        public async Task RunAsync(EchoOptions options)
+        public async Task RunAsync(EchoOptions options, CancellationToken cancellationToken)
         {
             this.logger.Log("options", options);
             await Task.CompletedTask;
