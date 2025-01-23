@@ -1,12 +1,17 @@
 ﻿namespace Neolution.DotNet.Console
 {
     using System;
+    using System.Globalization;
     using System.Reflection;
+    using System.Threading;
     using System.Threading.Tasks;
     using CommandLine;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Neolution.DotNet.Console.Abstractions;
+    using NLog;
+    using NLog.Extensions.Logging;
 
     /// <summary>
     /// The console application.
@@ -82,16 +87,55 @@
         /// <inheritdoc />
         public async Task RunAsync()
         {
-            await this.commandLineParserResult.WithParsedAsync(this.RunWithOptionsAsync);
+            using var cancellationTokenSource = new CancellationTokenSource();
+
+            Console.CancelKeyPress += (_, e) =>
+            {
+                // Prevent the console from terminating immediately and instead cancel the cancellation token source.
+                e.Cancel = true;
+                cancellationTokenSource.Cancel();
+            };
+
+            await this.RunAsync(cancellationTokenSource.Token);
+        }
+
+        /// <summary>
+        /// Runs the application.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        public async Task RunAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await this.commandLineParserResult.WithParsedAsync(async options => await this.RunWithOptionsAsync(options, cancellationToken));
+            }
+            catch (OperationCanceledException)
+            {
+                try
+                {
+                    var logger = LogManager.Setup().LoadConfigurationFromSection(this.Services.GetRequiredService<IConfiguration>()).GetCurrentClassLogger();
+                    logger.Log(LogLevel.Info, CultureInfo.InvariantCulture, message: "Operation was canceled by the user.");
+                }
+                catch (Exception)
+                {
+                    // Ignore any exceptions that might occur while trying to log the cancellation
+                }
+            }
         }
 
         /// <summary>
         /// Runs the command with options asynchronously.
         /// </summary>
         /// <param name="options">The options.</param>
-        /// <returns>The <see cref="Task"/>.</returns>
-        private async Task RunWithOptionsAsync(object options)
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns> The <see cref="Task" />. </returns>
+        private async Task RunWithOptionsAsync(object options, CancellationToken cancellationToken)
         {
+            // Check for cancellation before proceeding
+            cancellationToken.ThrowIfCancellationRequested();
+
             // To support scoped services, create a scope for each command call/run.
             var scopeFactory = this.Services.GetRequiredService<IServiceScopeFactory>();
             await using var scope = scopeFactory.CreateAsyncScope();
@@ -104,9 +148,16 @@
 
             // Resolve the command from the service provider by the determined type and invoke the entry point method (RunAsync)
             var command = scope.ServiceProvider.GetRequiredService(commandType);
-            if (commandEntryPointMethodInfo?.Invoke(command, new[] { options }) is Task commandRunTask)
+            if (commandEntryPointMethodInfo != null)
             {
-                await commandRunTask;
+                // Prepare the parameters, including the cancellation token
+                var parameters = new[] { options, cancellationToken };
+
+                // Invoke the command's RunAsync method with the cancellation token
+                if (commandEntryPointMethodInfo.Invoke(command, parameters) is Task commandRunTask)
+                {
+                    await commandRunTask;
+                }
             }
         }
     }

@@ -57,10 +57,7 @@
         [InlineData("verify-dependencies")]
         public void GivenValidArguments_WhenNoDefaultVerbIsDefined_ThenShouldNotThrow([NotNull] string args)
         {
-            if (args == null)
-            {
-                throw new ArgumentNullException(nameof(args));
-            }
+            ArgumentNullException.ThrowIfNull(args);
 
             // Arrange
             var builder = DotNetConsole.CreateBuilderWithReference(Assembly.GetAssembly(typeof(DefaultCommand))!, args.Split(" "));
