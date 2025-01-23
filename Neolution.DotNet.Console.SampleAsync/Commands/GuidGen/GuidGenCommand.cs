@@ -26,7 +26,7 @@
         }
 
         /// <inheritdoc />
-        public Task RunAsync(GuidGenOptions options)
+        public Task RunAsync(GuidGenOptions options, CancellationToken cancellationToken)
         {
             if (options == null)
             {
@@ -42,6 +42,7 @@
             }
 
             System.Console.WriteLine(result);
+
             this.logger.LogTrace("Wrote result to console");
             return Task.CompletedTask;
         }

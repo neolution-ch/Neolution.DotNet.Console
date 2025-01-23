@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added cancellation token support for commands
 - Added a built-in `verify-dependencies` command that validates the application's Dependency Injection setup by ensuring all required services are fully and correctly registered in the composition root.
 
 ### Changed

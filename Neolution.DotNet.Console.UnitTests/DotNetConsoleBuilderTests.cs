@@ -15,6 +15,11 @@
     public class DotNetConsoleBuilderTests
     {
         /// <summary>
+        /// The argument string for the internal verify-dependencies command
+        /// </summary>
+        private static readonly string[] VerifyDependenciesArgs = { "verify-dependencies" };
+
+        /// <summary>
         /// Given a mistyped verb, when a default verb is defined, then should throw on console building.
         /// </summary>
         [Fact]
@@ -98,7 +103,7 @@
         public void GivenVerifyDependenciesCommand_WhenRegistrationIsMissing_ThenShouldThrow()
         {
             // Arrange
-            var builder = DotNetConsole.CreateBuilderWithReference(Assembly.GetAssembly(typeof(DefaultCommand))!, new[] { "verify-dependencies" });
+            var builder = DotNetConsole.CreateBuilderWithReference(Assembly.GetAssembly(typeof(DefaultCommand))!, VerifyDependenciesArgs);
 
             // Intentionally only registering the transient service and not the scoped and singleton services.
             builder.Services.AddTransient<ITransientServiceStub, TransientServiceStub>();
