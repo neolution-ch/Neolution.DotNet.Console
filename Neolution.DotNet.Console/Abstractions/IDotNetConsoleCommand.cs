@@ -14,7 +14,7 @@
         /// </summary>
         /// <param name="options">The options.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>The <see cref="Task"/>.</returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task RunAsync(TOptions options, CancellationToken cancellationToken);
     }
 }

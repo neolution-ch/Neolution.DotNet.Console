@@ -15,9 +15,9 @@
     public class DotNetConsoleBuilderTests
     {
         /// <summary>
-        /// The argument string for the internal verify-dependencies command
+        /// The argument string for the internal checkdeps command
         /// </summary>
-        private static readonly string[] VerifyDependenciesArgs = { "verify-dependencies" };
+        private const string CheckDependenciesArgumentString = "checkdeps";
 
         /// <summary>
         /// Given a mistyped verb, when a default verb is defined, then should throw on console building.
@@ -97,13 +97,13 @@
         }
 
         /// <summary>
-        /// Given the verify-dependencies builder, when registration is missing, then should throw on console building.
+        /// Given the checkdeps builder, when registration is missing, then should throw on console building.
         /// </summary>
         [Fact]
-        public void GivenVerifyDependenciesCommand_WhenRegistrationIsMissing_ThenShouldThrow()
+        public void GivenCheckDependenciesCommand_WhenRegistrationIsMissing_ThenShouldThrow()
         {
             // Arrange
-            var builder = DotNetConsole.CreateBuilderWithReference(Assembly.GetAssembly(typeof(DefaultCommand))!, VerifyDependenciesArgs);
+            var builder = DotNetConsole.CreateBuilderWithReference(Assembly.GetAssembly(typeof(DefaultCommand))!, [CheckDependenciesArgumentString]);
 
             // Intentionally only registering the transient service and not the scoped and singleton services.
             builder.Services.AddTransient<ITransientServiceStub, TransientServiceStub>();

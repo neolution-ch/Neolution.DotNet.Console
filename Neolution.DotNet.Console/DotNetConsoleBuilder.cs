@@ -34,9 +34,9 @@
         private readonly ServiceCollection serviceCollection = new();
 
         /// <summary>
-        /// Run only to verify dependencies.
+        /// Run only to check dependencies.
         /// </summary>
-        private bool verifyDependencies;
+        private bool checkDependencies;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DotNetConsoleBuilder"/> class.
@@ -83,7 +83,7 @@
                 }
             });
 
-            if (this.verifyDependencies)
+            if (this.checkDependencies)
             {
                 this.hostBuilder.UseEnvironment("Development");
                 this.hostBuilder.Build();
@@ -134,9 +134,9 @@
             var parsedArguments = Parser.Default.ParseArguments(args, verbTypes);
             var consoleBuilder = new DotNetConsoleBuilder(builder, parsedArguments, environment, configuration);
 
-            if (args.Length == 1 && string.Equals(args[0], "verify-dependencies", StringComparison.OrdinalIgnoreCase))
+            if (args.Length == 1 && string.Equals(args[0], "checkdeps", StringComparison.OrdinalIgnoreCase))
             {
-                consoleBuilder.verifyDependencies = true;
+                consoleBuilder.checkDependencies = true;
                 return consoleBuilder;
             }
 
