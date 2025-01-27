@@ -6,9 +6,9 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    "Sample Console App: verify-dependencies": {
+    "Sample Console App: check-deps": {
       "commandName": "Project",
-      "commandLineArgs": "verify-dependencies",
+      "commandLineArgs": "check-deps",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

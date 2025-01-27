@@ -10,11 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added cancellation token support for commands
-- Added a built-in `verify-dependencies` command that validates the application's Dependency Injection setup by ensuring all required services are fully and correctly registered in the composition root.
+- Added a built-in `check-deps` command that validates the application's Dependency Injection setup by ensuring all required services are fully and correctly registered in the composition root.
 
 ### Changed
 
+- Updated Scrutor to v6.0.1
 - Updated NLog.Extensions.Logging to v5.3.15
+- Updated Microsoft.Extensions.Configuration.Json to v8.0.1
+- Updated Microsoft.Extensions.Configuration.UserSecrets to v8.0.1
+- Updated Microsoft.Extensions.DependencyInjection to v8.0.1
+- Updated Microsoft.Extensions.Hosting to v8.0.1
+- Updated Microsoft.Extensions.Logging to v8.0.1
+- Updated Microsoft.Extensions.Logging.Configuration to v8.0.1
 
 ## [3.0.4] - 2024-11-28
 

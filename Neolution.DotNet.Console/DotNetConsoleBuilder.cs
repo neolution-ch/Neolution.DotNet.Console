@@ -34,9 +34,9 @@
         private readonly ServiceCollection serviceCollection = new();
 
         /// <summary>
-        /// Run only to verify dependencies.
+        /// Run only to check dependencies.
         /// </summary>
-        private bool verifyDependencies;
+        private bool checkDependencies;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DotNetConsoleBuilder"/> class.
@@ -83,10 +83,13 @@
                 }
             });
 
-            if (this.verifyDependencies)
+            if (this.checkDependencies)
             {
+                // Use development environment before building because that's where ValidateScopes and ValidateOnBuild are enabled.
                 this.hostBuilder.UseEnvironment("Development");
                 this.hostBuilder.Build();
+
+                // If build was successful and did not throw an exception, return a console that does nothing and then terminates.
                 return new NoOperationConsole();
             }
 
@@ -134,9 +137,9 @@
             var parsedArguments = Parser.Default.ParseArguments(args, verbTypes);
             var consoleBuilder = new DotNetConsoleBuilder(builder, parsedArguments, environment, configuration);
 
-            if (args.Length == 1 && string.Equals(args[0], "verify-dependencies", StringComparison.OrdinalIgnoreCase))
+            if (args.Length == 1 && string.Equals(args[0], "check-deps", StringComparison.OrdinalIgnoreCase))
             {
-                consoleBuilder.verifyDependencies = true;
+                consoleBuilder.checkDependencies = true;
                 return consoleBuilder;
             }
 
