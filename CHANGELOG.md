@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.0] - 2025-01-27
+
 ### Added
 
 - Added cancellation token support for commands
@@ -105,7 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed AWS NLog Logger assembly that was used for logging to Amazon CloudWatch
 
-[unreleased]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v3.0.4...HEAD
+[unreleased]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v4.0.0...HEAD
 [3.0.1]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v2.0.2...v3.0.0
 [2.0.2]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v2.0.1...v2.0.2
@@ -114,3 +116,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [3.0.4]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v3.0.3...v3.0.4
 [3.0.3]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v3.0.2...v3.0.3
 [3.0.2]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v3.0.2-rc.0...v3.0.2
+[4.0.0]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v4.0.0-rc.0...v4.0.0
