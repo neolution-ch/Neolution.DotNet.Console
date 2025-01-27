@@ -6,9 +6,9 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    "Sample Console App: checkdeps": {
+    "Sample Console App: check-deps": {
       "commandName": "Project",
-      "commandLineArgs": "checkdeps",
+      "commandLineArgs": "check-deps",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

@@ -134,7 +134,7 @@
             var parsedArguments = Parser.Default.ParseArguments(args, verbTypes);
             var consoleBuilder = new DotNetConsoleBuilder(builder, parsedArguments, environment, configuration);
 
-            if (args.Length == 1 && string.Equals(args[0], "checkdeps", StringComparison.OrdinalIgnoreCase))
+            if (args.Length == 1 && string.Equals(args[0], "check-deps", StringComparison.OrdinalIgnoreCase))
             {
                 consoleBuilder.checkDependencies = true;
                 return consoleBuilder;

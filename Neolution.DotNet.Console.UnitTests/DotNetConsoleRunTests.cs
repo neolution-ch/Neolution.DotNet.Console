@@ -54,7 +54,7 @@
         [InlineData("--version")]
         [InlineData("help echo")]
         [InlineData("echo --help")]
-        [InlineData("checkdeps")]
+        [InlineData("check-deps")]
         public void GivenValidArguments_WhenNoDefaultVerbIsDefined_ThenShouldNotThrow([NotNull] string args)
         {
             ArgumentNullException.ThrowIfNull(args);

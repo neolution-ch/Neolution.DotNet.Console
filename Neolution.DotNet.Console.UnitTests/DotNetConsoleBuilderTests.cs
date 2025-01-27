@@ -15,9 +15,9 @@
     public class DotNetConsoleBuilderTests
     {
         /// <summary>
-        /// The argument string for the internal checkdeps command
+        /// The argument string for the internal check-deps command
         /// </summary>
-        private const string CheckDependenciesArgumentString = "checkdeps";
+        private const string CheckDependenciesArgumentString = "check-deps";
 
         /// <summary>
         /// Given a mistyped verb, when a default verb is defined, then should throw on console building.
@@ -97,7 +97,7 @@
         }
 
         /// <summary>
-        /// Given the checkdeps builder, when registration is missing, then should throw on console building.
+        /// Given the check-deps builder, when registration is missing, then should throw on console building.
         /// </summary>
         [Fact]
         public void GivenCheckDependenciesCommand_WhenRegistrationIsMissing_ThenShouldThrow()
