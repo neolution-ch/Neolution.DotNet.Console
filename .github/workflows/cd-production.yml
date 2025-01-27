@@ -34,6 +34,6 @@ jobs:
           dotnet pack "Neolution.DotNet.Console\Neolution.DotNet.Console.csproj" --configuration ${{ env.BUILD_CONFIGURATION }} --no-build -p:PackageVersion=$NUGET_VERSION
 
       - name: Push NuGet package
-        run: dotnet nuget push --skip-duplicate -k $NUGET_AUTH_TOKEN  **/bin/Release/*.nupkg
+        run: dotnet nuget push -k $NUGET_AUTH_TOKEN  **/bin/Release/*.nupkg
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API_KEY_NEOLUTION }}
