@@ -85,8 +85,11 @@
 
             if (this.checkDependencies)
             {
+                // Use development environment before building because that's where ValidateScopes and ValidateOnBuild are enabled.
                 this.hostBuilder.UseEnvironment("Development");
                 this.hostBuilder.Build();
+
+                // If build was successful and did not throw an exception, return a console that does nothing and then terminates.
                 return new NoOperationConsole();
             }
 
