@@ -8,7 +8,9 @@ To help you kickstart your console application, we've provided a a [sample appli
 
 # Guides
 
-## Migrate from V3 to V4
+## Migrate from V3 to V5
+
+*Note: V4 was intentionally skipped, there is no V4 release.*
 
 To support cancellation tokens, the `IDotNetConsoleCommand` interface had to be changed: The `RunAsync` method now requires also a `CancellationToken` as a parameter. This change is breaking, so you will need to update your commands to reflect this change.
 
