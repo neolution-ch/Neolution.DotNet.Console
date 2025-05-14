@@ -135,14 +135,22 @@
                 .ToArray();
 
             var parsedArguments = Parser.Default.ParseArguments(args, verbTypes);
-            var consoleBuilder = new DotNetConsoleBuilder(builder, parsedArguments, environment, configuration);
-
             if (args.Length == 1 && string.Equals(args[0], "check-deps", StringComparison.OrdinalIgnoreCase))
             {
-                consoleBuilder.checkDependencies = true;
-                return consoleBuilder;
+                try
+                {
+                    return new DotNetConsoleBuilder(builder, parsedArguments, environment, configuration)
+                    {
+                        checkDependencies = true,
+                    };
+                }
+                catch (Exception)
+                {
+                    // Only check service dependencies, which happens when the builder is built. All other exceptions are ignored.
+                }
             }
 
+            var consoleBuilder = new DotNetConsoleBuilder(builder, parsedArguments, environment, configuration);
             CheckStrictVerbMatching(args, verbTypes);
             return consoleBuilder;
         }
