@@ -4,15 +4,21 @@
 [![Build Status](https://github.com/neolution-ch/Neolution.DotNet.Console/actions/workflows/cd-production.yml/badge.svg)](https://github.com/neolution-ch/Neolution.DotNet.Console/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Neolution.DotNet.Console is a versatile package designed as a launchpad for .NET console applications. It comes equipped with a built-in dependency injection setup, mirroring the functionality found in ASP.NET Core applications, thus providing a seamless and intuitive user experience.
+Neolution.DotNet.Console is a library for building .NET console applications. It uses the Microsoft.Extensions.Hosting model to provide a familiar setup for dependency injection, logging, and command-line parsing.
+
+This project works for simple CLI tools as well as longer-running console services, and supports cancellation tokens, configuration from JSON, environment variables, or command-line arguments.
 
 ## Features
 
-- Async command execution
-- Built-in dependency injection (like ASP.NET Core)
-- NLog integration for flexible logging
-- Strict verb matching for safer CLI usage
-- Service registration validation at build time (check-deps command)
+- Async commands with cancellation support
+- Dependency injection setup matching ASP.NET Core patterns
+- Command-line parsing with verb and option support
+- Logging integration using NLog
+- Configuration from appsettings.json, environment variables, user secrets, and command line
+- Strict verb matching to prevent unintended command execution
+- A built-in `check-deps` command to verify all services are registered correctly
+- Support for multiple environments (Development, Production, etc.)
+- Automatic scope creation for each command execution to support scoped services
 
 ## Installation
 
@@ -113,22 +119,30 @@ This pattern keeps your `Program.cs` clean and delegates service registration an
 
 ### Defining a Command
 
-To add a command, implement the `IDotNetConsoleCommand` interface. For example:
+To add a command, implement the `IDotNetConsoleCommand<TOptions>` interface. For example:
 
 ```csharp
+using CommandLine;
 using Neolution.DotNet.Console.Abstractions;
 
-public class EchoCommand : IDotNetConsoleCommand
+[Verb("echo", HelpText = "Write a string into the console.")]
+public class EchoOptions
 {
-    public async Task RunAsync(CancellationToken cancellationToken)
+    [Value(0)]
+    public string? Message { get; set; }
+}
+
+public class EchoCommand : IDotNetConsoleCommand<EchoOptions>
+{
+    public async Task RunAsync(EchoOptions options, CancellationToken cancellationToken)
     {
-        Console.WriteLine("Hello from EchoCommand!");
+        Console.WriteLine($"Echo: {options.Message}");
         await Task.CompletedTask;
     }
 }
 ```
 
-The library will automatically discover and register all commands (classes implementing `IDotNetConsoleCommand`).
+The library will automatically discover and register all commands (classes implementing `IDotNetConsoleCommand<TOptions>`).
 
 ### Running the Application
 
@@ -140,9 +154,65 @@ dotnet run -- [verb] [options]
 
 Replace `[verb]` with the name of your command (e.g., `echo`). Any additional options or parameters defined in your command will be parsed and passed automatically.
 
----
+## Dependency Validation with check-deps
 
-## Guides
+The framework includes a built-in `check-deps` command that validates your application's dependency injection setup without running any business logic. This is particularly useful for catching DI configuration issues early.
+
+### Why use check-deps?
+
+- **Early Detection**: Catch dependency injection issues during build/CI rather than at runtime
+- **Fast Feedback**: Validates your entire DI container setup in seconds without executing business logic
+- **Confidence**: Ensures all your services can be properly constructed by the DI container
+- **CI Integration**: Perfect for automated validation in your deployment pipeline
+
+The command validates:
+
+- All registered services can be instantiated
+- No circular dependencies exist
+- Service lifetimes are properly configured
+- All required dependencies are registered
+
+If validation fails, the command will exit with a non-zero code and provide detailed error information about what's missing or misconfigured.
+
+### Running check-deps locally
+
+```sh
+# Validate your DI setup
+ dotnet run -- check-deps
+
+# Or if you have a published/built application
+ myapp.exe check-deps
+```
+
+### Using check-deps in CI/CD
+
+The `check-deps` command is especially valuable in CI/CD pipelines to catch dependency injection issues before deployment:
+
+```yaml
+# Example GitHub Actions workflow
+name: CI
+on: [push, pull_request]
+
+jobs:
+  validate-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Validate DI setup
+        run: dotnet run --project YourApp -- check-deps
+      - name: Run tests
+        run: dotnet test --no-build
+```
+
+## Migration Guides
 
 ### Migrate from V3 to V5
 

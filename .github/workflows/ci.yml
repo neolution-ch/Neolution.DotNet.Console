@@ -28,5 +28,8 @@ jobs:
     - name: Build
       run: dotnet build --no-restore --configuration '${{ env.BUILD_CONFIGURATION }}'
 
+    - name: Validate DI setup in SampleAsync
+      run: dotnet run --project Neolution.DotNet.Console.SampleAsync --no-build --configuration '${{ env.BUILD_CONFIGURATION }}' -- check-deps
+
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration '${{ env.BUILD_CONFIGURATION }}'

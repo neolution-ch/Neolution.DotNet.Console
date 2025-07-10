@@ -49,7 +49,7 @@
                 // Create a simple NLog configuration that logs to the console
                 var config = new NLog.Config.LoggingConfiguration();
                 consoleTarget = new ConsoleTarget("console");
-                config.AddRule(LogLevel.Info, LogLevel.Fatal, consoleTarget);
+                config.AddRule(LogLevel.Trace, LogLevel.Fatal, consoleTarget);
 
                 LogManager.Configuration = config;
                 logger = LogManager.GetCurrentClassLogger();
