@@ -2,10 +2,20 @@
 
   <PropertyGroup>
     <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <PackageId>Neolution.DotNet.Console</PackageId>
+    <Company>Neolution AG</Company>
+    <Description></Description>
+    <PackageProjectUrl>https://github.com/neolution-ch/Neolution.DotNet.Console</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/neolution-ch/Neolution.DotNet.Console</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>dotnet;console;dependency-injection</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Nullable>enable</Nullable>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageReleaseNotes>See CHANGELOG.md for release notes.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
