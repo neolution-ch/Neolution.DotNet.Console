@@ -41,7 +41,7 @@
                 result = result.ToUpperInvariant();
             }
 
-            System.Console.WriteLine(result);
+            Console.WriteLine(result);
 
             this.logger.LogTrace("Wrote result to console");
             return Task.CompletedTask;

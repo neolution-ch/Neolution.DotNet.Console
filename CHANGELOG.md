@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- The recommended application entry point (`Main` method) now uses `DotNetConsoleLogger` for logger initialization, error logging, and shutdown. The static logger accessor is now `DotNetConsoleLogger.Log`. Update your `Program.cs` to follow the new pattern for improved clarity and consistency.
+
 ## [5.0.0] - 2025-01-27
 
 ### Added

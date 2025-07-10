@@ -111,12 +111,12 @@
                 cancellationToken.ThrowIfCancellationRequested();
                 await this.commandLineParserResult.WithParsedAsync(async options => await this.RunWithOptionsAsync(options, cancellationToken));
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException ex)
             {
                 try
                 {
                     var logger = LogManager.Setup().LoadConfigurationFromSection(this.Services.GetRequiredService<IConfiguration>()).GetCurrentClassLogger();
-                    logger.Log(LogLevel.Info, CultureInfo.InvariantCulture, message: "Operation was canceled by the user.");
+                    logger.Log(LogLevel.Info, ex, CultureInfo.InvariantCulture, message: "Operation was canceled by the user.");
                 }
                 catch (Exception)
                 {

@@ -4,8 +4,37 @@ Neolution.DotNet.Console is a versatile package designed as a launchpad for .NET
 
 # Getting Started
 
-To help you kickstart your console application, we've provided a a [sample application](/Neolution.DotNet.Console.SampleAsync/Program.cs) that should demonstrate the basic usage of this package.
+To help you kickstart your console application, we've provided a [sample application](/Neolution.DotNet.Console.SampleAsync/Program.cs) that demonstrates the basic usage of this package.
 
+## Example Main Method
+
+Below is the recommended pattern for your `Program.cs` entry point, using the new `DotNetConsoleLogger`:
+public static async Task Main(string[] args)
+{
+    try
+    {
+        var builder = DotNetConsole.CreateDefaultBuilder(args);
+        DotNetConsoleLogger.Initialize(builder.Configuration);
+
+        // Register your services here...
+        builder.Services.AddHttpClient();
+        builder.Services.AddScoped<IScopedService, ServiceA>();
+        builder.Services.AddSingleton<ISingletonService, ServiceB>();
+
+        var console = builder.Build();
+        await console.RunAsync();
+    }
+    catch (Exception ex)
+    {
+        DotNetConsoleLogger.Log.Error(ex, "Stopped program because of an unexpected exception");
+        throw;
+    }
+    finally
+    {
+        // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+        DotNetConsoleLogger.Shutdown();
+    }
+}
 # Guides
 
 ## Migrate from V3 to V5
@@ -22,17 +51,7 @@ In .NET 6 the hosting model for ASP.NET Core applications was changed, we adjust
 
 The builder returned from calling `DotNetConsole.CreateDefaultBuilder(args)` now has a `Services` property that can be used to register services. Like in ASP.NET, this can now be done directly in `Program.cs`.
 
-    public static async Task Main(string[] args)
-    {
-        var builder = DotNetConsole.CreateDefaultBuilder(args);
-
-        // Register your services here...
-        builder.Services.AddHttpClient();
-        builder.Services.AddScoped<IScopedService, ServiceA>();
-        builder.Services.AddSingleton<ISingletonService, ServiceB>();
-
-        await builder.Build().RunAsync();
-    }
+    // See the example above for the new recommended Main method layout.
 
 ### Async by default
 

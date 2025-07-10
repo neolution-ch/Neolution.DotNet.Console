@@ -3,7 +3,6 @@
     using System;
 
     /// <inheritdoc />
-    [Serializable]
     public class DotNetConsoleException : Exception
     {
         /// <summary>
@@ -29,17 +28,6 @@
         /// Initializes a new instance of the <see cref="DotNetConsoleException"/> class.
         /// </summary>
         public DotNetConsoleException()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DotNetConsoleException"/> class.
-        /// </summary>
-        /// <param name="serializationInfo">The serialization information.</param>
-        /// <param name="streamingContext">The streaming context.</param>
-        [Obsolete("This API supports obsolete formatter-based serialization. It should not be called or extended by application code.", DiagnosticId = "SYSLIB0051")]
-        protected DotNetConsoleException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext)
-            : base(serializationInfo, streamingContext)
         {
         }
     }
