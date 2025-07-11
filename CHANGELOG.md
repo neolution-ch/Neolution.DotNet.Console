@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated Scrutor to v6.1.0.
-- Updated Microsoft.Extensions._ package references to use floating version `8.0._` to always get the latest patch.
+- Updated Microsoft.Extensions packages to latest patch versions.
 
 ### Removed
 
