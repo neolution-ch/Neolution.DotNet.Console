@@ -10,7 +10,7 @@
     /// Custom NLog layout renderer to render log level like NLNHelper did.
     /// </summary>
     /// <seealso cref="LayoutRenderer" />
-    [NLog.LayoutRenderers.LayoutRenderer("NLNHelperLogLevel")]
+    [LayoutRenderer("NLNHelperLogLevel")]
     public class NlnHelperLogLevelLayoutRenderer : LayoutRenderer
     {
         /// <inheritdoc />

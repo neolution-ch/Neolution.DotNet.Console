@@ -6,12 +6,9 @@
     using System.Threading;
     using System.Threading.Tasks;
     using CommandLine;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Neolution.DotNet.Console.Abstractions;
-    using NLog;
-    using NLog.Extensions.Logging;
 
     /// <summary>
     /// The console application.
@@ -111,12 +108,11 @@
                 cancellationToken.ThrowIfCancellationRequested();
                 await this.commandLineParserResult.WithParsedAsync(async options => await this.RunWithOptionsAsync(options, cancellationToken));
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException ex)
             {
                 try
                 {
-                    var logger = LogManager.Setup().LoadConfigurationFromSection(this.Services.GetRequiredService<IConfiguration>()).GetCurrentClassLogger();
-                    logger.Log(LogLevel.Info, CultureInfo.InvariantCulture, message: "Operation was canceled by the user.");
+                    DotNetConsoleLogger.Log.Info(ex, CultureInfo.InvariantCulture, "Operation was canceled by the user.");
                 }
                 catch (Exception)
                 {

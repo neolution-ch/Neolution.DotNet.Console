@@ -24,11 +24,11 @@
       },
       "Neolution.CodeAnalysis": {
         "type": "Direct",
-        "requested": "[3.2.1, )",
-        "resolved": "3.2.1",
-        "contentHash": "AQDkBJ9e6TrnhpwTtf4KrwlAPBLy77I5XkNey586nN2IFfjk1LVwBwvOcjORD1dSNtEhOf69JQjdmiMf54C90w==",
+        "requested": "[3.3.0-beta.2, )",
+        "resolved": "3.3.0-beta.2",
+        "contentHash": "88mG4f4P16K4Ql3uTqeaoeXGJLNMReFh9z3ZKmKZ0bY4RTk4z4syjuF/TefouGM2hR+mcBSdWbAtsKT/+FowlA==",
         "dependencies": {
-          "SonarAnalyzer.CSharp": "9.20.0.85982",
+          "SonarAnalyzer.CSharp": "9.32.0.97167",
           "StyleCop.Analyzers.Unstable": "1.2.0.556"
         }
       },
@@ -332,8 +332,8 @@
       },
       "Scrutor": {
         "type": "Transitive",
-        "resolved": "6.0.1",
-        "contentHash": "5xKT6ND5GqnFzwSaYozHCJe75GFL8sPy4yw/iRFqeBFGlmqPNFpOg1T9Q0Gl2h76Cklt0ZTg6Ypkri5iUBKXsA==",
+        "resolved": "6.1.0",
+        "contentHash": "m4+0RdgnX+jeiaqteq9x5SwEtuCjWG0KTw1jBjCzn7V8mCanXKoeF8+59E0fcoRbAjdEq6YqHFCmxZ49Kvqp3g==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.1",
           "Microsoft.Extensions.DependencyModel": "8.0.2"
@@ -341,8 +341,8 @@
       },
       "SonarAnalyzer.CSharp": {
         "type": "Transitive",
-        "resolved": "9.20.0.85982",
-        "contentHash": "c0IYtFg4mYusTafTy0Bs5wev45vRKNShkuoWyQyPMbC6imEFHL7tY/7xbbUJd6JNLYx5vP8wyi2LgiBsMHqb2Q=="
+        "resolved": "9.32.0.97167",
+        "contentHash": "Yxk86RV+8ynJpUhku1Yw2hITFmnmXKkXJ73cIFSy85ol5SnWREQg9RuTyV8nI7V7+pyLKpCfRmD7P0widsgjkg=="
       },
       "StyleCop.Analyzers.Unstable": {
         "type": "Transitive",
@@ -358,18 +358,18 @@
         "type": "Project",
         "dependencies": {
           "CommandLineParser": "[2.9.1, )",
-          "Microsoft.Extensions.Configuration.Abstractions": "[8.0.0, )",
-          "Microsoft.Extensions.Configuration.CommandLine": "[8.0.0, )",
-          "Microsoft.Extensions.Configuration.EnvironmentVariables": "[8.0.0, )",
-          "Microsoft.Extensions.Configuration.Json": "[8.0.1, )",
-          "Microsoft.Extensions.Configuration.UserSecrets": "[8.0.1, )",
-          "Microsoft.Extensions.DependencyInjection": "[8.0.1, )",
-          "Microsoft.Extensions.Hosting": "[8.0.1, )",
-          "Microsoft.Extensions.Logging": "[8.0.1, )",
-          "Microsoft.Extensions.Logging.Configuration": "[8.0.1, )",
+          "Microsoft.Extensions.Configuration.Abstractions": "[8.0.*, )",
+          "Microsoft.Extensions.Configuration.CommandLine": "[8.0.*, )",
+          "Microsoft.Extensions.Configuration.EnvironmentVariables": "[8.0.*, )",
+          "Microsoft.Extensions.Configuration.Json": "[8.0.*, )",
+          "Microsoft.Extensions.Configuration.UserSecrets": "[8.0.*, )",
+          "Microsoft.Extensions.DependencyInjection": "[8.0.*, )",
+          "Microsoft.Extensions.Hosting": "[8.0.*, )",
+          "Microsoft.Extensions.Logging": "[8.0.*, )",
+          "Microsoft.Extensions.Logging.Configuration": "[8.0.*, )",
           "NLog": "[5.3.4, )",
           "NLog.Extensions.Logging": "[5.3.15, )",
-          "Scrutor": "[6.0.1, )"
+          "Scrutor": "[6.1.0, )"
         }
       }
     }

@@ -28,5 +28,8 @@ jobs:
     - name: Build
       run: dotnet build --no-restore --configuration '${{ env.BUILD_CONFIGURATION }}'
 
+    - name: Run check-deps in Demo Application
+      run: dotnet run --project Neolution.DotNet.Console.Demo --no-build --configuration '${{ env.BUILD_CONFIGURATION }}' -- check-deps
+
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration '${{ env.BUILD_CONFIGURATION }}'

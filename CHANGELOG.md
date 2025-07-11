@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added `DotNetConsoleLogger.cs` static class to provide initialization, access, and shutdown for the logger instance used in console applications.
+
+### Changed
+
+- Updated Scrutor to v6.1.0.
+- Updated Microsoft.Extensions packages to latest patch versions.
+
+### Removed
+
+- Removed obsolete serialization constructor and `[Serializable]` attribute from `DotNetConsoleException` as formatter-based serialization is no longer supported or recommended in modern .NET.
+
 ## [5.0.0] - 2025-01-27
 
 ### Added
