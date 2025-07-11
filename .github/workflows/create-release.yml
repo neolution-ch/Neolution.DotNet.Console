@@ -50,7 +50,7 @@ jobs:
           git config user.email release-bot@neolution.ch
 
       - name: install release-it with plugins
-        run: npm install -g release-it@17.6.0 @release-it/keep-a-changelog@5.0.0
+        run: npm install -g release-it@16.10.1 @release-it/keep-a-changelog@4.3.0
 
       - name: Check Node.js version
         run: |
@@ -112,4 +112,3 @@ jobs:
           release-it "${params[@]}"
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          DEBUG: "*"

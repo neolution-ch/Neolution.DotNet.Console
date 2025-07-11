@@ -18,6 +18,5 @@
     }
   },
   "hooks": {
-    "before:git:release": "npx prettier -y --write CHANGELOG.md && git add CHANGELOG.md"
   }
 }
