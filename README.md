@@ -178,7 +178,7 @@ If validation fails, the command will exit with a non-zero code and provide deta
 
 ```sh
 # Validate your DI setup
- dotnet run -- check-deps
+dotnet run -- check-deps
 
 # Or if you have a published/built application
 myapp.exe check-deps
