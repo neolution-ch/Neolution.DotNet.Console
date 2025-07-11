@@ -50,7 +50,7 @@ jobs:
           git config user.email release-bot@neolution.ch
 
       - name: install release-it with plugins
-        run: npm install -g release-it@16.10.1 @release-it/keep-a-changelog@4.3.0
+        run: npm install -g release-it@17.6.0
 
       - name: Check Node.js version
         run: |
