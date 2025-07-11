@@ -9,9 +9,16 @@
   "github": {
     "release": true,
     "releaseName": "Release ${version}",
-    "releaseNotes": null
+    "releaseNotes": "auto"
   },
   "plugins": {
+    "@release-it/keep-a-changelog": {
+      "filename": "CHANGELOG.md",
+      "strictLatest": false,
+      "addUnreleased": true,
+      "head": "Unreleased",
+      "keepUnreleased": "${preRelease}"
+    }
   },
   "hooks": {
   }
