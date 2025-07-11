@@ -98,7 +98,9 @@ jobs:
           fi
 
           params+=(--ci)
-          params+=(--verbose)          echo "=== RELEASE-IT EXECUTION ==="
+          params+=(--verbose)
+
+          echo "=== RELEASE-IT EXECUTION ==="
           echo "command: release-it ${params[@]}"
           echo "Working directory: $(pwd)"
           echo "Git status:"
