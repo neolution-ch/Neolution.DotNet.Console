@@ -38,7 +38,7 @@ Install-Package Neolution.DotNet.Console
 
 ## Getting Started
 
-To help you kickstart your console application, we've provided a [sample application](/Neolution.DotNet.Console.SampleAsync/Program.cs) that demonstrates the basic usage of this package.
+To help you kickstart your console application, we've provided a [demo application](/Neolution.DotNet.Console.Demo/Program.cs) that demonstrates the basic usage of this package.
 
 ### Example Main Method with Startup Class (Recommended)
 
@@ -46,7 +46,7 @@ Below is the recommended pattern for your `Program.cs` entry point, using a `Sta
 
 ```csharp
 // Program.cs
-namespace Neolution.DotNet.Console.SampleAsync
+namespace Neolution.DotNet.Console.Demo
 {
     public static class Program
     {
@@ -80,7 +80,7 @@ namespace Neolution.DotNet.Console.SampleAsync
 
 ```csharp
 // Startup.cs
-namespace Neolution.DotNet.Console.SampleAsync
+namespace Neolution.DotNet.Console.Demo
 {
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;

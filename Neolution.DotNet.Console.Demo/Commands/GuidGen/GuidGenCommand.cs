@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.SampleAsync.Commands.GuidGen
+﻿namespace Neolution.DotNet.Console.Demo.Commands.GuidGen
 {
     using System;
     using System.Globalization;

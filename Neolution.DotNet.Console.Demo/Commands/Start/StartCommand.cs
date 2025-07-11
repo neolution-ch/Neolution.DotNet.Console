@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.SampleAsync.Commands.Start
+﻿namespace Neolution.DotNet.Console.Demo.Commands.Start
 {
     using System;
     using Microsoft.Extensions.Logging;

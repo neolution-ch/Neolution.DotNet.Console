@@ -1,12 +1,12 @@
 {
   "profiles": {
-    "Sample Console App": {
+    "Demo Console App": {
       "commandName": "Project",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    "Sample Console App: check-deps": {
+    "Demo Console App: check-deps": {
       "commandName": "Project",
       "commandLineArgs": "check-deps",
       "environmentVariables": {

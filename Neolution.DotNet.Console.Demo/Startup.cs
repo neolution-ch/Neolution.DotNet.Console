@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.SampleAsync
+﻿namespace Neolution.DotNet.Console.Demo
 {
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -37,6 +37,8 @@
         /// <param name="services">The services.</param>
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient();
+
             // EXAMPLE 1: Configure services based on the environment
             if (this.Environment.IsDevelopment())
             {

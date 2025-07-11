@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.SampleAsync
+﻿namespace Neolution.DotNet.Console.Demo
 {
     /// <summary>
     /// The program

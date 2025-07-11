@@ -1,4 +1,4 @@
-﻿namespace Neolution.DotNet.Console.SampleAsync.Commands.Echo
+﻿namespace Neolution.DotNet.Console.Demo.Commands.Echo
 {
     using System;
     using Microsoft.Extensions.Configuration;
