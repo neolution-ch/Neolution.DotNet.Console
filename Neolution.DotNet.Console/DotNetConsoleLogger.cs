@@ -39,19 +39,18 @@
         /// <param name="configuration">The configuration used to initialize the logger.</param>
         public static void Initialize(IConfiguration configuration)
         {
-            ConsoleTarget? consoleTarget = null;
             try
             {
                 logger = LogManager.Setup().LoadConfigurationFromSection(configuration).GetCurrentClassLogger();
             }
             catch (Exception ex)
             {
-                // Create a simple NLog configuration that logs to the console
-                var config = new NLog.Config.LoggingConfiguration();
-                consoleTarget = new ConsoleTarget("console");
+                // Create a console target for fallback logging
+                var consoleTarget = new ConsoleTarget("console");
 
                 try
                 {
+                    var config = new NLog.Config.LoggingConfiguration();
                     config.AddRule(LogLevel.Trace, LogLevel.Fatal, consoleTarget);
                     LogManager.Configuration = config;
                     logger = LogManager.GetCurrentClassLogger();
