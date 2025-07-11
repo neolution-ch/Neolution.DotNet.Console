@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `DotNetConsoleLogger.cs` static class to provide initialization, access, and shutdown for the logger instance used in console applications.
 
+### Changed
+
+- Updated Scrutor to v6.1.0.
+- Updated Microsoft.Extensions.* package references to use floating version `8.0.*` to always get the latest patch.
+
 ## [5.0.0] - 2025-01-27
 
 ### Added
