@@ -74,9 +74,10 @@ jobs:
           fi
 
           params+=(--ci)
+          params+=(--verbose)
 
           echo "command: release-it ${params[@]}"
           release-it "${params[@]}"
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          DEBUG: release-it:*
+          DEBUG: "*"
