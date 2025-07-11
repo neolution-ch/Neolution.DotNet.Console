@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated Scrutor to v6.1.0.
 - Updated Microsoft.Extensions.* package references to use floating version `8.0.*` to always get the latest patch.
 
+### Removed
+
+- Removed obsolete serialization constructor and `[Serializable]` attribute from `DotNetConsoleException` as formatter-based serialization is no longer supported or recommended in modern .NET.
+
 ## [5.0.0] - 2025-01-27
 
 ### Added
