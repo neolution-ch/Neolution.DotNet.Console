@@ -50,7 +50,7 @@ jobs:
           git config user.email release-bot@neolution.ch
 
       - name: install release-it with plugins
-        run: npm install -g release-it@18.1.2 @release-it/keep-a-changelog@6.0.0
+        run: npm install -g release-it@17.6.0 @release-it/keep-a-changelog@5.0.0
 
       - name: Check Node.js version
         run: node --version
@@ -65,8 +65,6 @@ jobs:
 
           if [[ ${{ github.event.inputs.versioning_phase }} != "stable" ]]; then
               params+=(--preRelease=${{ github.event.inputs.versioning_phase }})
-              params+=(--plugins.@release-it/keep-a-changelog.keepUnreleased)
-              params+=(--no-plugins.@release-it/keep-a-changelog.strictLatest)
           fi
 
           if [[ ${{ github.event.inputs.is_dry_run }} == "true" ]]; then
