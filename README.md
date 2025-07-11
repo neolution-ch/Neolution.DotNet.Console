@@ -181,7 +181,7 @@ If validation fails, the command will exit with a non-zero code and provide deta
  dotnet run -- check-deps
 
 # Or if you have a published/built application
- myapp.exe check-deps
+myapp.exe check-deps
 ```
 
 ### Using check-deps in CI/CD
