@@ -8,8 +8,7 @@
   },
   "github": {
     "release": true,
-    "releaseName": "Release ${version}",
-    "releaseNotes": "auto"
+    "releaseName": "Release ${version}"
   },
   "plugins": {
     "@release-it/keep-a-changelog": {
