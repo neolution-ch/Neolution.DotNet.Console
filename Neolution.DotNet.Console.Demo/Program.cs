@@ -15,8 +15,6 @@
             try
             {
                 var builder = DotNetConsole.CreateDefaultBuilder(args);
-                DotNetConsoleLogger.Initialize(builder.Configuration);
-
                 var startup = new Startup(builder.Environment, builder.Configuration);
                 startup.ConfigureServices(builder.Services);
                 var console = builder.Build();

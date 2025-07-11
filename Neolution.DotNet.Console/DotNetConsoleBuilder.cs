@@ -113,13 +113,19 @@
             var environment = DotNetConsoleDefaults.CreateConsoleEnvironment(args);
             var configuration = DotNetConsoleDefaults.CreateConsoleConfiguration(assembly, args, environment);
 
-            // Create a HostBuilder
+            // Initialize NLog logger from configuration with fallback; any config errors are handled in Initialize
+            DotNetConsoleLogger.Initialize(configuration);
+
+            // Create a HostBuilder and configure logging and services
             var builder = Host.CreateDefaultBuilder(args)
                 .UseContentRoot(environment.ContentRootPath)
-                .ConfigureLogging((context, logging) =>
+                .ConfigureLogging((_, logging) =>
                 {
+                    // Remove default providers and add core providers for debug and event sources
                     AdjustDefaultBuilderLoggingProviders(logging);
-                    logging.AddNLog(context.Configuration);
+
+                    // Add NLog provider using existing LogManager configuration
+                    logging.AddNLog();
                 })
                 .ConfigureServices((_, services) =>
                 {
@@ -137,6 +143,7 @@
             var parsedArguments = Parser.Default.ParseArguments(args, verbTypes);
             var consoleBuilder = new DotNetConsoleBuilder(builder, parsedArguments, environment, configuration);
 
+            // Determine if this is a check-deps run: only DI validation should run
             if (args.Length == 1 && string.Equals(args[0], "check-deps", StringComparison.OrdinalIgnoreCase))
             {
                 consoleBuilder.checkDependencies = true;
