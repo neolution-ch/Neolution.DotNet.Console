@@ -48,7 +48,8 @@
         {
             try
             {
-                logger = LogManager.Setup().LoadConfigurationFromSection(configuration).GetCurrentClassLogger();
+                LogManager.Setup().LoadConfigurationFromSection(configuration);
+                logger = LogManager.GetCurrentClassLogger();
             }
             catch (Exception ex)
             {
