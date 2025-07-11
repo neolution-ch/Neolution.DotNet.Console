@@ -52,6 +52,9 @@ jobs:
       - name: install release-it with plugins
         run: npm install -g release-it @release-it/keep-a-changelog
 
+      - name: Check Node.js version
+        run: node --version
+
       - name: run release-it
         run: |
           params=()
@@ -76,3 +79,4 @@ jobs:
           release-it "${params[@]}"
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          DEBUG: release-it:*
