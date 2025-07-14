@@ -89,8 +89,8 @@
                 this.hostBuilder.UseEnvironment("Development");
                 this.hostBuilder.Build();
 
-                // If build was successful and did not throw an exception, return a console that does nothing and then terminates.
-                return new NoOperationConsole();
+                // If build was successful and did not throw an exception, return a console that logs a success message and then terminates.
+                return new CheckDepsConsole();
             }
 
             var host = this.hostBuilder.Build();
