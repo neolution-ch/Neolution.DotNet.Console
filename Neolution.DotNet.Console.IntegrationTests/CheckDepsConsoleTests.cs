@@ -1,7 +1,6 @@
 ﻿namespace Neolution.DotNet.Console.IntegrationTests
 {
     using System.Diagnostics;
-    using System.IO;
     using System.Threading.Tasks;
     using Shouldly;
     using Xunit;
@@ -9,8 +8,22 @@
     /// <summary>
     /// Integration tests for the CheckDepsConsole scenario.
     /// </summary>
-    public class CheckDepsConsoleTests
+    public class CheckDepsConsoleTests : IClassFixture<SolutionDirectoryFixture>
     {
+        /// <summary>
+        /// The fixture that provides solution and project paths.
+        /// </summary>
+        private readonly SolutionDirectoryFixture fixture;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CheckDepsConsoleTests"/> class.
+        /// </summary>
+        /// <param name="fixture">The solution directory fixture.</param>
+        public CheckDepsConsoleTests(SolutionDirectoryFixture fixture)
+        {
+            this.fixture = fixture;
+        }
+
         /// <summary>
         /// Given the Demo app, when run with 'check-deps', then it prints the expected DI validation message.
         /// </summary>
@@ -19,26 +32,33 @@
         public async Task GivenDemoApp_WhenRunWithCheckDeps_ThenPrintsDependencyInjectionValidationSucceeded()
         {
             // Arrange
-            // Find the solution directory by traversing up from the current directory
-            var dir = Directory.GetCurrentDirectory();
-            while (dir != null && !File.Exists(Path.Combine(dir, "Neolution.DotNet.Console.sln")))
+            var restorePsi = new ProcessStartInfo
             {
-                dir = Path.GetDirectoryName(dir);
+                FileName = "dotnet",
+                Arguments = $"restore \"{this.fixture.DemoProjectPath}\"",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            };
+
+            using (var restoreProcess = Process.Start(restorePsi))
+            {
+                if (restoreProcess is null)
+                {
+                    throw new System.InvalidOperationException("Failed to start dotnet restore for Demo app.");
+                }
+
+                await restoreProcess.StandardOutput.ReadToEndAsync();
+                await restoreProcess.StandardError.ReadToEndAsync();
+                await restoreProcess.WaitForExitAsync();
+                restoreProcess.ExitCode.ShouldBe(0, "dotnet restore failed for Demo app");
             }
 
-            if (dir is null)
-            {
-                throw new DirectoryNotFoundException("Could not find solution directory.");
-            }
-
-            var solutionDir = dir;
-            var demoProjPath = Path.Combine(solutionDir, "Neolution.DotNet.Console.Demo", "Neolution.DotNet.Console.Demo.csproj");
-
-            File.Exists(demoProjPath).ShouldBeTrue($"Demo project file not found: {demoProjPath}");
             var psi = new ProcessStartInfo
             {
                 FileName = "dotnet",
-                Arguments = $"run --project \"{demoProjPath}\" check-deps",
+                Arguments = $"run --project \"{this.fixture.DemoProjectPath}\" check-deps",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
