@@ -85,7 +85,9 @@
 
             if (this.checkDependencies)
             {
-                // Use development environment before building because that's where ValidateScopes and ValidateOnBuild are enabled.
+                // Ensure development environment is used for dependency checking
+                // Note: The environment should already be set to Development during CreateConsoleEnvironment
+                // but we explicitly set it here as well to ensure ValidateScopes and ValidateOnBuild are enabled.
                 this.hostBuilder.UseEnvironment("Development");
                 this.hostBuilder.Build();
 
@@ -144,7 +146,7 @@
             var consoleBuilder = new DotNetConsoleBuilder(builder, parsedArguments, environment, configuration);
 
             // Determine if this is a check-deps run: only DI validation should run
-            if (args.Length == 1 && string.Equals(args[0], "check-deps", StringComparison.OrdinalIgnoreCase))
+            if (DotNetConsoleDefaults.IsCheckDependenciesRun(args))
             {
                 consoleBuilder.checkDependencies = true;
                 return consoleBuilder;
