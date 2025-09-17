@@ -34,6 +34,11 @@
         private readonly ServiceCollection serviceCollection = new();
 
         /// <summary>
+        /// List of configuration delegates to be applied during host building.
+        /// </summary>
+        private readonly List<Action<HostBuilderContext, IConfigurationBuilder>> configurationDelegates = new();
+
+        /// <summary>
         /// Run only to check dependencies.
         /// </summary>
         private bool checkDependencies;
@@ -67,6 +72,19 @@
         /// Gets the collection of services for the application to compose. This is useful for adding user provided or framework provided services.
         /// </summary>
         public IServiceCollection Services => this.serviceCollection;
+
+        /// <summary>
+        /// Adds a delegate for configuring additional configuration sources for the application.
+        /// </summary>
+        /// <param name="configureDelegate">The delegate for configuring the configuration builder.</param>
+        /// <returns>The <see cref="DotNetConsoleBuilder"/>.</returns>
+        public DotNetConsoleBuilder ConfigureAppConfiguration(Action<HostBuilderContext, IConfigurationBuilder> configureDelegate)
+        {
+            ArgumentNullException.ThrowIfNull(configureDelegate);
+
+            this.configurationDelegates.Add(configureDelegate);
+            return this;
+        }
 
         /// <summary>
         /// Builds this instance.
@@ -136,6 +154,16 @@
 
             var parsedArguments = Parser.Default.ParseArguments(args, verbTypes);
             var consoleBuilder = new DotNetConsoleBuilder(builder, parsedArguments, environment, configuration);
+
+            // Apply any custom configuration delegates that will be added later via ConfigureAppConfiguration
+            builder.ConfigureAppConfiguration((context, configBuilder) =>
+            {
+                // Apply all stored configuration delegates
+                foreach (var configureDelegate in consoleBuilder.configurationDelegates)
+                {
+                    configureDelegate(context, configBuilder);
+                }
+            });
 
             if (args.Length == 1 && string.Equals(args[0], "check-deps", StringComparison.OrdinalIgnoreCase))
             {
