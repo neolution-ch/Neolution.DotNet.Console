@@ -2,16 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using CommandLine;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Logging;
     using Neolution.DotNet.Console.Abstractions;
     using Neolution.DotNet.Console.Internal;
-    using NLog.Extensions.Logging;
 
     /// <summary>
     /// The console application builder.
@@ -34,24 +31,9 @@
         private readonly ServiceCollection serviceCollection = new();
 
         /// <summary>
-        /// List of configuration delegates to be applied during host building.
+        /// The configuration manager
         /// </summary>
-        private readonly List<Action<HostBuilderContext, IConfigurationBuilder>> configurationDelegates = new();
-
-        /// <summary>
-        /// The initial configuration builder used to create dynamic configuration
-        /// </summary>
-        private readonly IConfigurationBuilder configurationBuilder;
-
-        /// <summary>
-        /// The host builder context used for dynamic configuration building
-        /// </summary>
-        private readonly HostBuilderContext hostBuilderContext;
-
-        /// <summary>
-        /// The built configuration root - built once when first accessed
-        /// </summary>
-        private IConfigurationRoot? builtConfiguration;
+        private readonly ConsoleConfigurationManager configurationManager;
 
         /// <summary>
         /// Run only to check dependencies.
@@ -72,12 +54,14 @@
             this.hostBuilder = hostBuilder;
             this.commandLineParserResult = commandLineParserResult;
             this.Environment = environment;
-            this.configurationBuilder = configurationBuilder;
-            this.hostBuilderContext = new HostBuilderContext(new Dictionary<object, object>())
+
+            var hostBuilderContext = new HostBuilderContext(new Dictionary<object, object>())
             {
                 HostingEnvironment = environment,
                 Configuration = configurationBuilder.Build(),
             };
+
+            this.configurationManager = new ConsoleConfigurationManager(configurationBuilder, hostBuilderContext);
         }
 
         /// <summary>
@@ -88,35 +72,7 @@
         /// <summary>
         /// Gets a collection of configuration providers for the application to compose. This is useful for adding new configuration sources and providers.
         /// </summary>
-        public IConfiguration Configuration
-        {
-            get
-            {
-                // Build the configuration once when first accessed, similar to Microsoft's approach
-                if (this.builtConfiguration == null)
-                {
-                    // Create a new configuration builder based on the initial one
-                    var configBuilder = new ConfigurationBuilder();
-
-                    // Add all sources from the initial configuration builder
-                    foreach (var source in this.configurationBuilder.Sources)
-                    {
-                        configBuilder.Add(source);
-                    }
-
-                    // Apply all configuration delegates that have been added via ConfigureAppConfiguration
-                    foreach (var configureDelegate in this.configurationDelegates)
-                    {
-                        configureDelegate(this.hostBuilderContext, configBuilder);
-                    }
-
-                    // Build and store the configuration root
-                    this.builtConfiguration = configBuilder.Build();
-                }
-
-                return this.builtConfiguration;
-            }
-        }
+        public IConfiguration Configuration => this.configurationManager.Configuration;
 
         /// <summary>
         /// Gets the collection of services for the application to compose. This is useful for adding user provided or framework provided services.
@@ -130,13 +86,7 @@
         /// <returns>The <see cref="DotNetConsoleBuilder"/>.</returns>
         public DotNetConsoleBuilder ConfigureAppConfiguration(Action<HostBuilderContext, IConfigurationBuilder> configureDelegate)
         {
-            ArgumentNullException.ThrowIfNull(configureDelegate);
-
-            this.configurationDelegates.Add(configureDelegate);
-
-            // Reset the built configuration so it gets rebuilt on next access
-            this.builtConfiguration = null;
-
+            this.configurationManager.AddConfigurationDelegate(configureDelegate);
             return this;
         }
 
@@ -186,103 +136,28 @@
             var configBuilder = DotNetConsoleDefaults.CreateConsoleConfigurationBuilder(assembly, args, environment);
 
             // Create a HostBuilder
-            var builder = Host.CreateDefaultBuilder(args)
-                .UseContentRoot(environment.ContentRootPath)
-                .ConfigureLogging((context, logging) =>
-                {
-                    AdjustDefaultBuilderLoggingProviders(logging);
-                    logging.AddNLog(context.Configuration);
-                })
-                .ConfigureServices((_, services) =>
-                {
-                    // Register all commands found in the entry assembly.
-                    services.Scan(selector => selector.FromAssemblies(assembly)
-                        .AddClasses(classes => classes.AssignableTo(typeof(IDotNetConsoleCommand<>)))
-                        .AsImplementedInterfaces());
-                });
+            var builder = ConsoleHostBuilderConfigurator.CreateConfiguredHostBuilder(assembly, args, environment);
 
-            // If verb types were not specified, compile all available verbs for this run by looking for classes with the Verb attribute in the specified assembly
-            verbTypes ??= assembly.GetTypes()
-                .Where(t => t.GetCustomAttribute<VerbAttribute>() != null)
-                .ToArray();
-
-            var parsedArguments = Parser.Default.ParseArguments(args, verbTypes);
+            var parsedArguments = CommandLineProcessor.ParseArguments(assembly, verbTypes, args);
             var consoleBuilder = new DotNetConsoleBuilder(builder, parsedArguments, environment, configBuilder);
 
             // Apply any custom configuration delegates that will be added later via ConfigureAppConfiguration
             builder.ConfigureAppConfiguration((context, configBuilder) =>
             {
                 // Apply all stored configuration delegates
-                foreach (var configureDelegate in consoleBuilder.configurationDelegates)
+                foreach (var configureDelegate in consoleBuilder.configurationManager.ConfigurationDelegates)
                 {
                     configureDelegate(context, configBuilder);
                 }
             });
 
-            if (args.Length == 1 && string.Equals(args[0], "check-deps", StringComparison.OrdinalIgnoreCase))
+            if (CommandLineProcessor.IsCheckDependenciesRequest(args))
             {
                 consoleBuilder.checkDependencies = true;
                 return consoleBuilder;
             }
 
-            CheckStrictVerbMatching(args, verbTypes);
             return consoleBuilder;
-        }
-
-        /// <summary>
-        /// Adjusts the default builder logging providers.
-        /// </summary>
-        /// <param name="logging">The logging.</param>
-        private static void AdjustDefaultBuilderLoggingProviders(ILoggingBuilder logging)
-        {
-            // Remove the default logging providers
-            logging.ClearProviders();
-
-            // Re-add other logging providers that are assigned in Host.CreateDefaultBuilder
-            logging.AddDebug();
-            logging.AddEventSourceLogger();
-
-            if (OperatingSystem.IsWindows())
-            {
-                // Add the EventLogLoggerProvider on windows machines
-                logging.AddEventLog();
-            }
-        }
-
-        /// <summary>
-        /// Enforce strict verb matching if one verb is marked as default. Otherwise, the default verb will be executed even if that was not the users intention.
-        /// </summary>
-        /// <param name="args">The arguments.</param>
-        /// <param name="availableVerbTypes">The available verb types.</param>
-        /// <exception cref="Neolution.DotNet.Console.DotNetConsoleException">Cannot create builder, because the specified verb '{firstVerb}' matches no command.</exception>
-        private static void CheckStrictVerbMatching(string[] args, Type[] availableVerbTypes)
-        {
-            var availableVerbs = availableVerbTypes.Select(t => t.GetCustomAttribute<VerbAttribute>()!).ToList();
-            if (!availableVerbs.Any(v => v.IsDefault))
-            {
-                // If no default verb is defined, we do not enforce strict verb matching
-                return;
-            }
-
-            var firstVerb = args.FirstOrDefault();
-            if (string.IsNullOrWhiteSpace(firstVerb) || firstVerb.StartsWith('-'))
-            {
-                // If the user passed no verb, but a default verb is defined, the default verb will be executed
-                return;
-            }
-
-            // Names reserved by CommandLineParser library
-            var validFirstArguments = new List<string> { "--help", "--version", "help", "version" };
-
-            // Names of all available verbs
-            validFirstArguments.AddRange(availableVerbs.Select(t => t.Name));
-
-            // Check if the first argument can be found in the list of valid arguments
-            var verbMatched = validFirstArguments.Any(v => v.Equals(firstVerb, StringComparison.OrdinalIgnoreCase));
-            if (!verbMatched)
-            {
-                throw new DotNetConsoleException($"Cannot create builder, because the specified verb '{firstVerb}' matches no command.");
-            }
         }
     }
 }
