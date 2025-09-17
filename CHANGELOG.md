@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `ConfigureAppConfiguration` method to `DotNetConsoleBuilder` (re-)enabling custom configuration providers
 
+## Fixed
+
+- Fixed configuration provider timing: `DotNetConsole.Configuration` now properly reflects all configuration providers (including those added via `ConfigureAppConfiguration`) when accessed early in the application lifecycle. 
+
 ## [5.0.0] - 2025-01-27
 
 ### Added

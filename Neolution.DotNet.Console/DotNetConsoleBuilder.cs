@@ -39,6 +39,21 @@
         private readonly List<Action<HostBuilderContext, IConfigurationBuilder>> configurationDelegates = new();
 
         /// <summary>
+        /// The initial configuration builder used to create dynamic configuration
+        /// </summary>
+        private readonly IConfigurationBuilder configurationBuilder;
+
+        /// <summary>
+        /// The host builder context used for dynamic configuration building
+        /// </summary>
+        private readonly HostBuilderContext hostBuilderContext;
+
+        /// <summary>
+        /// The built configuration root - built once when first accessed
+        /// </summary>
+        private IConfigurationRoot? builtConfiguration;
+
+        /// <summary>
         /// Run only to check dependencies.
         /// </summary>
         private bool checkDependencies;
@@ -49,13 +64,20 @@
         /// <param name="hostBuilder">The host builder.</param>
         /// <param name="commandLineParserResult">The command line parser result.</param>
         /// <param name="environment">The environment.</param>
-        /// <param name="configuration">The configuration.</param>
-        public DotNetConsoleBuilder(IHostBuilder hostBuilder, ParserResult<object> commandLineParserResult, IHostEnvironment environment, IConfiguration configuration)
+        /// <param name="configurationBuilder">The initial configuration builder.</param>
+        internal DotNetConsoleBuilder(IHostBuilder hostBuilder, ParserResult<object> commandLineParserResult, IHostEnvironment environment, IConfigurationBuilder configurationBuilder)
         {
+            ArgumentNullException.ThrowIfNull(configurationBuilder);
+
             this.hostBuilder = hostBuilder;
             this.commandLineParserResult = commandLineParserResult;
             this.Environment = environment;
-            this.Configuration = configuration;
+            this.configurationBuilder = configurationBuilder;
+            this.hostBuilderContext = new HostBuilderContext(new Dictionary<object, object>())
+            {
+                HostingEnvironment = environment,
+                Configuration = configurationBuilder.Build(),
+            };
         }
 
         /// <summary>
@@ -66,7 +88,35 @@
         /// <summary>
         /// Gets a collection of configuration providers for the application to compose. This is useful for adding new configuration sources and providers.
         /// </summary>
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration
+        {
+            get
+            {
+                // Build the configuration once when first accessed, similar to Microsoft's approach
+                if (this.builtConfiguration == null)
+                {
+                    // Create a new configuration builder based on the initial one
+                    var configBuilder = new ConfigurationBuilder();
+
+                    // Add all sources from the initial configuration builder
+                    foreach (var source in this.configurationBuilder.Sources)
+                    {
+                        configBuilder.Add(source);
+                    }
+
+                    // Apply all configuration delegates that have been added via ConfigureAppConfiguration
+                    foreach (var configureDelegate in this.configurationDelegates)
+                    {
+                        configureDelegate(this.hostBuilderContext, configBuilder);
+                    }
+
+                    // Build and store the configuration root
+                    this.builtConfiguration = configBuilder.Build();
+                }
+
+                return this.builtConfiguration;
+            }
+        }
 
         /// <summary>
         /// Gets the collection of services for the application to compose. This is useful for adding user provided or framework provided services.
@@ -83,6 +133,10 @@
             ArgumentNullException.ThrowIfNull(configureDelegate);
 
             this.configurationDelegates.Add(configureDelegate);
+
+            // Reset the built configuration so it gets rebuilt on next access
+            this.builtConfiguration = null;
+
             return this;
         }
 
@@ -129,7 +183,7 @@
             // Create configuration and environment instances that are only valid before the host is built.
             // We want to expose these as read-only properties in the DotNetConsoleBuilder.
             var environment = DotNetConsoleDefaults.CreateConsoleEnvironment(args);
-            var configuration = DotNetConsoleDefaults.CreateConsoleConfiguration(assembly, args, environment);
+            var configBuilder = DotNetConsoleDefaults.CreateConsoleConfigurationBuilder(assembly, args, environment);
 
             // Create a HostBuilder
             var builder = Host.CreateDefaultBuilder(args)
@@ -153,7 +207,7 @@
                 .ToArray();
 
             var parsedArguments = Parser.Default.ParseArguments(args, verbTypes);
-            var consoleBuilder = new DotNetConsoleBuilder(builder, parsedArguments, environment, configuration);
+            var consoleBuilder = new DotNetConsoleBuilder(builder, parsedArguments, environment, configBuilder);
 
             // Apply any custom configuration delegates that will be added later via ConfigureAppConfiguration
             builder.ConfigureAppConfiguration((context, configBuilder) =>
