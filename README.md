@@ -14,6 +14,18 @@ To help you kickstart your console application, we've provided a a [sample appli
 
 To support cancellation tokens, the `IDotNetConsoleCommand` interface had to be changed: The `RunAsync` method now requires also a `CancellationToken` as a parameter. This change is breaking, so you will need to update your commands to reflect this change.
 
+### ConfigureAppConfiguration
+
+The [`ConfigureAppConfiguration`](Neolution.DotNet.Console/DotNetConsoleBuilder.cs:81) method is now part of the `DotNetConsoleBuilder` and can be called after the builder has been instantiated.
+
+```csharp
+var builder = DotNetConsole.CreateDefaultBuilder(args);
+builder.ConfigureAppConfiguration((context, config) =>
+{
+    config.AddGoogleSecrets(options => { /* configuration */ });
+});
+```
+
 ## Migrate from V2 to V3
 
 In .NET 6 the hosting model for ASP.NET Core applications was changed, we adjusted to that to fulfill the primary goal of this package: to provide a seamless and intuitive user experience. This introduces breaking changes that are explained below.
