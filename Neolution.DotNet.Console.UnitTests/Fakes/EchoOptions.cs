@@ -15,7 +15,7 @@
         /// The message.
         /// </value>
         [Value(0)]
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the echo should be printed in upper case.
