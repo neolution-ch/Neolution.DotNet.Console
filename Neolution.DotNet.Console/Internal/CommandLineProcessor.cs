@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Reflection;
     using CommandLine;
+    using Neolution.DotNet.Console.Attributes;
 
     /// <summary>
     /// Handles command line argument parsing and validation.
@@ -25,6 +26,18 @@
             if (!IsCheckDependenciesRequest(args))
             {
                 CheckStrictVerbMatching(args, verbTypes);
+            }
+
+            // Check if any verb type is marked for custom argument parsing
+            // This supports customers who manually parse arguments in their command
+            if (HasCustomArgumentParsing(verbTypes))
+            {
+                using var parser = new Parser(settings =>
+                {
+                    settings.IgnoreUnknownArguments = true;
+                    settings.CaseSensitive = false;
+                });
+                return parser.ParseArguments(args, verbTypes);
             }
 
             return Parser.Default.ParseArguments(args, verbTypes);
@@ -85,6 +98,16 @@
             {
                 throw new DotNetConsoleException($"Cannot create builder, because the specified verb '{firstVerb}' matches no command.");
             }
+        }
+
+        /// <summary>
+        /// Determines if any verb type has the CustomArgumentParsing attribute.
+        /// </summary>
+        /// <param name="verbTypes">The available verb types.</param>
+        /// <returns>True if any verb type uses custom argument parsing, false otherwise.</returns>
+        private static bool HasCustomArgumentParsing(Type[] verbTypes)
+        {
+            return verbTypes.Any(t => t.GetCustomAttribute<CustomArgumentParsingAttribute>() != null);
         }
     }
 }

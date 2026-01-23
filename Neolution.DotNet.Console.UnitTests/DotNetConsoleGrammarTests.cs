@@ -188,7 +188,9 @@
         /// <returns>A built console app ready to run.</returns>
         private static IDotNetConsole CreateConsoleAppWithLogger(string args, IUnitTestLogger tracker)
         {
-            var builder = DotNetConsole.CreateBuilderWithReference(Assembly.GetAssembly(typeof(DefaultCommand))!, args.Split(" "));
+            var servicesAssembly = Assembly.GetAssembly(typeof(DefaultCommand))!;
+            var verbTypes = new[] { typeof(DefaultOptions), typeof(EchoOptions) };
+            var builder = DotNetConsole.CreateBuilderWithReference(servicesAssembly, verbTypes, args.Split(" "));
 
             builder.Services.Replace(new ServiceDescriptor(typeof(IUnitTestLogger), tracker));
 

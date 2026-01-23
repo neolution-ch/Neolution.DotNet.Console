@@ -32,7 +32,9 @@
             Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", environmentName);
 
             const string commandLineString = "default";
-            var builder = DotNetConsole.CreateBuilderWithReference(Assembly.GetAssembly(typeof(DefaultCommand))!, commandLineString.Split(" "));
+            var servicesAssembly = Assembly.GetAssembly(typeof(DefaultCommand))!;
+            var verbTypes = new[] { typeof(DefaultOptions), typeof(EchoOptions) };
+            var builder = DotNetConsole.CreateBuilderWithReference(servicesAssembly, verbTypes, commandLineString.Split(" "));
 
             if (builder.Environment.IsDevelopment())
             {
