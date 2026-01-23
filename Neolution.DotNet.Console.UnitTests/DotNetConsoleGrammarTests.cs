@@ -119,6 +119,48 @@
         }
 
         /// <summary>
+        /// When calling the console app with parameters but without specifying the default verb, it should run the default command with those parameters.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        [Fact]
+        public async Task GivenBuiltConsoleApp_WhenCallingDefaultVerbWithParametersWithoutVerb_ThenShouldRunDefaultVerbWithParameters()
+        {
+            // Arrange
+            const string args = "--option=Queue --tenantId=1234";
+            var logger = new UnitTestLogger();
+            var console = CreateConsoleAppWithLogger(args, logger);
+
+            // Act
+            await console.RunAsync();
+
+            // Assert
+            var options = (DefaultOptions)logger.LoggedObjects["options"];
+            options.Option.ShouldBe("Queue");
+            options.TenantId.ShouldBe("1234");
+        }
+
+        /// <summary>
+        /// When calling the console app with parameters and explicitly specifying the default verb, it should run the default command with those parameters.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        [Fact]
+        public async Task GivenBuiltConsoleApp_WhenCallingDefaultVerbWithParametersWithVerb_ThenShouldRunDefaultVerbWithParameters()
+        {
+            // Arrange
+            const string args = "default --option=Queue --tenantId=1234";
+            var logger = new UnitTestLogger();
+            var console = CreateConsoleAppWithLogger(args, logger);
+
+            // Act
+            await console.RunAsync();
+
+            // Assert
+            var options = (DefaultOptions)logger.LoggedObjects["options"];
+            options.Option.ShouldBe("Queue");
+            options.TenantId.ShouldBe("1234");
+        }
+
+        /// <summary>
         /// Creates the console application with logger.
         /// </summary>
         /// <param name="args">The arguments.</param>
