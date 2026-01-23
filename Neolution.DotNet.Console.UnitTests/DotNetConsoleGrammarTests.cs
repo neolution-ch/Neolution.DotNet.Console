@@ -161,6 +161,26 @@
         }
 
         /// <summary>
+        /// When calling the console app with parameters but without specifying the default verb, and the default options have no properties, it should still run the default command.
+        /// This reproduces a customer scenario where they defined isDefault but parse arguments manually in the command.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        [Fact]
+        public async Task GivenBuiltConsoleAppWithDefaultVerbWithoutProperties_WhenCallingWithParametersWithoutVerb_ThenShouldRunDefaultVerb()
+        {
+            // Arrange
+            const string args = "--option=Queue --tenantId=1234";
+            var logger = new UnitTestLogger();
+            var console = CreateConsoleAppWithLoggerForDefaultWithoutProperties(args, logger);
+
+            // Act
+            await console.RunAsync();
+
+            // Assert
+            logger.LoggedObjects["options"].ShouldBeOfType<DefaultOptionsWithoutProperties>();
+        }
+
+        /// <summary>
         /// Creates the console application with logger.
         /// </summary>
         /// <param name="args">The arguments.</param>
@@ -169,6 +189,23 @@
         private static IDotNetConsole CreateConsoleAppWithLogger(string args, IUnitTestLogger tracker)
         {
             var builder = DotNetConsole.CreateBuilderWithReference(Assembly.GetAssembly(typeof(DefaultCommand))!, args.Split(" "));
+
+            builder.Services.Replace(new ServiceDescriptor(typeof(IUnitTestLogger), tracker));
+
+            return builder.Build();
+        }
+
+        /// <summary>
+        /// Creates the console application with logger for default command without properties.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <param name="tracker">The logger.</param>
+        /// <returns>A built console app ready to run.</returns>
+        private static IDotNetConsole CreateConsoleAppWithLoggerForDefaultWithoutProperties(string args, IUnitTestLogger tracker)
+        {
+            var servicesAssembly = Assembly.GetAssembly(typeof(DefaultCommandWithoutProperties))!;
+            var verbTypes = new[] { typeof(DefaultOptionsWithoutProperties) };
+            var builder = DotNetConsole.CreateBuilderWithReference(servicesAssembly, verbTypes, args.Split(" "));
 
             builder.Services.Replace(new ServiceDescriptor(typeof(IUnitTestLogger), tracker));
 
