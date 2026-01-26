@@ -10,8 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `ConfigureAppConfiguration` method to `DotNetConsoleBuilder` (re-)enabling custom configuration providers
+- `CustomArgumentParsingAttribute` to allow verbs to accept unknown arguments for manual parsing
 
-## Fixed
+### Fixed
 
 - Fixed configuration provider timing: `DotNetConsole.Configuration` now properly reflects all configuration providers (including those added via `ConfigureAppConfiguration`) when accessed early in the application lifecycle.
 
