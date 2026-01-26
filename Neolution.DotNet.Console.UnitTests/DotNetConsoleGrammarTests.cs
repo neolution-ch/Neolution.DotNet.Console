@@ -181,6 +181,78 @@
         }
 
         /// <summary>
+        /// When calling a non-default verb with custom argument parsing and unknown arguments, it should succeed.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        [Fact]
+        public async Task GivenNonDefaultVerbWithCustomArgumentParsing_WhenCallingWithUnknownArgs_ThenShouldSucceed()
+        {
+            // Arrange
+            const string args = "process --custom-arg=value --another-arg";
+            var logger = new UnitTestLogger();
+            var servicesAssembly = Assembly.GetAssembly(typeof(ProcessCommand))!;
+            var verbTypes = new[] { typeof(ProcessOptions) };
+            var builder = DotNetConsole.CreateBuilderWithReference(servicesAssembly, verbTypes, args.Split(" "));
+            builder.Services.Replace(new ServiceDescriptor(typeof(IUnitTestLogger), logger));
+            var console = builder.Build();
+
+            // Act
+            await console.RunAsync();
+
+            // Assert
+            logger.LoggedObjects["options"].ShouldBeOfType<ProcessOptions>();
+        }
+
+        /// <summary>
+        /// When calling a verb with custom argument parsing and some defined properties, it should parse known args and ignore unknown ones.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        [Fact]
+        public async Task GivenVerbWithCustomArgumentParsingAndProperties_WhenCallingWithMixedArgs_ThenShouldParseKnownAndIgnoreUnknown()
+        {
+            // Arrange
+            const string args = "mixed --name=Test --count=5 --unknown-arg=ignored --another=value";
+            var logger = new UnitTestLogger();
+            var servicesAssembly = Assembly.GetAssembly(typeof(MixedCommand))!;
+            var verbTypes = new[] { typeof(MixedOptions) };
+            var builder = DotNetConsole.CreateBuilderWithReference(servicesAssembly, verbTypes, args.Split(" "));
+            builder.Services.Replace(new ServiceDescriptor(typeof(IUnitTestLogger), logger));
+            var console = builder.Build();
+
+            // Act
+            await console.RunAsync();
+
+            // Assert
+            var options = (MixedOptions)logger.LoggedObjects["options"];
+            options.Name.ShouldBe("Test");
+            options.Count.ShouldBe(5);
+        }
+
+        /// <summary>
+        /// When calling a verb without custom argument parsing attribute and unknown arguments, the command should not execute.
+        /// This ensures the default behavior still works.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        [Fact]
+        public async Task GivenVerbWithoutCustomArgumentParsing_WhenCallingWithUnknownArgs_ThenCommandShouldNotExecute()
+        {
+            // Arrange
+            const string args = "echo --unknown-option=value";
+            var logger = new UnitTestLogger();
+            var servicesAssembly = Assembly.GetAssembly(typeof(EchoCommand))!;
+            var verbTypes = new[] { typeof(EchoOptions) };
+            var builder = DotNetConsole.CreateBuilderWithReference(servicesAssembly, verbTypes, args.Split(" "));
+            builder.Services.Replace(new ServiceDescriptor(typeof(IUnitTestLogger), logger));
+            var console = builder.Build();
+
+            // Act
+            await console.RunAsync();
+
+            // Assert - command should not have executed, so logger should be empty
+            logger.LoggedObjects.ShouldBeEmpty();
+        }
+
+        /// <summary>
         /// Creates the console application with logger.
         /// </summary>
         /// <param name="args">The arguments.</param>
