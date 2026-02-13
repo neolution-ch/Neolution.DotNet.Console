@@ -44,7 +44,7 @@
         /// Initializes the logger based on the provided configuration.
         /// </summary>
         /// <param name="configuration">The configuration used to initialize the logger.</param>
-        internal static void Initialize(IConfiguration configuration)
+        public static void Initialize(IConfiguration configuration)
         {
             try
             {
