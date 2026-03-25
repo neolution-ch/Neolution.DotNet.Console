@@ -50,10 +50,39 @@ jobs:
           git config user.email release-bot@neolution.ch
 
       - name: install release-it with plugins
-        run: npm install -g release-it @release-it/keep-a-changelog
+        run: npm install -g release-it@16.3.0 @release-it/keep-a-changelog@2.1.0
+
+      - name: Check Node.js version
+        run: |
+          node --version
+          npm --version
+          echo "=== PACKAGE.JSON DEBUG ==="
+          if [ -f package.json ]; then
+            echo "package.json exists:"
+            cat package.json
+          else
+            echo "No package.json found"
+          fi
+          echo "=== RELEASE-IT CONFIG DEBUG ==="
+          if [ -f .release-it.json ]; then
+            echo ".release-it.json contents:"
+            cat .release-it.json
+          else
+            echo "No .release-it.json found"
+          fi
+          echo "================================"
 
       - name: run release-it
         run: |
+          echo "=== WORKFLOW INPUTS DEBUG ==="
+          echo "bump_version_number: '${{ github.event.inputs.bump_version_number }}'"
+          echo "versioning_phase: '${{ github.event.inputs.versioning_phase }}'"
+          echo "is_dry_run: '${{ github.event.inputs.is_dry_run }}'"
+          echo "GITHUB_TOKEN (first 10 chars): ${GITHUB_TOKEN:0:10}..."
+          echo "Node.js version: $(node --version)"
+          echo "release-it version: $(release-it --version)"
+          echo "================================"
+
           params=()
 
           if [[ ${{ github.event.inputs.bump_version_number }} != "consecutive" ]]; then
@@ -62,8 +91,6 @@ jobs:
 
           if [[ ${{ github.event.inputs.versioning_phase }} != "stable" ]]; then
               params+=(--preRelease=${{ github.event.inputs.versioning_phase }})
-              params+=(--plugins.@release-it/keep-a-changelog.keepUnreleased)
-              params+=(--no-plugins.@release-it/keep-a-changelog.strictLatest)
           fi
 
           if [[ ${{ github.event.inputs.is_dry_run }} == "true" ]]; then
@@ -71,8 +98,17 @@ jobs:
           fi
 
           params+=(--ci)
+          params+=(--verbose)
 
+          echo "=== RELEASE-IT EXECUTION ==="
           echo "command: release-it ${params[@]}"
+          echo "Working directory: $(pwd)"
+          echo "Git status:"
+          git status --porcelain
+          echo "Git tags (last 5):"
+          git tag --sort=-version:refname | head -5
+          echo "================================"
+
           release-it "${params[@]}"
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}

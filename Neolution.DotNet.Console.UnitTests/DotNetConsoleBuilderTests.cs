@@ -19,7 +19,7 @@
         /// <summary>
         /// The argument string for the internal check-deps command
         /// </summary>
-        private const string CheckDependenciesArgumentString = "check-deps";
+        private const string CheckDependenciesArgumentString = DotNetConsoleDefaults.CheckDependenciesCommand;
 
         /// <summary>
         /// Given a mistyped verb, when a default verb is defined, then should throw on console building.

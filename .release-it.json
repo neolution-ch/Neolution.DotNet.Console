@@ -7,14 +7,16 @@
     "skipChecks": true
   },
   "github": {
-    "release": true
+    "release": true,
+    "releaseName": "Release ${version}"
   },
   "plugins": {
     "@release-it/keep-a-changelog": {
       "filename": "CHANGELOG.md",
-      "addVersionUrl": true,
+      "strictLatest": false,
       "addUnreleased": true,
-      "strictLatest": false
+      "head": "Unreleased",
+      "keepUnreleased": "${preRelease}"
     }
   },
   "hooks": {

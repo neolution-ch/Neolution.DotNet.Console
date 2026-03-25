@@ -107,12 +107,14 @@
 
             if (this.checkDependencies)
             {
-                // Use development environment before building because that's where ValidateScopes and ValidateOnBuild are enabled.
+                // Ensure development environment is used for dependency checking
+                // Note: The environment should already be set to Development during CreateConsoleEnvironment
+                // but we explicitly set it here as well to ensure ValidateScopes and ValidateOnBuild are enabled.
                 this.hostBuilder.UseEnvironment("Development");
                 this.hostBuilder.Build();
 
-                // If build was successful and did not throw an exception, return a console that does nothing and then terminates.
-                return new NoOperationConsole();
+                // If build was successful and did not throw an exception, return a console that logs a success message and then terminates.
+                return new CheckDepsConsole();
             }
 
             var host = this.hostBuilder.Build();
@@ -135,6 +137,9 @@
             var environment = DotNetConsoleDefaults.CreateConsoleEnvironment(args);
             var configBuilder = DotNetConsoleDefaults.CreateConsoleConfigurationBuilder(assembly, args, environment);
 
+            // Initialize NLog logger from configuration with fallback; any config errors are handled in Initialize
+            DotNetConsoleLogger.Initialize(configBuilder.Build());
+
             // Create a HostBuilder
             var builder = ConsoleHostBuilderConfigurator.CreateConfiguredHostBuilder(assembly, args, environment);
 
@@ -151,7 +156,8 @@
                 }
             });
 
-            if (CommandLineProcessor.IsCheckDependenciesRequest(args))
+            // Determine if this is a check-deps run: only DI validation should run
+            if (DotNetConsoleDefaults.IsCheckDependenciesRun(args))
             {
                 consoleBuilder.checkDependencies = true;
                 return consoleBuilder;

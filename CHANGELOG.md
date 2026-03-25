@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Fixed loading of `appsettings.Development.json` during `check-deps` runs by forcing the Development environment for dependency validation.
 - Updated Scrutor to v6.1.0.
 - Updated Microsoft.Extensions packages to latest patch versions.
 

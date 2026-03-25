@@ -4,7 +4,6 @@
     using Microsoft.Extensions.Configuration;
     using NLog;
     using NLog.Extensions.Logging;
-    using NLog.Targets;
 
     /// <summary>
     /// Provides static methods to initialize and manage a logger instance.
@@ -26,38 +25,10 @@
             {
                 if (logger == null)
                 {
-                    throw new InvalidOperationException("Logger has not been initialized. Call Initialize(configuration) first.");
+                    throw new InvalidOperationException("Logger has not yet been initialized.");
                 }
 
                 return logger;
-            }
-        }
-
-        /// <summary>
-        /// Initializes the logger based on the provided configuration.
-        /// </summary>
-        /// <param name="configuration">The configuration used to initialize the logger.</param>
-        public static void Initialize(IConfiguration configuration)
-        {
-            ConsoleTarget? consoleTarget = null;
-            try
-            {
-                logger = LogManager.Setup().LoadConfigurationFromSection(configuration).GetCurrentClassLogger();
-            }
-            catch (Exception ex)
-            {
-                // Create a simple NLog configuration that logs to the console
-                var config = new NLog.Config.LoggingConfiguration();
-                consoleTarget = new ConsoleTarget("console");
-                config.AddRule(LogLevel.Trace, LogLevel.Fatal, consoleTarget);
-
-                LogManager.Configuration = config;
-                logger = LogManager.GetCurrentClassLogger();
-                logger.Error(ex, "Logger initialization failed");
-            }
-            finally
-            {
-                consoleTarget?.Dispose();
             }
         }
 
@@ -67,6 +38,26 @@
         public static void Shutdown()
         {
             LogManager.Shutdown();
+        }
+
+        /// <summary>
+        /// Initializes the logger based on the provided configuration.
+        /// </summary>
+        /// <param name="configuration">The configuration used to initialize the logger.</param>
+        public static void Initialize(IConfiguration configuration)
+        {
+            try
+            {
+                LogManager.Setup().LoadConfigurationFromSection(configuration);
+                logger = LogManager.GetCurrentClassLogger();
+            }
+            catch (Exception ex)
+            {
+                // Fallback: minimal console logger setup using NLog fluent API
+                LogManager.Setup().LoadConfiguration(builder => builder.ForLogger().WriteToConsole());
+                logger = LogManager.GetCurrentClassLogger();
+                logger.Error(ex, "Logger initialization failed.");
+            }
         }
     }
 }
