@@ -119,6 +119,140 @@
         }
 
         /// <summary>
+        /// When calling the console app with parameters but without specifying the default verb, it should run the default command with those parameters.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        [Fact]
+        public async Task GivenBuiltConsoleApp_WhenCallingDefaultVerbWithParametersWithoutVerb_ThenShouldRunDefaultVerbWithParameters()
+        {
+            // Arrange
+            const string args = "--option=Queue --tenantId=1234";
+            var logger = new UnitTestLogger();
+            var console = CreateConsoleAppWithLogger(args, logger);
+
+            // Act
+            await console.RunAsync();
+
+            // Assert
+            var options = (DefaultOptions)logger.LoggedObjects["options"];
+            options.Option.ShouldBe("Queue");
+            options.TenantId.ShouldBe("1234");
+        }
+
+        /// <summary>
+        /// When calling the console app with parameters and explicitly specifying the default verb, it should run the default command with those parameters.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        [Fact]
+        public async Task GivenBuiltConsoleApp_WhenCallingDefaultVerbWithParametersWithVerb_ThenShouldRunDefaultVerbWithParameters()
+        {
+            // Arrange
+            const string args = "default --option=Queue --tenantId=1234";
+            var logger = new UnitTestLogger();
+            var console = CreateConsoleAppWithLogger(args, logger);
+
+            // Act
+            await console.RunAsync();
+
+            // Assert
+            var options = (DefaultOptions)logger.LoggedObjects["options"];
+            options.Option.ShouldBe("Queue");
+            options.TenantId.ShouldBe("1234");
+        }
+
+        /// <summary>
+        /// When calling the console app with parameters but without specifying the default verb, and the default options have no properties, it should still run the default command.
+        /// This reproduces a customer scenario where they defined isDefault but parse arguments manually in the command.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        [Fact]
+        public async Task GivenBuiltConsoleAppWithDefaultVerbWithoutProperties_WhenCallingWithParametersWithoutVerb_ThenShouldRunDefaultVerb()
+        {
+            // Arrange
+            const string args = "--option=Queue --tenantId=1234";
+            var logger = new UnitTestLogger();
+            var console = CreateConsoleAppWithLoggerForDefaultWithoutProperties(args, logger);
+
+            // Act
+            await console.RunAsync();
+
+            // Assert
+            logger.LoggedObjects["options"].ShouldBeOfType<DefaultOptionsWithoutProperties>();
+        }
+
+        /// <summary>
+        /// When calling a non-default verb with custom argument parsing and unknown arguments, it should succeed.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        [Fact]
+        public async Task GivenNonDefaultVerbWithCustomArgumentParsing_WhenCallingWithUnknownArgs_ThenShouldSucceed()
+        {
+            // Arrange
+            const string args = "process --custom-arg=value --another-arg";
+            var logger = new UnitTestLogger();
+            var servicesAssembly = Assembly.GetAssembly(typeof(ProcessCommand))!;
+            var verbTypes = new[] { typeof(ProcessOptions) };
+            var builder = DotNetConsole.CreateBuilderWithReference(servicesAssembly, verbTypes, args.Split(" "));
+            builder.Services.Replace(new ServiceDescriptor(typeof(IUnitTestLogger), logger));
+            var console = builder.Build();
+
+            // Act
+            await console.RunAsync();
+
+            // Assert
+            logger.LoggedObjects["options"].ShouldBeOfType<ProcessOptions>();
+        }
+
+        /// <summary>
+        /// When calling a verb with custom argument parsing and some defined properties, it should parse known args and ignore unknown ones.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        [Fact]
+        public async Task GivenVerbWithCustomArgumentParsingAndProperties_WhenCallingWithMixedArgs_ThenShouldParseKnownAndIgnoreUnknown()
+        {
+            // Arrange
+            const string args = "mixed --name=Test --count=5 --unknown-arg=ignored --another=value";
+            var logger = new UnitTestLogger();
+            var servicesAssembly = Assembly.GetAssembly(typeof(MixedCommand))!;
+            var verbTypes = new[] { typeof(MixedOptions) };
+            var builder = DotNetConsole.CreateBuilderWithReference(servicesAssembly, verbTypes, args.Split(" "));
+            builder.Services.Replace(new ServiceDescriptor(typeof(IUnitTestLogger), logger));
+            var console = builder.Build();
+
+            // Act
+            await console.RunAsync();
+
+            // Assert
+            var options = (MixedOptions)logger.LoggedObjects["options"];
+            options.Name.ShouldBe("Test");
+            options.Count.ShouldBe(5);
+        }
+
+        /// <summary>
+        /// When calling a verb without custom argument parsing attribute and unknown arguments, the command should not execute.
+        /// This ensures the default behavior still works.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        [Fact]
+        public async Task GivenVerbWithoutCustomArgumentParsing_WhenCallingWithUnknownArgs_ThenCommandShouldNotExecute()
+        {
+            // Arrange
+            const string args = "echo --unknown-option=value";
+            var logger = new UnitTestLogger();
+            var servicesAssembly = Assembly.GetAssembly(typeof(EchoCommand))!;
+            var verbTypes = new[] { typeof(EchoOptions) };
+            var builder = DotNetConsole.CreateBuilderWithReference(servicesAssembly, verbTypes, args.Split(" "));
+            builder.Services.Replace(new ServiceDescriptor(typeof(IUnitTestLogger), logger));
+            var console = builder.Build();
+
+            // Act
+            await console.RunAsync();
+
+            // Assert - command should not have executed, so logger should be empty
+            logger.LoggedObjects.ShouldBeEmpty();
+        }
+
+        /// <summary>
         /// Creates the console application with logger.
         /// </summary>
         /// <param name="args">The arguments.</param>
@@ -126,7 +260,26 @@
         /// <returns>A built console app ready to run.</returns>
         private static IDotNetConsole CreateConsoleAppWithLogger(string args, IUnitTestLogger tracker)
         {
-            var builder = DotNetConsole.CreateBuilderWithReference(Assembly.GetAssembly(typeof(DefaultCommand))!, args.Split(" "));
+            var servicesAssembly = Assembly.GetAssembly(typeof(DefaultCommand))!;
+            var verbTypes = new[] { typeof(DefaultOptions), typeof(EchoOptions) };
+            var builder = DotNetConsole.CreateBuilderWithReference(servicesAssembly, verbTypes, args.Split(" "));
+
+            builder.Services.Replace(new ServiceDescriptor(typeof(IUnitTestLogger), tracker));
+
+            return builder.Build();
+        }
+
+        /// <summary>
+        /// Creates the console application with logger for default command without properties.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <param name="tracker">The logger.</param>
+        /// <returns>A built console app ready to run.</returns>
+        private static IDotNetConsole CreateConsoleAppWithLoggerForDefaultWithoutProperties(string args, IUnitTestLogger tracker)
+        {
+            var servicesAssembly = Assembly.GetAssembly(typeof(DefaultCommandWithoutProperties))!;
+            var verbTypes = new[] { typeof(DefaultOptionsWithoutProperties) };
+            var builder = DotNetConsole.CreateBuilderWithReference(servicesAssembly, verbTypes, args.Split(" "));
 
             builder.Services.Replace(new ServiceDescriptor(typeof(IUnitTestLogger), tracker));
 

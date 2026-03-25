@@ -21,6 +21,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed obsolete serialization constructor and `[Serializable]` attribute from `DotNetConsoleException` as formatter-based serialization is no longer supported or recommended in modern .NET.
 
+## [5.0.1] - 2026-03-25
+
+### Added
+
+- `ConfigureAppConfiguration` method to `DotNetConsoleBuilder` (re-)enabling custom configuration providers
+- `CustomArgumentParsingAttribute` to allow verbs to accept unknown arguments for manual parsing
+
+### Fixed
+
+- Fixed configuration provider timing: `DotNetConsole.Configuration` now properly reflects all configuration providers (including those added via `ConfigureAppConfiguration`) when accessed early in the application lifecycle.
+
 ## [5.0.0] - 2025-01-27
 
 ### Added
@@ -121,7 +132,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed AWS NLog Logger assembly that was used for logging to Amazon CloudWatch
 
-[unreleased]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v5.0.0...HEAD
+[Unreleased]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v5.0.1...HEAD
 [3.0.1]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v2.0.2...v3.0.0
 [2.0.2]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v2.0.1...v2.0.2
@@ -132,3 +143,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [3.0.2]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v3.0.2-rc.0...v3.0.2
 [5.0.0]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v4.0.0...v5.0.0
 [4.0.0]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v4.0.0-rc.0...v4.0.0
+[5.0.1]: https://github.com/neolution-ch/Neolution.DotNet.Console/compare/v5.0.1-beta.2...v5.0.1

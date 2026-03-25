@@ -68,6 +68,18 @@
         /// <returns>The <see cref="IConfiguration" />.</returns>
         internal static IConfiguration CreateConsoleConfiguration(Assembly assembly, string[] args, IHostEnvironment environment)
         {
+            return CreateConsoleConfigurationBuilder(assembly, args, environment).Build();
+        }
+
+        /// <summary>
+        /// Creates the console configuration builder (without building it).
+        /// </summary>
+        /// <param name="assembly">The assembly.</param>
+        /// <param name="args">The arguments.</param>
+        /// <param name="environment">The environment.</param>
+        /// <returns>The <see cref="IConfigurationBuilder" />.</returns>
+        internal static IConfigurationBuilder CreateConsoleConfigurationBuilder(Assembly assembly, string[] args, IHostEnvironment environment)
+        {
             var configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(environment.ContentRootPath)
                 .AddEnvironmentVariables(prefix: "DOTNET_");
@@ -85,7 +97,7 @@
 
             configurationBuilder.AddEnvironmentVariables();
 
-            return configurationBuilder.Build();
+            return configurationBuilder;
         }
 
         /// <summary>
